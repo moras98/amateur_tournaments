@@ -1,0 +1,109 @@
+import 'package:bracket/core/utils/nav_geometry.dart';
+import 'package:bracket/core/widgets/animate_in.dart';
+import 'package:bracket/features/explore/explore_providers.dart';
+import 'package:bracket/features/explore/widgets/tournament_card.dart';
+import 'package:bracket/l10n/generated/app_localizations.dart';
+import 'package:bracket/models/tournament_model.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:latlong2/latlong.dart';
+
+/// Search-result list with pull-to-refresh and an empty state.
+class TournamentList extends ConsumerWidget {
+  const TournamentList({
+    super.key,
+    required this.tournaments,
+    this.userLocation,
+  });
+
+  final List<TournamentModel> tournaments;
+  final LatLng? userLocation;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (tournaments.isEmpty) {
+      return _EmptyResults(
+        onClearFilters: () =>
+            ref.read(exploreFiltersProvider.notifier).clearAll(),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: () async {
+        // A fresh GPS fix too: the first one may have been denied or stale
+        // (e.g. the app was outdoors with the service off).
+        ref.invalidate(userLocationProvider);
+        await ref.read(userLocationProvider.future);
+        ref.invalidate(exploreResultsProvider);
+        await ref.read(exploreResultsProvider.future);
+      },
+      child: ListView.separated(
+        physics: const AlwaysScrollableScrollPhysics(),
+        // The list scrolls behind the floating nav capsule on the map tab,
+        // so its last card must be able to clear the bar.
+        padding: EdgeInsets.fromLTRB(
+          16,
+          8,
+          16,
+          24 + navBarClearanceOf(context),
+        ),
+        itemCount: tournaments.length,
+        separatorBuilder: (context, index) => const SizedBox(height: 12),
+        itemBuilder: (context, index) {
+          final tournament = tournaments[index];
+          // Staggered fade-in entrance (capped so long lists don't wait).
+          return AnimateIn(
+            delay: Duration(milliseconds: 50 * index.clamp(0, 6)),
+            child: TournamentCard(
+              tournament: tournament,
+              distanceKm: tournament.distanceKmFrom(userLocation),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _EmptyResults extends StatelessWidget {
+  const _EmptyResults({required this.onClearFilters});
+
+  final VoidCallback onClearFilters;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.search_off,
+              size: 56,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(height: 16),
+            Text(l10n.noTournaments, style: theme.textTheme.titleLarge),
+            const SizedBox(height: 8),
+            Text(
+              l10n.noTournamentsBody,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: onClearFilters,
+              child: Text(l10n.clearFilters),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
