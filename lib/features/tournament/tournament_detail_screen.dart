@@ -332,8 +332,7 @@ class _TournamentDetailScreenState
                           children: [
                             TileLayer(
                               urlTemplate: osmTileUrl,
-                              userAgentPackageName:
-                                  'com.example.amateur_tournaments',
+                              userAgentPackageName: 'com.bracket.torneos',
                               tileProvider: ref.watch(tileProviderProvider),
                             ),
                             MarkerLayer(

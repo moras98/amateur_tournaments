@@ -1,4 +1,4 @@
-package com.example.amateur_tournaments
+package com.bracket.torneos
 
 import io.flutter.embedding.android.FlutterActivity
 

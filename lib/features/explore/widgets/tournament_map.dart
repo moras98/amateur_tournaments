@@ -184,7 +184,7 @@ class _TournamentMapState extends ConsumerState<TournamentMap> {
           children: [
             TileLayer(
               urlTemplate: osmTileUrl,
-              userAgentPackageName: 'com.example.amateur_tournaments',
+              userAgentPackageName: 'com.bracket.torneos',
               tileProvider: tileProvider,
             ),
             _ClusterMarkersLayer(
