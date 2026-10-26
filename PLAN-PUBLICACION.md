@@ -1006,3 +1006,49 @@ momento en que se configuren los providers de Google y Apple.
 **Verificación de esta tanda:** `flutter analyze` limpio · **132/132 tests** · iconos y splash
 regenerados para Android (incluye monocromo) e iOS · `grep -ri bracket` sin coincidencias fuera
 de las menciones históricas de esta documentación.
+
+### 11.8 Búsqueda de marca de "Tande" (26/10/2026)
+
+Hecha por mí, no pendiente. Fuente: **TMview** (`tmdn.org`), el buscador de EUIPO que indexa
+USPTO, EUIPO, DNPI Uruguay y ~70 oficinas. Consulta por API con criterio de **palabra** y de
+**contiene**, filtrando por oficina. Control de cobertura: la misma consulta con "conaprole" y
+"antel" devuelve marcas de **UY**, así que la ausencia de Tande en Uruguay es un dato, no un
+hueco de la herramienta.
+
+| Oficina | Marcas "TANDE" | Detalle | Riesgo para la app |
+|---|---|---|---|
+| **UY** (DNPI) | **0** | — | **ninguno** |
+| **AR / CL / PY / ES** | **0** | — | ninguno |
+| **WO** (OMPI) | **0** | sin registro internacional | ninguno |
+| **EM** (EUIPO) | 1 | "TandE", clase 12, **expirada** | ninguno |
+| **US** (USPTO) | 3 | clase 43 registrada (restaurante), clase 12 terminada, clase 45 (Tande Law Group) | **ninguno en clases 9/41/42** |
+| **MX** | 2 | clases 35 y 37 | ninguno |
+| **BR** | 6 | **una viva en clase 41** (Alexandre Ramos Samuel) + "Projeto Léa Tande" clase 41 | **medio si algún día entra a Brasil** |
+
+**El hallazgo que un buscador exacto se pierde: TANDEM.** En EE.UU. hay muchas marcas TANDEM
+vivas justo en las clases que importan: clase 9/41/42 (Tandem Diabetes Care), clase 42 (Passport
+Online, CoNetrix, Tandem LLC), clase 41 en trámite (MTH Solutions), clase 38/41/44 (Tandem CAT).
+Como "Tande" es un truncamiento de "Tandem", un examinador podría citarlas por riesgo de
+confusión **si se intenta registrar la marca**, aunque para usar el nombre en una app el riesgo
+práctico es bajo: las tiendas no hacen clearance y los titulares están en mercados distintos
+(diabetes, software educativo, diarios, catálogos).
+
+**Veredicto: Tande se puede usar.** Sin obstáculos en Uruguay, Argentina, Chile, Paraguay, España
+ni en el registro internacional, y sin marcas exactas en las clases de la app en EE.UU. ni en la
+UE (la de EUIPO está expirada).
+
+Acciones que se desprenden:
+
+- **Usar** el nombre: sin riesgo relevante en el mercado inicial ni en los que siguen.
+- **No gastar** todavía en registrar la marca en EE.UU.: si algún día se hace, esperar una cita
+  de TANDEM y presupuesto para responderla.
+- **Brasil**: si entra en el plan, o se resuelve la convivencia con el titular de la clase 41 o se
+  elige otro nombre para ese mercado.
+- **Certeza legal en Uruguay**: la búsqueda que hice es de registros; para un dictamen está la
+  "Búsqueda de antecedentes fonéticos de marcas" del MIEM
+  (https://www.gub.uy/tramites/busqueda-antecedentes-foneticos-marcas). Recién vale la pena
+  cuando haya ingresos, no antes de publicar.
+
+Reproducible: `POST https://www.tmdn.org/tmview/api/search/results` con
+`{"page":"1","pageSize":"50","criteria":"W","basicSearch":"tande","offices":["UY"]}`
+y cabeceras `Origin`/`Referer` de tmdn.org. Sin ellas la API responde vacío.
