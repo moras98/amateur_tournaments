@@ -862,62 +862,68 @@ Google Registry. **Ese endpoint devuelve 404 hasta para dominios registrados** (
    Ese es el patrón que resuelve "marca linda" + "que me encuentren".
 5. Dominio y tiendas libres, verificado.
 
-### 11.2 Lo que está ocupado (verificado hoy: 45 dominios .com chequeados)
+### 11.2 Una sola palabra: lo que verifiqué (y lo que ya no existe)
 
-Todos los .com de una sola palabra del rubro están tomados: `alargue, silbato, tercertiempo,
-mediacancha, picado, cancha, arranque, laredonda, canchero, picadito, canchazo, rabona, gambeta,
-vestuario, pizarra, canchon, jugador12, chilena, contragolpe, palomita, canchea, arco, torneito,
-jugadita, pelotazo, armate, juntada, canchita, lajugada, fueradejuego, laprevia, potrero, elpotrero,
-tirolibre, juegolimpio, eldescanso, anotate, sumate, jugala, armala, elvestuario`.
+Chequeé **~90 dominios**. El resultado es contundente y conviene decirlo antes de seguir:
 
-Y varias ya son apps (colisión directa en tienda): **Falta 1** (Montevideo y Flores), MeFalta1,
-Falta1 Chile, PlayOff, GESPACH, APP Torneos, Deporstar, 4league, Torneos App, Cancha, CanchaYa,
-Donde Juego, Laro, Canchita (ligas de fútbol), Canchero, El Canchero, Picado, El Picado,
-Picadito (2), Rabona (red social de fútbol), Gambeta, Tercer Tiempo (2), Silbato, Tiro Libre.
+| Extensión | Método | Resultado con nombres de una palabra |
+|---|---|---|
+| `.com` | RDAP de Verisign (control `google.com` → 200) | **todos tomados**: golo, kopa, taka, tiki, volea, chute, kiro, luno, kolo, mika, tavo, sono, pita, canche, ligo, raso, chapa, juga, tanda, saque, trave, grada, tribuna, ludico, gambito, partita, pista, golazo, kancha, ludus, torneo, liga, once, duelo, quite, remate, globito, sorteo, y ~15 más |
+| `.app` | RDAP vía rdap.org (control `cash.app` → 200; cadena al azar → 404) | **todos tomados**: los mismos + golo, tanda, saque, trave, grada, palo, taco, volta, gol, ronda, tribuna, chute, toque, partita, ludico, vaselina (¡sólo vaselina.app está libre!) |
+| `.club` | idem (control `google.club` → 200) | **sólo `grada.club`** |
 
-**Conclusión: el nombre tiene que ser una frase corta de dos palabras o una palabra inventada.**
-No hay tercera opción en este rubro.
+No es mala suerte: los `.com` de 4-6 letras son un activo financiero y están registrados en bloque.
+**Ningún nombre de una palabra que sea a la vez pegadizo y pronunciable tiene `.com` ni `.app` libre.**
 
-### 11.3 Opciones con disponibilidad verificada
+**La regla que desbloquea todo:** el nombre de la app **no tiene que ser el dominio**. Strava no es
+strava.com por obligación; en la práctica usás el dominio para la política de privacidad, el mail de
+Resend y poco más. Verificado libre para eso: **`golohq.com`** y **`getgrada.com`**.
 
-| Nombre | Dominio | Colisiones | Por qué tiene futuro | Riesgo |
+### 11.3 Finalistas (una palabra, fonética universal)
+
+Criterio fonético: sílabas abiertas (consonante + vocal), sólo `a e i o u`, sin tildes, sin dígrafos
+ambiguos (`j`, `z`, `ll`, `ñ`), y `g` dura en todos los idiomas antes de `o`/`a`.
+
+| Nombre | Cómo se lee | Qué significa | Marca | Dominio verificado |
 |---|---|---|---|---|
-| **La Otra Cancha** | `laotracancha.com` **libre** (`.app` sin DNS, probablemente libre) | **ninguna app**; la frase circula en medios de fútbol (videopodcast de Bumbox, ciclo de Caracol TV) | "La otra cancha" es descubrimiento puro y contenedor: otros deportes, otras ciudades, otros formatos, otros niveles. Admite equipos, chat, stats y clubes sin forzar | En inglés no significa nada (pero es corto y se pronuncia fácil) |
-| **Cancha Mayor** | `canchamayor.com` **libre** | ninguna app; sí existen "Cancha" y "CANCHA" | Suena a institución (club, liga, Federación): escala natural a clubes, ligas y torneos grandes | "Mayor" puede sonar a categoría senior |
-| **Tiempo Cumplido** | `tiempocumplido.com` **libre** | **0 resultados** en búsqueda de tienda | Marca de fútbol real, elegante, muy recordable; el "final del partido" da lugar a resultados, estadísticas y premiación | Semánticamente es *el final*: para una app de descubrir torneos puede sonar a cierre |
-| El Vestuario | `.com` tomado, `.app` sin DNS | **`vestuario.app` es un producto activo** (gestión de peñas de fútbol) | Es la mejor metáfora de contenedor que existe (el equipo, el chat, las stats, las multas) | Ya hay alguien usando exactamente esa idea |
-| Torneos Cerca | `torneoscerca.com` sin DNS | ninguna | — | Descartado por vos: describe una función y no deja crecer |
+| **Golo** | GO-lo, idéntico en es/en/pt/fr/it/de | "gol" en portugués; se asocia a gol/goal en todo el mundo | Débil (casi genérica) y **GOLO es una marca de nutrición en EE.UU.** | `golohq.com` **libre** · `golo.com`/`.app` tomados |
+| **Grada** | GRA-da, idéntico en es/pt/it | las gradas, donde está la gente | Media: más distintiva en inglés | `grada.club` **libre** · `getgrada.com` **libre** |
+| Tanda | TAN-da | tanda de penales (es); serie/turno (pt) | Hay una fintech llamada Tanda en África | sin dominio fácil (`tandahq`, `tandaapp` tomados) |
 
-**Recomendación: La Otra Cancha.** Es la única que cumple las cuatro cosas a la vez: no describe
-una pantalla, se dice de una, tiene .com libre y la metáfora invita a crecer (un torneo de pádel en
-otra ciudad es literalmente "la otra cancha"). Contra: al ser una frase hecha del fútbol no es
-defendible como marca registrada (por eso la usan podcast y TV). Si querés defensibilidad, el
-nombre tiene que ser inventado o `Cancha Mayor`. Título de tienda: `La Otra Cancha — torneos` (25), y
-la palabra clave también en la descripción corta. En inglés el título queda igual y los keywords
-ingleses van en la descripción corta: `Find amateur tournaments near you`.
+**Recomendación: Golo + `golohq.com`.** Es la que gana en "máximos lenguajes": cuatro letras, dos
+sílabas abiertas, cero letras ambiguas, y el concepto gol/goal se entiende sin traducir en casi
+cualquier país donde se juegue al fútbol. Título de tienda: `Golo — torneos` (15 caracteres, deja
+lugar para "fútbol" o "pádel" según el mercado).
 
-Alternativa si querés algo más "institucional" y orientado a clubes/ligas: `Cancha Mayor`.
+Si te importa más poder defender la marca que la pegada inmediata: **Grada**, que además tiene
+`grada.club` y `getgrada.com` libres y suena menos genérica en inglés.
 
-### 11.4 Logos para La Otra Cancha (archivos en `store/logo-concepts/`)
+Ojo con dos cosas de Golo: (1) al ser casi una palabra común, la marca es difícil de registrar y de
+defender — para un proyecto que recién arranca eso se acepta, pero sabiéndolo; (2) antes de comprar
+nada, búsqueda de marca en **INPI (UY)**, **USPTO (EE.UU.)** y **EUIPO (UE)**, clases 9 y 41. Es
+gratis y son 20 minutos.
 
-| Concepto | Qué dice | A 48 px | Archivo |
+### 11.4 Iconos (archivos en `store/logo-concepts/`)
+
+| Concepto | Para | A 48 px | Archivo |
 |---|---|---|---|
-| **A — cancha con la pelota saliendo del cuadro** | "hay otra cancha más allá de esta" | se lee bien: la pelota es la que sostiene el icono | `otra-cancha-a-linea.svg` |
-| B — dos canchas superpuestas | la cancha de al lado | la de atrás se desvanece y parece un artefacto | `otra-cancha-b-dos.svg` |
-| C — línea + pelota sola | minimalismo | no se entiende como cancha; composición desbalanceada | `otra-cancha-c-linea.svg` (descartado) |
-| Pin (versión anterior) | "cerca" | **el más legible de todos** a tamaño chico | `a-pin-limpio.svg` |
+| **La pelota** (círculo menta + pentágono y 5 costuras) | **Golo** | **el más legible de todos**: se lee pelota incluso a 24 px | `golo-pelota.svg` |
+| Pin con círculo central | cualquier nombre | muy bueno | `a-pin-limpio.svg` + `a-pin-foreground.svg` + `a-pin-monocromo.svg` |
+| Cancha mínima | Grada / nombres de cancha | se lee, más ruido | `b-cancha-minima.svg` |
+| Cancha con pelota saliendo | La Otra Cancha | se lee | `otra-cancha-a-linea.svg` |
 
-Si priorizás legibilidad absoluta a 48 px, el pin sigue siendo mejor icono. Si priorizás marca
-propia, A es el camino y se puede limpiar (acercar la pelota al borde del cuadro para que la
-composición quede centrada).
+Para Golo el icono y el logo son lo mismo: la pelota. El wordmark va en Plus Jakarta Sans ExtraBold
+(`GOLO`), y el segundo `O` puede llevar el pentágono de la pelota en negativo.
 
-Para aplicar cualquiera: reemplazar `assets/icon.png` e `assets/icon_fg.png`, y correr
+Para aplicar: reemplazar `assets/icon.png` e `assets/icon_fg.png` y correr
 `dart run flutter_launcher_icons` + `dart run flutter_native_splash:create`.
 
 ### 11.5 Antes de decidir
 
-1. Confirmar en el registrador (no por RDAP) que `laotracancha.com` y `laotracancha.app` se pueden
-   comprar, y comprar los dos el mismo día.
-2. Buscar "La Otra Cancha" en App Store Connect al crear la app: si el nombre está tomado ahí,
-   queda `La Otra Cancha App` o `LaOtraCancha`, que se ven peor pero funcionan.
-3. Que lo diga en voz alta alguien que no sea vos: si hay que deletrearlo, no sirve.
+1. Comprar `golohq.com` (o el dominio elegido) el mismo día que decidas: no es el nombre, es la
+   casa de la política de privacidad y del remitente de Resend.
+2. Búsqueda de marca en INPI / USPTO / EUIPO, clases 9 y 41.
+3. Decí el nombre en voz alta a tres personas de países distintos y pediles que lo escriban. Si
+   alguien escribe "bolo", "goloh" o "yolo", no sirve.
+4. Recién ahí: renombrar label, display name, ficha y bundle id (todavía es gratis porque no hay
+   ningún upload).
