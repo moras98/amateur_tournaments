@@ -295,6 +295,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get chooseBirthDate => 'Elegí tu fecha de nacimiento';
 
   @override
+  String get mustBe18 => 'Tenés que tener 18 años o más para usar Bracket.';
+
+  @override
   String get chooseSport => 'Elegí al menos un deporte';
 
   @override
@@ -1314,6 +1317,9 @@ class AppLocalizationsEsUy extends AppLocalizationsEs {
 
   @override
   String get chooseBirthDate => 'Elegí tu fecha de nacimiento';
+
+  @override
+  String get mustBe18 => 'Tenés que tener 18 años o más para usar Bracket.';
 
   @override
   String get chooseSport => 'Elegí al menos un deporte';

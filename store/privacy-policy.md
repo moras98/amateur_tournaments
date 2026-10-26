@@ -69,8 +69,10 @@ dentro de los 10 días hábiles.
 
 ## 6. Menores
 
-La app está orientada a personas de 13 años o más. Si la usás desde esa edad
-hasta los 18, hacelo con el consentimiento de un adulto.
+La app está dirigida exclusivamente a personas mayores de 18 años. La fecha
+de nacimiento es obligatoria al crear la cuenta y no se permite el registro
+ni la edición del perfil por debajo de esa edad, porque la Ley 18.331 exige
+autorización del tutor para tratar los datos de menores.
 
 ## 7. Cambios
 

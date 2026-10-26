@@ -32,8 +32,9 @@ organización ocurre directamente entre el organizador y los participantes
 
 ## 3. Edad
 
-La app está dirigida a personas de 13 años o más. Si tenés entre 13 y 18,
-usala con el consentimiento de un adulto.
+La app está dirigida exclusivamente a personas mayores de 18 años. La fecha
+de nacimiento es obligatoria al crear la cuenta y no se permite registrarse
+ni editar el perfil con una edad inferior a 18 años.
 
 ## 4. Responsabilidades del organizador
 

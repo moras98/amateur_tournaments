@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bracket/core/location/reverse_geocoder.dart';
 import 'package:bracket/core/theme/adaptive.dart';
+import 'package:bracket/core/utils/age.dart';
 import 'package:bracket/core/utils/country_code.dart';
 import 'package:bracket/data/repositories/providers.dart';
 import 'package:bracket/features/auth/widgets/profile_fields.dart';
@@ -190,6 +191,14 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(l10n.chooseBirthDate)));
+      return;
+    }
+    // Same minimum-age gate as sign-up (Terms §3): an edit must not turn the
+    // stored birth date into an under-18 one.
+    if (!isAdult(_birthDate!)) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.mustBe18)));
       return;
     }
 

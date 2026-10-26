@@ -2,6 +2,7 @@ import 'package:bracket/data/auth/auth_repository.dart';
 import 'package:bracket/data/auth/mock_auth_repository.dart';
 import 'package:bracket/data/repositories/mock/mock_profile_repository.dart';
 import 'package:bracket/data/repositories/mock/mock_store.dart';
+import 'package:bracket/core/utils/age.dart';
 import 'package:bracket/core/utils/format.dart';
 import 'package:bracket/core/theme/app_theme.dart';
 import 'package:bracket/features/auth/forgot_password_screen.dart';
@@ -164,6 +165,26 @@ void main() {
       expect(auth.currentSession, isNull);
       expect(events, [isNull]);
       await sub.cancel();
+    });
+  });
+
+  group('isAdult (the 18+ gate)', () {
+    final now = DateTime(2026, 10, 26);
+
+    test('a birthday still ahead means a minor', () {
+      // Born 2 Nov 2008: 17 years, 11 months on 26 Oct 2026 — and the
+      // day before the 18th birthday counts as 17 too.
+      expect(isAdult(DateTime(2008, 11, 2), now: now), isFalse);
+      expect(isAdult(DateTime(2008, 10, 27), now: now), isFalse);
+    });
+
+    test('turning 18 today is enough', () {
+      expect(isAdult(DateTime(2008, 10, 26), now: now), isTrue);
+    });
+
+    test('adults pass and future birth dates fail', () {
+      expect(isAdult(DateTime(1996, 4, 12), now: now), isTrue);
+      expect(isAdult(DateTime(2027, 1, 1), now: now), isFalse);
     });
   });
 
@@ -743,6 +764,90 @@ void main() {
       await tester.tap(next);
       await tester.pumpAndSettle();
       expect(find.text('Sobre vos'), findsOneWidget);
+    });
+
+    testWidgets('sign-up blocks an under-18 birth date', (tester) async {
+      final auth = MockAuthRepository(signedIn: false);
+      await tester.pumpWidget(appHarness(signedIn: false, auth: auth));
+      await tester.pumpAndSettle();
+      await openSignUp(tester);
+
+      // Step 1 — the account: name, email, password + terms.
+      await tester.enterText(find.byType(TextFormField).at(0), 'New Bie');
+      await tester.enterText(
+        find.byType(TextFormField).at(1),
+        'minor@demo.app',
+      );
+      await tester.pump(const Duration(milliseconds: 300)); // email check
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextFormField).at(2), 'Password123');
+      await tester.pumpAndSettle();
+
+      final next = find.widgetWithText(FilledButton, 'Siguiente');
+      await tester.scrollUntilVisible(
+        next,
+        300,
+        scrollable: signUpScrollable(),
+      );
+      await tester.pumpAndSettle();
+      await acceptTerms(tester);
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+
+      // Step 2 — username, then the birth date through the picker's
+      // text-input mode (this Flutter's Material calendar has no year
+      // navigation, so tapping back 13 years isn't possible).
+      await tester.enterText(find.byType(TextFormField).at(0), 'minor');
+      await tester.pump(const Duration(milliseconds: 300)); // username check
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('Tocá para elegir'),
+        300,
+        scrollable: signUpScrollable(),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Tocá para elegir'));
+      await tester.pumpAndSettle();
+
+      // The entry-mode button (its tooltip differs per locale → icon).
+      await tester.tap(
+        find.descendant(
+          of: find.byType(DatePickerDialog),
+          matching: find.byIcon(Icons.edit_outlined),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // The field pre-fills with the compact date of the initial date
+      // (now.year - 25); keep its shape, swap in a 10-year-old's year.
+      final dateField = find.descendant(
+        of: find.byType(InputDatePickerFormField),
+        matching: find.byType(TextField),
+      );
+      final prefill = tester.widget<TextField>(dateField).controller!.text;
+      final segments = prefill.split('/');
+      segments[segments.length - 1] = '${DateTime.now().year - 10}';
+      await tester.enterText(dateField, segments.join('/'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('ACEPTAR'));
+      await tester.pumpAndSettle();
+
+      // The gate fires before the step advances — the snackbar shows, the
+      // step holds, and no account exists.
+      await tester.scrollUntilVisible(
+        next,
+        300,
+        scrollable: signUpScrollable(),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Tenés que tener 18 años o más para usar Bracket.'),
+        findsOneWidget,
+      );
+      expect(find.text('Sobre vos'), findsOneWidget);
+      expect(auth.currentSession, isNull);
     });
 
     testWidgets('signing out returns to the login screen', (tester) async {

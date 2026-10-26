@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bracket/core/theme/app_gradients.dart';
+import 'package:bracket/core/utils/age.dart';
 import 'package:bracket/core/theme/adaptive.dart';
 import 'package:bracket/data/auth/auth_repository.dart';
 import 'package:bracket/data/repositories/providers.dart';
@@ -159,6 +160,15 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       ).showSnackBar(SnackBar(content: Text(l10n.chooseBirthDate)));
       return;
     }
+    // Minimum-age gate (Terms §3): surface it right after the date is picked,
+    // before the user invests in the remaining steps.
+    if (_step == 1 && _birthDate != null && !isAdult(_birthDate!)) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.mustBe18)));
+      return;
+    }
     setState(() => _step++);
   }
 
@@ -180,6 +190,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(l10n.chooseBirthDate)));
+      return;
+    }
+    // The step-1 gate can't be walked past, but re-check anyway so the
+    // account is never created with an under-age birth date.
+    if (!isAdult(_birthDate!)) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.mustBe18)));
       return;
     }
     setState(() {

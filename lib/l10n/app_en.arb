@@ -102,6 +102,7 @@
   "sportsFilterHint": "Your sports filter the events you see in Explore.",
   "createAccount": "Create account",
   "chooseBirthDate": "Choose your date of birth",
+  "mustBe18": "You must be 18 or older to use Bracket.",
   "chooseSport": "Choose at least one sport",
   "acceptTermsPrefix": "I accept the ",
   "termsAndConditions": "Terms and Conditions",

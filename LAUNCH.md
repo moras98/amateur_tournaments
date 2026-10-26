@@ -15,7 +15,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 
 | Item | Status |
 |---|---|
-| App build | ✅ analyze clean, **128/128 tests**, `1.0.0+1` |
+| App build | ✅ analyze clean, **132/132 tests**, `1.0.0+1` |
 | Application ID | ✅ `com.bracket.torneos` (permanent — never change after publish) |
 | Git | ✅ 5 commits, secrets gitignored |
 | Upload keystore | ✅ `~/upload-keystore.jks` + `android/key.properties` |
@@ -70,7 +70,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 # after filling .release.env:
 ./scripts/build-release.sh
 # → build/app/outputs/bundle/release/app-release.aab
-# (runs gen-l10n + 128 tests, signs with the upload key, prints the signer)
+# (runs gen-l10n + 132 tests, signs with the upload key, prints the signer)
 ```
 
 - [ ] `.release.env` filled (never commit it — it's gitignored)
@@ -124,7 +124,7 @@ testing* track before production access. Internal testing does **not** count.
 - [ ] **Every tester must opt in via the link AND open the app daily** for 14
       unbroken days — track them with a WhatsApp group reminder
 - [ ] Day 15: **apply for production access** (dashboard questionnaire —
-      answer with real numbers: 128 automated tests + on-device manual QA)
+      answer with real numbers: 132 automated tests + on-device manual QA)
 
 ## 5. Production
 

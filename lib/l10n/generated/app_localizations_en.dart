@@ -292,6 +292,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseBirthDate => 'Choose your date of birth';
 
   @override
+  String get mustBe18 => 'You must be 18 or older to use Bracket.';
+
+  @override
   String get chooseSport => 'Choose at least one sport';
 
   @override

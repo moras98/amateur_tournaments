@@ -645,6 +645,12 @@ abstract class AppLocalizations {
   /// **'Elegí tu fecha de nacimiento'**
   String get chooseBirthDate;
 
+  /// No description provided for @mustBe18.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Tenés que tener 18 años o más para usar Bracket.'**
+  String get mustBe18;
+
   /// No description provided for @chooseSport.
   ///
   /// In es_UY, this message translates to:
