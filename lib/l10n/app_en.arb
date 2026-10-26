@@ -69,6 +69,7 @@
   "continueWith": "Continue with {provider}",
   "noAccountSignup": "Don't have an account? Sign up",
   "browseAsGuest": "Browse events without an account",
+  "currencyLabel": "Currency",
 
   "forgotPassword": "Forgot your password?",
   "forgotPasswordTitle": "Reset your password",

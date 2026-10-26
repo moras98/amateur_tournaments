@@ -1,3 +1,4 @@
+import 'package:bracket/core/utils/country_code.dart';
 import 'package:latlong2/latlong.dart';
 
 /// Lifecycle of a tournament as seen by players.
@@ -27,6 +28,7 @@ class TournamentModel {
     this.description = '',
     this.prizes = '',
     this.inscriptionCost = 0,
+    this.currency = defaultCurrency,
     this.totalTeams = 4,
     this.confirmedTeams = 0,
     this.manualConfirmed = 0,
@@ -48,6 +50,12 @@ class TournamentModel {
   final DateTime startTime;
   final DateTime endTime;
   final double inscriptionCost;
+
+  /// ISO 4217 code the cost is charged in (`UYU`, `EUR`, …): the event
+  /// form's selector stores it (audit 4.9) and the card/detail screens
+  /// render the amount through `formatCost` with it — an organizer in
+  /// Madrid sees euros, not "$ 25".
+  final String currency;
   final int totalTeams;
 
   /// Confirmed inscriptions, read from the `spots_left` view.
@@ -92,6 +100,7 @@ class TournamentModel {
     DateTime? startTime,
     DateTime? endTime,
     double? inscriptionCost,
+    String? currency,
     int? totalTeams,
     int? confirmedTeams,
     int? manualConfirmed,
@@ -115,6 +124,7 @@ class TournamentModel {
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       inscriptionCost: inscriptionCost ?? this.inscriptionCost,
+      currency: currency ?? this.currency,
       totalTeams: totalTeams ?? this.totalTeams,
       confirmedTeams: confirmedTeams ?? this.confirmedTeams,
       manualConfirmed: manualConfirmed ?? this.manualConfirmed,
@@ -148,6 +158,8 @@ class TournamentModel {
               .toLocal(),
       // JSON numbers may arrive as int or double.
       inscriptionCost: (json['inscription_cost'] as num?)?.toDouble() ?? 0,
+      // Rows written before migration 0009 arrive without the column.
+      currency: json['currency'] as String? ?? defaultCurrency,
       totalTeams: (json['total_teams'] as num?)?.toInt() ?? 4,
       confirmedTeams:
           (json['confirmed_teams'] as num?)?.toInt() ??
@@ -180,6 +192,7 @@ class TournamentModel {
       'start_time': startTime.toUtc().toIso8601String(),
       'end_time': endTime.toUtc().toIso8601String(),
       'inscription_cost': inscriptionCost,
+      'currency': currency,
       'total_teams': totalTeams,
       'manual_confirmed': manualConfirmed,
       'venue_name': venueName,

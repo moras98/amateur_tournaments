@@ -92,6 +92,9 @@ Run the migrations in order (Supabase SQL editor, or `supabase db push`):
 8. `supabase/migrations/0008_explore_indexes.sql` — indexes behind the
    Explore query: `end_time` (date cut), `latitude`/`longitude` (radius
    box), plus 0002's `start_time` for the 200-row ordered page.
+9. `supabase/migrations/0009_currency.sql` — per-tournament `currency`
+   (ISO 4217, default `UYU`, CHECK on the 13 offered codes): the event
+   form prices each tournament in its own currency.
 
 All are idempotent (`if not exists` / `drop policy if exists`) — safe to
 re-run. Tournament locations are plain `latitude`/`longitude` columns; **no
@@ -122,7 +125,7 @@ starts empty); returning users go straight to their destination.
 
 ```bash
 flutter analyze
-flutter test        # 119 tests
+flutter test        # 128 tests
 ```
 
 Widget tests drive the app through `test/support/harness.dart`

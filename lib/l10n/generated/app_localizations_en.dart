@@ -197,6 +197,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get browseAsGuest => 'Browse events without an account';
 
   @override
+  String get currencyLabel => 'Currency';
+
+  @override
   String get forgotPassword => 'Forgot your password?';
 
   @override

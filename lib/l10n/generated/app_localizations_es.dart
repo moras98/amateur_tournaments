@@ -198,6 +198,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get browseAsGuest => 'Explorar eventos sin cuenta';
 
   @override
+  String get currencyLabel => 'Moneda';
+
+  @override
   String get forgotPassword => '¿Olvidaste tu contraseña?';
 
   @override
@@ -1214,6 +1217,9 @@ class AppLocalizationsEsUy extends AppLocalizationsEs {
 
   @override
   String get browseAsGuest => 'Explorar eventos sin cuenta';
+
+  @override
+  String get currencyLabel => 'Moneda';
 
   @override
   String get forgotPassword => '¿Olvidaste tu contraseña?';

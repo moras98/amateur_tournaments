@@ -707,6 +707,86 @@ void main() {
     await tester.pumpAndSettle();
   });
 
+  testWidgets('editing an event saves the currency', (tester) async {
+    await tester.pumpWidget(
+      appHarness(signedInAs: 'u-org-1', initialView: ExploreView.list),
+    );
+    await tester.pumpAndSettle();
+
+    await openOrganizeTab(tester);
+    await tester.tap(find.text('Futbol 5 Nocturno Cordón'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.edit_outlined));
+    await tester.pumpAndSettle();
+    expect(find.byType(EventFormScreen), findsOneWidget);
+
+    // The selector sits with the cost, below the fold. Seeded rows predate
+    // the column, so t-5 opens as the home market UYU.
+    final formScrollable = find
+        .descendant(
+          of: find.byType(EventFormScreen),
+          matching: find.byType(Scrollable),
+        )
+        .first;
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('event-currency')),
+      300,
+      scrollable: formScrollable,
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('event-currency')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('EUR  €'));
+    await tester.pumpAndSettle();
+
+    // The amount prefix follows the selection ('€ ' in place of '$ ').
+    expect(find.text('€ '), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.widgetWithText(FilledButton, 'Guardar cambios'),
+      400,
+      scrollable: formScrollable,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Guardar cambios'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Evento guardado'), findsOneWidget);
+    expect(MockStore().tournamentById('t-5')!.currency, 'EUR');
+
+    // Back to the shell, then Explore: the card renders the stored
+    // currency (t-5 costs 20000). (Not `pageBack()`: it matches the
+    // English 'Back' tooltip, and this app renders es_UY.)
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.descendant(
+        of: find.byType(NavigationBar),
+        matching: find.byIcon(Icons.map_outlined),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('€ 20.000'),
+      300,
+      scrollable: find.descendant(
+        of: find.byType(ExploreScreen),
+        matching: find.byWidgetPredicate(
+          (widget) => widget is Scrollable && widget.axis == Axis.vertical,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('€ 20.000'), findsOneWidget);
+    expect(find.text(r'$ 20.000'), findsNothing);
+
+    // Let the snackbar dismiss so no timers leak into teardown.
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+  });
+
   testWidgets('organizer can close and reopen registrations', (tester) async {
     await tester.pumpWidget(
       appHarness(signedInAs: 'u-org-1', initialView: ExploreView.list),

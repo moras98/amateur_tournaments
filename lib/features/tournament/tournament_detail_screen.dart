@@ -289,6 +289,7 @@ class _TournamentDetailScreenState
                         value: formatCost(
                           tournament.inscriptionCost,
                           freeLabel: l10n.free,
+                          currency: tournament.currency,
                         ),
                       ),
                       const SizedBox(height: 12),

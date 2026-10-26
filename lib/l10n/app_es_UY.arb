@@ -69,6 +69,7 @@
   "continueWith": "Continuar con {provider}",
   "noAccountSignup": "¿No tenés cuenta? Registrate",
   "browseAsGuest": "Explorar eventos sin cuenta",
+  "currencyLabel": "Moneda",
 
   "forgotPassword": "¿Olvidaste tu contraseña?",
   "forgotPasswordTitle": "Recuperar contraseña",

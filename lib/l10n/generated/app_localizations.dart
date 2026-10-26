@@ -465,6 +465,12 @@ abstract class AppLocalizations {
   /// **'Explorar eventos sin cuenta'**
   String get browseAsGuest;
 
+  /// No description provided for @currencyLabel.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Moneda'**
+  String get currencyLabel;
+
   /// No description provided for @forgotPassword.
   ///
   /// In es_UY, this message translates to:

@@ -127,7 +127,11 @@ class TournamentCard extends StatelessWidget {
                         _SpotsBadge(tournament: t),
                         const SizedBox(width: 8),
                         Text(
-                          formatCost(t.inscriptionCost, freeLabel: l10n.free),
+                          formatCost(
+                            t.inscriptionCost,
+                            freeLabel: l10n.free,
+                            currency: t.currency,
+                          ),
                           style: theme.textTheme.labelLarge?.copyWith(
                             color: theme.colorScheme.primary,
                           ),

@@ -4,6 +4,7 @@ import 'package:bracket/core/constants.dart';
 import 'package:bracket/core/location/reverse_geocoder.dart';
 import 'package:bracket/core/map/tile_provider.dart';
 import 'package:bracket/core/theme/adaptive.dart';
+import 'package:bracket/core/utils/country_code.dart';
 import 'package:bracket/core/utils/format.dart';
 import 'package:bracket/data/repositories/providers.dart';
 import 'package:bracket/features/explore/explore_providers.dart';
@@ -46,6 +47,7 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
 
   String _sport = AppConstants.sports.first;
   String _kind = AppConstants.kinds.first;
+  late String _currency;
   late DateTime _start;
   late DateTime _end;
   LatLng? _pin;
@@ -64,9 +66,26 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
   @override
   void initState() {
     super.initState();
+    // New event: the device region's currency (locale countryCode → the
+    // country table, home market otherwise). Editing overwrites this with
+    // the stored value in _applyTournament.
+    _currency = _deviceCurrency();
     final initial = DateTime.now().add(const Duration(days: 7));
     _start = DateTime(initial.year, initial.month, initial.day, 19);
     _end = DateTime(initial.year, initial.month, initial.day, 23);
+  }
+
+  /// Default currency for a new tournament: the phone's region mapped
+  /// through [countryCodes] (audit 4.9), the home market for locales
+  /// without a region or outside the table.
+  static String _deviceCurrency() {
+    final region =
+        WidgetsBinding.instance.platformDispatcher.locale.countryCode;
+    if (region != null && region.isNotEmpty) {
+      final country = countryForIso(region);
+      if (country != null) return country.currency;
+    }
+    return defaultCurrency;
   }
 
   @override
@@ -101,6 +120,7 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
     _city.text = tournament.city;
     _sport = tournament.sport;
     _kind = tournament.kind;
+    _currency = tournament.currency;
     _start = tournament.startTime;
     _end = tournament.endTime;
     _pin = tournament.location;
@@ -228,16 +248,52 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
               validator: (value) => _teamsValidator(value, l10n),
             ),
             const SizedBox(height: 12),
-            TextFormField(
-              key: const Key('event-cost'),
-              controller: _cost,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: l10n.costLabel,
-                hintText: l10n.costFreeHint,
-                prefixText: r'$ ',
-              ),
-              validator: (value) => _costValidator(value, l10n),
+            // Amount and currency in one row: the prefix tracks the
+            // selection, so typing 25 after picking EUR reads "€ 25".
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    key: const Key('event-cost'),
+                    controller: _cost,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: l10n.costLabel,
+                      hintText: l10n.costFreeHint,
+                      prefixText: '${currencySymbol(_currency)} ',
+                    ),
+                    validator: (value) => _costValidator(value, l10n),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                SizedBox(
+                  width: 132,
+                  child: DropdownButtonFormField<String>(
+                    key: const Key('event-currency'),
+                    initialValue: currencies.contains(_currency)
+                        ? _currency
+                        : defaultCurrency,
+                    // Same shape as the dial-code dropdown: expanded so the
+                    // closed field ellipsizes instead of overflowing.
+                    isExpanded: true,
+                    decoration: InputDecoration(labelText: l10n.currencyLabel),
+                    items: [
+                      for (final code in currencies)
+                        DropdownMenuItem(
+                          value: code,
+                          child: Text('$code  ${currencySymbol(code)}'),
+                        ),
+                    ],
+                    selectedItemBuilder: (context) => [
+                      for (final code in currencies)
+                        Text(code, overflow: TextOverflow.ellipsis),
+                    ],
+                    onChanged: (code) =>
+                        setState(() => _currency = code ?? defaultCurrency),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 12),
             TextFormField(
@@ -646,6 +702,7 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
           startTime: _start,
           endTime: _end,
           inscriptionCost: _parsedCost,
+          currency: _currency,
           totalTeams: _parsedTeams,
           venueName: _venue.text.trim(),
           address: _address.text.trim(),
@@ -673,6 +730,7 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
             startTime: _start,
             endTime: _end,
             inscriptionCost: _parsedCost,
+            currency: _currency,
             totalTeams: _parsedTeams,
             venueName: _venue.text.trim(),
             address: _address.text.trim(),
