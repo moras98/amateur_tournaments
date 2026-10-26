@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <rect width="1024" height="1024" fill="#0F3B2A"/>
+  <!-- Cancha minima: contorno, linea central y circulo -->
+  <rect x="196" y="286" width="632" height="452" rx="44" fill="none" stroke="#34E0A1" stroke-width="58"/>
+  <line x1="512" y1="286" x2="512" y2="738" stroke="#34E0A1" stroke-width="58"/>
+  <circle cx="512" cy="512" r="96" fill="none" stroke="#34E0A1" stroke-width="58"/>
+  <circle cx="512" cy="512" r="22" fill="#34E0A1"/>
+</svg>

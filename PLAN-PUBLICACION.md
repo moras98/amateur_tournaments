@@ -834,3 +834,70 @@ La semana siguiente, sin excepción: el fallback de contacto (§4.10-b), recuper
 el bug de registro con `emailRedirectTo` (§4.1) y borrado de cuenta (§3.2). Recién después el
 filtro geográfico con paginación (§4.8), que sólo importa cuando hay más de 1000 torneos — o sea,
 no antes de salir de un metro.
+
+---
+
+## 11. Nombres e identidad visual (evaluado 26/10/2026)
+
+### 11.1 Criterios
+
+1. **ASO**: el título tiene que tener la palabra que la gente escribe en la tienda ("torneo",
+   "fútbol", "pádel") — con 0 presupuesto de marketing, la búsqueda de la tienda es el canal.
+2. **Honestidad**: el nombre no puede prometer lo que la app no hace (adiós "Bracket" sin cuadros).
+3. **Dominio y tiendas libres**, verificado hoy, no supuesto.
+4. **Que funcione a 48 px** y en un solo color (icono adaptativo de Android 13+).
+
+### 11.2 Qué hay en el mercado (verificado en Play/App Store, 26/10)
+
+El nicho está partido en tres, y conviene no caer en ninguno:
+
+| Grupo | Apps | Qué resuelven |
+|---|---|---|
+| "Me falta un jugador" | Falta 1 (¡Montevideo y Flores!), MeFalta1, Falta1 Chile | Completar un equipo |
+| "Gestión para organizadores" | PlayOff, GESPACH, APP Torneos, Deporstar, 4league, Torneos App | Ligas, fixture, planillas |
+| "Reserva de canchas" | Cancha, Donde Juego, Laro | Reservar la cancha |
+
+Tu producto es **descubrimiento**: mapa de eventos + contacto. Ese es el hueco menos poblado, y el
+nombre tiene que decir "torneos" y "cerca", no "faltan jugadores" ni "planillas".
+
+### 11.3 Opciones (disponibilidad chequeada por RDAP + búsqueda en tiendas)
+
+| Nombre | Dominio | Colisiones | Veredicto |
+|---|---|---|---|
+| **Torneos Cerca** | `torneoscerca.com` **libre**, `torneoscerca.app` **libre** | ninguna encontrada | **Recomendado**: ASO directo, honesto, título "Torneos Cerca — jugá hoy" (25) |
+| Bracket (actual) | — | 5+ apps en las dos tiendas | Costo 0, pero promete cuadros y compite contra apps que sí los hacen |
+| Cancha | tomado | "Cancha - Reserva tu jugada", CanchaYa | Descartado: es reserva de canchas |
+| Canchero | tomado | `com.canchero.app`, El Canchero | Descartado |
+| Picado / El Picado | tomado | 2 apps en Play | Descartado |
+| Silbato | tomado | 1 app en Play | Descartado |
+| Alargue | tomado (`alargue.com` es un sitio de fútbol en México) | El Alargue Torneo (IG) | Descartado |
+| Media Cancha / Tercer Tiempo / La Redonda / Arranque / Cancha Abierta / Torneo Vivo / Juega Hoy | **todos los .com tomados** | — | Sólo servirían con otro TLD |
+
+Que un nombre sea descriptivo tiene un costo: "Torneos Cerca" no es registrable como marca y no se
+recuerda tan bien como un nombre inventado. Con 0 presupuesto de marketing y un mercado que busca
+"torneos", la búsqueda pesa más que la marca. Cuando haya audiencia, la marca se construye (y se
+puede renombrar entonces, que es cuando el costo vale la pena).
+
+**Costo del cambio ahora:** 3-4 h — `android:label`, `CFBundleDisplayName`, título y ficha en las
+dos tiendas, dominio, iconos regenerados. `applicationId` sigue siendo cambiable gratis porque no
+hay ningún upload; después es permanente.
+
+### 11.4 Logos (archivos en `store/logo-concepts/`)
+
+| Concepto | Qué dice | A 48 px | Archivo |
+|---|---|---|---|
+| **A — pin con el círculo central de la cancha** | "cerca" + deporte, sin texto | **el más legible**: silueta fuerte, el hueco sobrevive | `a-pin-limpio.svg` + `a-pin-foreground.svg` (capa adaptativa) + `a-pin-monocromo.svg` |
+| B — cancha mínima (contorno + línea + círculo) | deporte, más literal | se lee, pero más ruido en chico | `b-cancha-minima.svg` |
+| C — llave que cierra sobre una pelota | cuadro/torneo | se empasta; el pentágono desaparece | descartado (y era la idea del cuadro, fuera de alcance) |
+
+Recomendación: **A con el nombre Torneos Cerca**. Aplicación: reemplazar `assets/icon.png` e
+`assets/icon_fg.png` por `a-pin-limpio.png` y `a-pin-foreground.png`, después
+
+```bash
+dart run flutter_launcher_icons
+dart run flutter_native_splash:create
+```
+
+El splash y la barra de estado quedan con `#0F3B2A` (ya configurado en `pubspec.yaml`), así que el
+cambio es sólo de archivo. Si te quedás con "Bracket", el concepto A igual sirve como evolución (es
+el pin, no la llave) y evita la asociación con cuadros.
