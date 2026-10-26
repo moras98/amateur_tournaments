@@ -6,12 +6,41 @@ octubre de 2026. **Alcance: publicación global (todas las tiendas/territorios) 
 Resend.** Lo global cambia tres cosas: el modelo de ingresos (§8), la estrategia de crecimiento
 (§6) y dos límites del código que hoy sólo se ven con datos de un país (§4.8 y §4.9).
 
+### Alcance del producto (confirmado 26/10/2026)
+
+**La app ES:** un marketplace de descubrimiento. El organizador publica un evento con sede, fecha
+y cupo; el jugador lo encuentra en el mapa o en la lista y lo contacta por WhatsApp (u otra app de
+mensajería) para coordinar. La app no cobra, no arbitra y no gestiona el pago.
+
+**La app NO ES (ideas para un futuro, fuera del lanzamiento):** cuadros/llaves, resultados,
+posiciones, estadísticas, notificaciones push, chat interno, pagos, y venta a clubes o complejos
+(B2B/white label). Todo eso queda **explícitamente fuera de alcance** en este plan: si aparece la
+tentación de construirlo antes de publicar, la respuesta es no.
+
+**La consecuencia buena:** el bloqueante #1 (la ficha que prometía cuadros) **deja de necesitar
+código**. No hay que construir el cuadro para publicar: hay que reescribir la ficha para que diga
+lo que la app hace (§6.6 y §6.7). Eran 2-3 semanas de desarrollo y ahora son 2 horas de texto.
+
+**La consecuencia incómoda:** la monetización se queda sólo con la suscripción del organizador,
+porque el B2B era la línea que pagaba el tiempo. Con este alcance, año 1 esperado: **US$ 0-70/mes**
+en el mejor caso de un metro con tracción (§8). Es el costo de aprender si el marketplace funciona,
+no un ingreso, y conviene decirlo así desde el principio.
+
+**La decisión que vence con el primer upload: el nombre.** "Bracket" promete cuadros que ya
+decidiste no construir, está tomado por 5+ apps en las dos tiendas y no aporta nada al ASO de un
+marketplace de eventos. Mientras no subas nada, `applicationId` todavía se puede cambiar gratis
+(después es permanente). Alternativas alineadas al alcance: `Torneos`, `Cancha`, `Juega`,
+`Torneo Cerca`, o un nombre propio sin significado (marca registrable). Si te quedás con Bracket,
+es una decisión consciente: el título de la ficha tiene que compensar con "torneos" y "eventos".
+No hay una respuesta correcta; lo que no es correcto es descubrirlo después del primer upload.
+
 ---
 
 ## 1. Veredicto
 
 El código está sano: `flutter analyze` limpio y **107/107 tests** en verde. Lo que falta
-para publicar **no es código de pantallas**. Son cuatro cosas, y una decisión de producto.
+para publicar **no es código de pantallas** ni funciones nuevas: son cuatro cosas operativas y un
+puñado de arreglos chicos.
 
 1. **La ficha de tienda vende un producto que la app no es.** `store/play-store.md` promete
    "el cuadro se arma solo", "resultados", "posiciones", "notificaciones" y "compartir el
@@ -49,9 +78,10 @@ lo cubren a US$ 25/h. Ese es el modelo que escala globalmente; la suscripción i
 complemento.
 
 **Recomendación en una línea:** 3-4 semanas hasta Android en producción y 5-6 hasta iOS, con
-disponibilidad global desde el día 1 pero **una sola ciudad como mercado inicial**. Antes de
-gastar en marketing, decidí si el cuadro se construye (2-3 semanas) o si la ficha se reescribe
-para lo que hay: sin cuadro no hay loop de WhatsApp y el nombre promete otra cosa.
+disponibilidad global desde el día 1 pero **una sola ciudad como mercado inicial**. No se
+construye ninguna función nueva: se arreglan el alta, el contacto y la ficha, y se publica. Lo que
+define si el producto sirve no es una feature, es si un organizador consigue llenar su torneo con
+gente que llegó desde el mapa.
 
 ---
 
@@ -339,6 +369,51 @@ código telefónico: `lib/core/utils/country_code.dart`), y `formatCost` usando
 selector de moneda junto al monto. Ojo: las inscripciones se pagan **fuera de la app**, así que
 esto es información, no un cobro — no hace falta conversión ni tipo de cambio.
 
+### 4.10 🔴 En el alcance real (mapa + contacto), el contacto tiene tres agujeros
+
+Si el producto es "encontrar el evento y escribirle al organizador", esta es la parte que no puede
+fallar. Hoy falla en tres puntos:
+
+**(a) Un torneo se puede publicar sin forma de contacto → CTA muerta.** `UserModel.canBeContacted`
+(`lib/models/user_model.dart:28`) es `phone.isNotEmpty`, y el teléfono es **opcional** en el perfil
+(`phoneOptional` en el ARB). El formulario de evento no pide ni valida teléfono
+(`lib/features/organizer/event_form_screen.dart`, 0 coincidencias de `phone`). En el detalle, el
+botón de contacto queda **deshabilitado** (`tournament_detail_screen.dart:451`) sin explicar por
+qué. Resultado: el organizador ve su torneo publicado y nadie lo puede contactar; el jugador ve un
+botón gris y no sabe si es un bug. Es el único camino de conversión del producto, bloqueado.
+
+**Fix (2-3 h):** al tocar "crear evento", si `!canBeContacted`, abrir el perfil con el aviso
+"para publicar tu torneo necesitás un teléfono de contacto" (y volver al formulario después). En el
+detalle, si el organizador es el dueño, mostrar "agregá tu teléfono para que te puedan escribir" en
+lugar del botón gris.
+
+**(b) Sólo WhatsApp, y el fallback es texto muerto.** `lib/core/utils/contact.dart` define
+`openWhatsApp` (wa.me), `openDialer` (:22) y `openEmail` (:29) — **los dos últimos no se usan en
+ningún lado** (0 llamadas). El aviso de error dice "No se pudo abrir WhatsApp. Llamá al {phone}"
+pero no hay acción: el usuario tiene que copiar el número a mano. Y `wa.me` en un teléfono sin
+WhatsApp termina en el navegador o en nada.
+
+**Fix (3-4 h):** un solo `contactOrganizer(context, organizer, message)` que intente
+`whatsapp://send?phone=` (nativo), caiga a `https://wa.me/...` y, si los dos fallan, abra una hoja
+con **Llamar / SMS / Email** — usando las dos funciones que ya existen. Con eso cumplís "WhatsApp u
+otra app de mensajería" sin elegir un ganador por país, que es lo que un lanzamiento global
+necesita (WhatsApp domina LatAm y España; en EE.UU. el SMS y el share sheet pesan más).
+
+**(c) No se puede compartir el evento.** No hay `share_plus` ni hoja de compartir: lo único que
+existe es el mensaje uno-a-uno al organizador. **Este es el loop de crecimiento del producto tal
+como está definido:** un jugador que encuentra un torneo lo manda al grupo de su equipo, y de ahí
+salen 8-16 personas que ya tienen el problema que la app resuelve. Sin esto, cada jugador llega
+sólo por ads o por el póster del complejo.
+
+**Fix (3-4 h):** `share_plus` con texto + link a la tienda:
+`"Torneo {título} — {día} {hora} en {sede}. Cupo {n} equipos. Anotate en Bracket: {link}"`.
+En Android el link de Play; en iOS el de App Store (o un `onelink`/`app.link` si después querés
+medir mejor). No hace falta página web: la tienda es la landing.
+
+**Los tres juntos son 8-10 h y son, en este alcance, el corazón del producto.** Más las plantillas
+de mensaje ya existentes (que están bien escritas y en español, y para un lanzamiento global
+deberían pasar por el mismo criterio que la UI: `es`/`en`).
+
 ## 5. Plan de publicación (realista a 5-10 h/semana)
 
 Cada fase tiene criterio de aceptación. No arranques la siguiente sin cerrar la anterior.
@@ -362,6 +437,9 @@ Cada fase tiene criterio de aceptación. No arranques la siguiente sin cerrar la
 - [ ] Borrado de cuenta in-app: `deleteAccount` en `AuthRepository`, `on delete cascade` ya
       existe en las tablas, pantalla en Perfil con doble confirmación. **Requisito Apple.**
 - [ ] §4.3 sobreventa (trigger con `raise`).
+- [ ] §4.10 el corazón del producto: exigir teléfono antes de publicar, `contactOrganizer` con
+      fallback (WhatsApp nativo → wa.me → Llamar/SMS/Email) y **compartir el evento** con
+      `share_plus` + link a la tienda.
 - [ ] §4.8 filtro por fecha + caja geográfica + `.limit()` + índices (esto es lo que hace que
       "cerca tuyo" sea verdad fuera de Montevideo).
 - [ ] §4.9 moneda del torneo (columna + selector + `formatCost`).
@@ -398,8 +476,9 @@ Cada fase tiene criterio de aceptación. No arranques la siguiente sin cerrar la
 - [ ] Responder cada review (las primeras 20 reviews mueven el ranking).
 - **Criterio:** las dos apps públicas y sin crashes en Vitals la primera semana.
 
-**Total: 40-52 h de trabajo propio + 14 días de espera inevitable de Google.** (Lo global suma
-~10 h: filtro geográfico, moneda y ficha en inglés; no suma nada en dinero.)
+**Total: 46-60 h de trabajo propio + 14 días de espera inevitable de Google.** (Lo global suma
+~10 h: filtro geográfico, moneda y ficha en inglés. El contacto y compartir suma ~8 h. Ninguno de
+los dos suma dinero: sigue en US$ 679 el primer año.)
 
 ---
 
@@ -407,6 +486,12 @@ Cada fase tiene criterio de aceptación. No arranques la siguiente sin cerrar la
 
 La regla del marketplace: **los organizadores son la oferta, los jugadores la demanda**. Una
 lista vacía es una app muerta. Todo el marketing antes de tener 3 torneos activos es tirar plata.
+
+Y con el alcance que definiste (mapa + contacto), el mecanismo de crecimiento es uno solo:
+**compartir el evento**. El jugador que lo encuentra lo manda al grupo de su equipo — 8-16 personas
+que ya tienen el problema — y ese link a la tienda es tu adquisición gratis. Por eso §4.10-c
+(compartir) está en la fase 1 y no en "algún día": sin esa hoja de compartir, este plan de
+marketing depende 100% de pósters y ads.
 
 Y con publicación global hay una regla más: **el marketing es geográfico aunque la tienda no lo
 sea**. La app está en 175 países; el esfuerzo va a **un metro por vez** hasta tener un playbook
@@ -590,56 +675,61 @@ Precios por país: activá los tiers por poder de compra (Apple *alternate tiers
 US$ 4,99 en Brasil es caro (≈ R$ 27) y en Suiza es barato; sin ajuste, la conversión cae donde
 está el volumen.
 
-### 8.1 Escenarios año 1
+### 8.1 Escenarios año 1 (sólo suscripción de organizador)
 
 La unidad de medida global no es el país, es el **metro con organizadores activos**. Escenarios
-con disponibilidad global desde el día 1 y GTM en un metro por vez (§6.4):
+con disponibilidad global desde el día 1 y GTM en un metro por vez (§6.4), **sin B2B** porque está
+fuera de alcance:
 
-| Escenario | Metros con tracción | Organizadores activos | Pagos (20%/15%) | Suscripciones neto/mes | Clubes B2B | B2B/mes | **Total/mes** |
-|---|---|---|---|---|---|---|---|
-| A — 1 metro flojo | 1 | 25 | 5 | US$ 18 | 0 | — | **US$ 18** |
-| B — 1-2 metros | 1-2 | 100 | 20 | US$ 71 | 0 | — | **US$ 71** |
-| C — 5 metros | 5 | 250 | 38 | US$ 135 | 0 | — | **US$ 135** |
-| D — B + 5 clubes | 1-2 | 100 | 20 | US$ 71 | 5 | US$ 375 | **US$ 446** |
-| E — 5 metros + 15 clubes | 5 | 250 | 38 | US$ 135 | 15 | US$ 1.125 | **US$ 1.260** |
+| Escenario | Metros con tracción | Organizadores activos | Pagos (20%/15%) | Ingreso neto/mes | vs. infra (679/año) |
+|---|---|---|---|---|---|
+| A — 1 metro flojo | 1 | 25 | 5 | **US$ 18** | −535/año |
+| B — 1-2 metros | 1-2 | 100 | 20 | **US$ 71** | +173/año |
+| C — 5 metros | 5 | 250 | 38 | **US$ 135** | +941/año |
+| D — no cobrar nada todavía | — | cualquiera | 0 | **US$ 0** | −679/año |
 
-Dos cosas para leer en esa tabla:
+La columna de suscripciones crece **lento y lineal con el esfuerzo de venta**: cada organizador hay
+que conseguirlo a mano y cada uno paga US$ 3,54 netos. Cinco metros y 250 organizadores es un año
+de trabajo sostenido a 5-10 h/semana, no un resultado de lanzamiento.
 
-- La columna de suscripciones crece **lento y lineal con el esfuerzo de venta**, porque cada
-  organizador hay que conseguirlo a mano. Cinco metros y 250 organizadores es un año de trabajo
-  sostenido a 5-10 h/semana, no un resultado de lanzamiento.
-- La fila D es la que importa: **5 clubes aportan 5× lo que 20 suscripciones**. El B2B es la
-  única línea que crece sin depender de que cada jugador descubra la app.
+**La fila D es la más probable y hay que mirarla de frente:** si decidís no cobrar hasta validar el
+marketplace (lo que el propio `LAUNCH.md` §7 recomienda), el ingreso del año 1 es **cero** y el
+costo es **US$ 679 + 266 horas**. Ese es el precio de averiguar si el marketplace funciona.
 
 ### 8.2 Puntos de equilibrio
 
-| Qué tiene que cubrir | Suscriptores pagos | o clubes B2B (US$ 75/mes) |
-|---|---|---|
-| Infraestructura año 1 (US$ 679) | 16 | 1 |
-| Infraestructura año 2 (US$ 654) | 15 | 1 |
-| Infra + 266 h/año a US$ 15/h | 110 | 5 |
-| Infra + 266 h/año a US$ 25/h | 173 | 8 |
-| Infra + 266 h/año a US$ 40/h | 267 | 13 |
+| Qué tiene que cubrir | Suscriptores pagos necesarios |
+|---|---|
+| Infraestructura año 1 (US$ 679) | 16 |
+| Infraestructura año 2 (US$ 654) | 15 |
+| Infra + 266 h/año a US$ 15/h | 110 |
+| Infra + 266 h/año a US$ 25/h | 173 |
+| Infra + 266 h/año a US$ 40/h | 267 |
 
-**Ese es el cambio que trae lo global:** los 267 suscriptores siguen siendo improbables, pero
-**8 clubes pagando US$ 75/mes es alcanzable** y no depende de tener masa de jugadores en 175
-países. Y el comprador de un club puede estar en Montevideo, Buenos Aires, Santiago, Madrid o
-Miami: el límite pasa a ser cuántas llamadas hacés, no cuánta gente hay en tu ciudad.
+Con este alcance **no hay línea de ingresos que cubra el tiempo**: la suscripción sola no llega
+ni a un cuarto de lo necesario ni en el escenario optimista. Decirlo claro: en el alcance actual,
+Bracket **no es un negocio, es una audiencia**. Está bien que sea eso en el año 1 — pero hay que
+saberlo, porque cambia cómo se decide cada hora: se invierte en lo que consigue organizadores y
+jugadores, no en lo que agrega features.
 
-### 8.3 Qué haría que esto sí sea negocio (en orden)
+### 8.3 Qué haría que esto sí sea negocio (en orden, y todo con el alcance que ya definiste)
 
-1. **B2B / white label a clubes, complejos y ligas.** US$ 50-100/mes por su espacio de torneos
-   con su marca. Mismo código, sin 15% de tienda (se factura), sin revisión de Apple/Google, y
-   el club trae a sus propios jugadores. Es el modelo que aprovecha la publicación global:
-   el producto es el mismo y el comprador puede estar en cualquier país.
-2. **El loop del cuadro.** Si el cuadro existe, cada organizador que lo comparte por WhatsApp
-   trae 8-16 jugadores sin que pongas un peso en ads. Es el único mecanismo de crecimiento
-   orgánico que este producto puede tener, y es lo que hace que el metro 2 sea más barato que
-   el metro 1. **Sin cuadro no hay loop, y sin loop el CAC lo pagás siempre vos.**
-3. **Expansión a más metros** (Buenos Aires, Santiago, São Paulo, Madrid): recién cuando el
-   playbook de §6.4 esté probado, con la ficha en pt-BR y un español neutro en la tienda.
-4. **Suscripción individual de organizador**: se queda como está (complemento, no base). A
-   US$ 4,99 conviene más como filtro de calidad de organizadores que como fuente de ingreso.
+1. **El loop de compartir el evento (§4.10-c).** Es la pieza de código con mejor retorno de todo el
+   plan: un jugador manda el torneo al grupo de su equipo y trae 8-16 personas que ya tienen el
+   problema. Hace que el metro 2 cueste menos que el metro 1. Sin loop, el CAC lo pagás siempre vos
+   y ningún número de esta sección mejora.
+2. **Más metros, mismo producto.** Buenos Aires, Santiago, São Paulo, Madrid: el costo marginal es
+   el playbook de 3 semanas (§6.4) y la ficha en pt-BR. Es la única forma de mover la aguja del
+   ingreso sin agregar producto.
+3. **Cuando el alcance crezca, la línea que paga es B2B** (clubes, complejos, ligas: US$ 50-100/mes
+   por su espacio de torneos). Con 8 clubes se cubre el tiempo a US$ 25/h, contra 173 suscriptores
+   individuales. Hoy está fuera de alcance por decisión tuya — no lo construyas, pero no lo olvides:
+   es la respuesta a "¿y cómo se sostiene esto?".
+4. **Publicidad local de complejos y marcas deportivas** (un complejo paga por aparecer destacado
+   en el mapa). Es compatible con "gratis para todos", se factura fuera de la tienda y no toca el
+   flujo de pagos. Necesita volumen para venderse: año 2 como mínimo.
+5. **Suscripción de organizador**: como está, es más un filtro de calidad (organizadores que
+   repiten) que una fuente de ingreso. Dejala si querés, no la defiendas como el modelo.
 
 Lo que no cambiaría nada: subir el precio. Con 20 pagos, duplicarlo te deja en US$ 147/mes y
 probablemente te baja la conversión. El problema es cuántos organizadores tenés, no cuánto cobrás.
@@ -647,6 +737,20 @@ probablemente te baja la conversión. El problema es cuántos organizadores ten�
 ---
 
 ## 9. Qué NO construir todavía
+
+**Fuera de alcance por decisión de producto (26/10/2026), no por falta de tiempo.** Si alguna de
+estas aparece como "es rapidito", la respuesta es que cambia a qué se dedica la app:
+
+- **Cuadros, llaves, fixtures, resultados, posiciones y estadísticas.** Es otra app (la que la
+  ficha prometía). Con el alcance actual, "Bracket" es el nombre de un marketplace de eventos.
+- **Clubes / B2B / white label.** Es la línea que paga el tiempo (§8.3-3), pero no es el producto
+  de esta etapa. Si algún día entra, entra como oferta separada, no como feature de la app.
+- **Notificaciones push.** Fuera de alcance, aunque sea la causa de que un pedido de inscripción
+  dependa de que el organizador abra la app. Es la primera cosa a reconsiderar en la v2.
+- **Chat interno.** Doble motivo: está fuera de alcance y agrega moderación, reportes y
+  responsabilidad por contenido de terceros.
+
+Y las que ya estaban fuera por costo/beneficio:
 
 - **Pagos dentro de la app** (retiene equipos, cobra comisión). Suma obligaciones de Play
   Billing/StoreKit, disputas, reembolsos y responsabilidad por plata de terceros. En Uruguay,
@@ -712,16 +816,21 @@ grep -rn "resetPassword\|forgotPassword" lib || echo "0: no hay recuperar contra
 grep -rn "emailRedirectTo" lib || echo "0: el link de confirmacion no vuelve a la app"
 grep -n "limit(\|range(" lib/data/repositories/supabase/supabase_tournament_repository.dart || echo "0: sin paginacion (tope 1000 filas de PostgREST)"
 grep -n "currency" lib/models/tournament_model.dart || echo "0: el modelo no tiene moneda (format.dart la hardcodea a $)"
+# el corazon del producto: contacto y compartir
+grep -rn "openDialer\|openEmail" lib | grep -v "core/utils/contact.dart" || echo "0: Llamar/SMS/Email definidos y nunca usados"
+grep -rn "share_plus\|Share\.share" lib pubspec.yaml || echo "0: no se puede compartir un evento"
+grep -n "canBeContacted" lib/features/tournament/tournament_detail_screen.dart
 ```
 
 ### 10.3 Orden de ejecución si tenés 10 horas esta semana
 1. Crear las dos cuentas de developer (hoy: la verificación tarda días).
-2. Comprar el dominio y verificarlo en Resend; SMTP en Supabase (2 h).
-3. Ficha honesta es/en + privacidad con email y URL (3 h).
-4. Bug de registro §4.1 completo, con `emailRedirectTo` (4 h).
-5. Anon key en `.release.env` (5 min).
-6. Commit.
+2. Ficha honesta es/en + privacidad con email y URL (3 h). **Con el alcance confirmado esto ya no
+   depende de ninguna decisión: la ficha se reescribe y listo.**
+3. **Compartir el evento + exigir teléfono antes de publicar** (§4.10 a y c, 5 h): es lo que hace
+   que el marketplace tenga loop y que ningún torneo quede sin forma de contacto.
+4. Anon key en `.release.env` (5 min).
 
-La semana siguiente, sin excepción: recuperar contraseña (§4.4), borrado de cuenta (§3.2) y el
-filtro geográfico con paginación (§4.8) — esos tres son los que separan "se puede publicar" de
-"se puede usar fuera de Montevideo".
+La semana siguiente, sin excepción: el fallback de contacto (§4.10-b), recuperar contraseña (§4.4),
+el bug de registro con `emailRedirectTo` (§4.1) y borrado de cuenta (§3.2). Recién después el
+filtro geográfico con paginación (§4.8), que sólo importa cuando hay más de 1000 torneos — o sea,
+no antes de salir de un metro.
