@@ -177,7 +177,13 @@ Rules:
   (sports) — with a dot indicator plus a back arrow on the left (steps
   2+), a fade/slide swap, the single full-width filled action at the
   bottom, and validation scoped to the mounted step (the
-  `Form` wraps the switcher, never the step children). The birth date is
+  `Form` wraps the switcher, never the step children). The **cuenta**
+  step additionally gates `Siguiente` on an unchecked terms checkbox
+  below the password checklist (`TermsCheckbox`, its link opens the
+  hosted terms): the field validators run first, then a snackbar demands
+  the tick. Google/Apple sign-in has no form of its own, so the OAuth
+  acceptance is a tappable fine-print line under the social buttons
+  instead — consent precedes account creation either way. The birth date is
   a section label over a tappable hairline row (`surface` +
   `outlineVariant`, 52 tall) — never a floating input title. Email and
   username are checked live while typing (250 ms debounce, like the

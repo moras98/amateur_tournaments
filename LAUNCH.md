@@ -6,13 +6,14 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 
 | Item | Status |
 |---|---|
-| App build | ✅ analyze clean, **102/102 tests**, `1.0.0+1` |
+| App build | ✅ analyze clean, **103/103 tests**, `1.0.0+1` |
 | Application ID | ✅ `com.bracket.torneos` (permanent — never change after publish) |
-| Git | ✅ 2 commits, secrets gitignored |
+| Git | ✅ 4 commits, secrets gitignored |
 | Upload keystore | ✅ `~/upload-keystore.jks` + `android/key.properties` |
 | Store AAB script | ✅ `scripts/build-release.sh` |
 | Store copy | ✅ `store/play-store.md` |
 | Privacy policy | 📝 draft `store/privacy-policy.md` — needs contact email + public URL |
+| Terms & conditions | 📝 draft `store/terms-and-conditions.md` — needs contact email + public URL (linked from the sign-up checkbox) |
 | Supabase anon key in `.release.env` | ⬜ **not filled yet** |
 | Migrations `0005` / `0006` applied | ❓ unconfirmed |
 | Play Console account | ⬜ |
@@ -57,9 +58,12 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 
 - [ ] **App identity**: name `Bracket`, application ID `com.bracket.torneos`
       (autofills from the AAB), version `1.0.0+1`.
-- [ ] **Privacy policy URL**: fill `EMAIL_DE_CONTACTO` in
-      `store/privacy-policy.md`, publish it (GitHub Pages on this repo is
-      fine), paste the URL into Play Console.
+- [ ] **Legal docs**: fill `EMAIL_DE_CONTACTO` in `store/privacy-policy.md`
+      **and** `store/terms-and-conditions.md`, publish both (GitHub Pages on
+      this repo is fine), paste the privacy URL into Play Console, then point
+      `AppConstants.privacyUrl` / `AppConstants.termsUrl`
+      (`lib/core/constants.dart`) at the final URLs — the sign-up checkbox
+      and the login fine print open them in the browser.
 - [ ] **Data safety form** (must match the policy):
       - Collected: **name, email, profile photo (from Google/Apple), date of
         birth, gender, phone (optional), approximate/precise location

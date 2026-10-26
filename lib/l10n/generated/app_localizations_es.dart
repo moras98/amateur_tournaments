@@ -263,6 +263,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get chooseSport => 'Elegí al menos un deporte';
 
   @override
+  String get acceptTermsPrefix => 'Acepto los ';
+
+  @override
+  String get termsAndConditions => 'Términos y condiciones';
+
+  @override
+  String get acceptTermsError =>
+      'Para crear la cuenta, aceptá los Términos y condiciones.';
+
+  @override
+  String get socialTermsPrefix => 'Al continuar, aceptás los ';
+
+  @override
   String get accountCreatedConfirmEmail =>
       'Cuenta creada. Revisá tu email para confirmarla y luego iniciá sesión.';
 
@@ -1157,6 +1170,19 @@ class AppLocalizationsEsUy extends AppLocalizationsEs {
 
   @override
   String get chooseSport => 'Elegí al menos un deporte';
+
+  @override
+  String get acceptTermsPrefix => 'Acepto los ';
+
+  @override
+  String get termsAndConditions => 'Términos y condiciones';
+
+  @override
+  String get acceptTermsError =>
+      'Para crear la cuenta, aceptá los Términos y condiciones.';
+
+  @override
+  String get socialTermsPrefix => 'Al continuar, aceptás los ';
 
   @override
   String get accountCreatedConfirmEmail =>

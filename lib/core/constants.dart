@@ -18,6 +18,15 @@ abstract class AppConstants {
   static const oauthRedirectUrl =
       'io.supabase.amateurtournaments://login-callback';
 
+  /// Public URLs of the legal documents (hosted — see LAUNCH.md; update
+  /// these if the hosting moves). Opened from the registration forms.
+  static const termsUrl =
+      'https://github.com/moras98/amateur_tournaments/blob/main/store/'
+      'terms-and-conditions.md';
+  static const privacyUrl =
+      'https://github.com/moras98/amateur_tournaments/blob/main/store/'
+      'privacy-policy.md';
+
   /// Supported sports. Values are stored as-is in `tournaments.sport`;
   /// the human labels come from `AppLocalizations.sportLabel`.
   static const sports = ['football', 'padel', 'tennis', 'basketball'];

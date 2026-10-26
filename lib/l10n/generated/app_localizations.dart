@@ -585,6 +585,30 @@ abstract class AppLocalizations {
   /// **'Elegí al menos un deporte'**
   String get chooseSport;
 
+  /// No description provided for @acceptTermsPrefix.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Acepto los '**
+  String get acceptTermsPrefix;
+
+  /// No description provided for @termsAndConditions.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Términos y condiciones'**
+  String get termsAndConditions;
+
+  /// No description provided for @acceptTermsError.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Para crear la cuenta, aceptá los Términos y condiciones.'**
+  String get acceptTermsError;
+
+  /// No description provided for @socialTermsPrefix.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Al continuar, aceptás los '**
+  String get socialTermsPrefix;
+
   /// No description provided for @accountCreatedConfirmEmail.
   ///
   /// In es_UY, this message translates to:

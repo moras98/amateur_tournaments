@@ -260,6 +260,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseSport => 'Choose at least one sport';
 
   @override
+  String get acceptTermsPrefix => 'I accept the ';
+
+  @override
+  String get termsAndConditions => 'Terms and Conditions';
+
+  @override
+  String get acceptTermsError =>
+      'Accept the Terms and Conditions to create your account.';
+
+  @override
+  String get socialTermsPrefix => 'By continuing you accept the ';
+
+  @override
   String get accountCreatedConfirmEmail =>
       'Account created. Check your email to confirm it, then sign in.';
 

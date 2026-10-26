@@ -1,6 +1,7 @@
 import 'package:bracket/core/theme/app_gradients.dart';
 import 'package:bracket/data/auth/auth_repository.dart';
 import 'package:bracket/data/repositories/providers.dart';
+import 'package:bracket/features/auth/widgets/terms_acceptance.dart';
 import 'package:bracket/l10n/generated/app_localizations.dart';
 import 'package:bracket/l10n/labels.dart';
 import 'package:flutter/material.dart';
@@ -260,6 +261,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         )
                       : const Icon(Icons.apple, size: 24),
                   label: Text(l10n.continueWith(SocialProvider.apple.label)),
+                ),
+                const SizedBox(height: 12),
+                // OAuth has no form of its own, so the acceptance for
+                // Google/Apple sign-ups rides here as fine print.
+                Center(
+                  child: TermsText(
+                    prefix: l10n.socialTermsPrefix,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 12),
                 TextButton(

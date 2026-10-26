@@ -91,6 +91,10 @@
   "createAccount": "Create account",
   "chooseBirthDate": "Choose your date of birth",
   "chooseSport": "Choose at least one sport",
+  "acceptTermsPrefix": "I accept the ",
+  "termsAndConditions": "Terms and Conditions",
+  "acceptTermsError": "Accept the Terms and Conditions to create your account.",
+  "socialTermsPrefix": "By continuing you accept the ",
   "accountCreatedConfirmEmail": "Account created. Check your email to confirm it, then sign in.",
 
   "pwUseAtLeast8": "Use at least 8 characters",

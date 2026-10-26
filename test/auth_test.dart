@@ -295,6 +295,12 @@ void main() {
         )
         .first;
 
+    /// Ticks the terms checkbox on step 1 — required to leave it.
+    Future<void> acceptTerms(WidgetTester tester) async {
+      await tester.tap(find.byType(Checkbox));
+      await tester.pumpAndSettle();
+    }
+
     testWidgets('signing up creates the account with a complete profile', (
       tester,
     ) async {
@@ -320,6 +326,7 @@ void main() {
         scrollable: signUpScrollable(),
       );
       await tester.pumpAndSettle();
+      await acceptTerms(tester);
       await tester.tap(next);
       await tester.pumpAndSettle();
 
@@ -464,6 +471,7 @@ void main() {
         scrollable: signUpScrollable(),
       );
       await tester.pumpAndSettle();
+      await acceptTerms(tester);
       await tester.tap(next);
       await tester.pumpAndSettle();
       expect(find.text('Sobre vos'), findsNothing); // blocked by the email
@@ -504,6 +512,7 @@ void main() {
         scrollable: signUpScrollable(),
       );
       await tester.pumpAndSettle();
+      await acceptTerms(tester);
 
       // Registered email, then the action right away — far short of the
       // 250 ms debounce: the fresh check must still block the step.
@@ -533,6 +542,44 @@ void main() {
         find.text('Ese nombre de usuario ya está en uso.'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('advancing requires accepting the terms', (tester) async {
+      await tester.pumpWidget(app(signedIn: false));
+      await tester.pumpAndSettle();
+      await openSignUp(tester);
+
+      await tester.enterText(find.byType(TextFormField).at(0), 'New Bie');
+      await tester.enterText(find.byType(TextFormField).at(1), 'free@demo.app');
+      await tester.pump(const Duration(milliseconds: 300)); // email check
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextFormField).at(2), 'Password123');
+      await tester.pumpAndSettle();
+
+      final next = find.widgetWithText(FilledButton, 'Siguiente');
+      await tester.scrollUntilVisible(
+        next,
+        300,
+        scrollable: signUpScrollable(),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+
+      // Valid fields but no tick: the snackbar fires and step 1 holds.
+      expect(
+        find.text('Para crear la cuenta, aceptá los Términos y condiciones.'),
+        findsOneWidget,
+      );
+      expect(find.text('Sobre vos'), findsNothing);
+
+      // Let the snackbar clear (it overlays the checkbox), then tick.
+      await tester.pump(const Duration(seconds: 4));
+      await tester.pumpAndSettle();
+      await acceptTerms(tester);
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+      expect(find.text('Sobre vos'), findsOneWidget);
     });
 
     testWidgets('signing out returns to the login screen', (tester) async {

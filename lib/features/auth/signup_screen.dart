@@ -5,6 +5,7 @@ import 'package:bracket/core/theme/adaptive.dart';
 import 'package:bracket/data/auth/auth_repository.dart';
 import 'package:bracket/data/repositories/providers.dart';
 import 'package:bracket/features/auth/widgets/profile_fields.dart';
+import 'package:bracket/features/auth/widgets/terms_acceptance.dart';
 import 'package:bracket/l10n/generated/app_localizations.dart';
 import 'package:bracket/l10n/labels.dart';
 import 'package:bracket/models/user_model.dart';
@@ -38,6 +39,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   DateTime? _birthDate;
   String _gender = '';
   List<String> _sports = ['football'];
+
+  /// Tick of the terms checkbox (step 1 gates on it).
+  bool _termsAccepted = false;
 
   // Debounced live duplicate checks (250 ms, like the inscriptions
   // search): each flag feeds its field's validator.
@@ -139,6 +143,15 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     if (!mounted) return;
     setState(() => _loading = false);
     if (!(_formKey.currentState?.validate() ?? false)) return;
+    // Acceptance gate runs after the field validators so an untouched form
+    // still surfaces its field errors first.
+    if (_step == 0 && !_termsAccepted) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.acceptTermsError)));
+      return;
+    }
     if (_step == 1 && _birthDate == null) {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(
@@ -409,6 +422,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         onChanged: (_) => setState(() {}),
       ),
       PasswordChecklist(password: _passwordController.text),
+      const SizedBox(height: 8),
+      TermsCheckbox(
+        value: _termsAccepted,
+        onChanged: (value) => setState(() => _termsAccepted = value ?? false),
+      ),
       const SizedBox(height: 20),
       _filledAction(l10n.next, _next),
       const SizedBox(height: 12),
