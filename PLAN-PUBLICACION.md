@@ -901,6 +901,54 @@ función que la gente usa.
 Alternativa si preferís máxima neutralidad aunque sea más genérica: **Juego**. Si querés algo con
 más pulso local y te importa menos lo global: **Junte**.
 
+### 11.3b Nombres inventados (una palabra, sin significado, multi-deporte)
+
+Probé ~40 invenciones de 5-7 letras con fonética paneuropea (sílabas abiertas, sólo `a e i o u`,
+sin `j z x w y`, sin dígrafos) y a los finalistas los busqué además como empresa y como app.
+
+**Lo primero, el dato duro:** el `.com` de cualquier invención corta y pronunciable también está
+tomado. Veintidós candidatos probados (kalvo, karvo, talvo, nelvo, selvo, velmo, kavio, tovio,
+sonva, pilvo, palvo, silvo, kande, tande, nande, pande, kalde, kanto, bilvo, kilvo, kova, velto)
+y veintidós `.com` registrados. Igual los de tres sílabas (kavelo, tavilo, navelo, kavilo, tumivo,
+kantivo, velmora, palvera, sonvira). **El dominio no se consigue; se elige el TLD.**
+
+**Descartados por colisión real** (no por sonar mal, por estar en uso):
+
+| Nombre | Quién lo usa |
+|---|---|
+| Talvo | `talvo.eu` (app de finanzas) y `gettalvo.co` (afirmaciones) |
+| Kavio | `getkavio.app` (social scheduling) y `kavioapp.com` |
+| Vanto | `usevanto.com` (CRM en Brasil) y `vanto.app` |
+| Kelto | Kelto App en el App Store (`id1495098696`) |
+| Velto | `velto.at` (estudio de apps) y VELTO APP |
+| Tarvo | `tarvoai.com` y `tarvo.health` |
+| Pilvo | `pilvo.com.au` (consultora de software, Australia) |
+
+**El que queda limpio: TANDE.**
+
+| | |
+|---|---|
+| Lectura | TAN-de, igual en es, en, pt, fr, it y de (`t a n d e` no tiene una sola letra ambigua) |
+| Significado | ninguno en los idiomas grandes (apellido noruego, nada más) |
+| Colisiones | **0 resultados** en Play, App Store y búsqueda web como empresa |
+| Dominio | `tande.club` **libre** · `tande.app` tomado · confirmar `tande.uy` / `tande.com.uy` en el registrador |
+| Espacio para crecer | es una marca, no una función: no hay nada que se le quede chico |
+
+Segundo: **PILVO**, que tiene `pilvo.app` **y** `pilvo.club` libres (los dos), pero existe
+`pilvo.com.au`. Si te importa más el dominio que la colisión lejana, Pilvo es la opción.
+
+**Lo que cuesta un nombre inventado:** no dice qué hace la app, así que el significado lo carga el
+subtítulo. `Tande — torneos y pádel cerca tuyo` en la ficha hace ese trabajo, y en la boca de la
+gente queda "bajate Tande". Es el mismo trato que hicieron Strava, Vinted o Canva.
+
+Lockups ya armados con la tipografía real del proyecto (Plus Jakarta Sans ExtraBold):
+
+```
+store/logo-concepts/tande-lockup.png     (icono pin+play + TANDE)
+store/logo-concepts/pilvo-lockup.png     (icono pin+play + PILVO)
+store/logo-concepts/comparacion-nombres.png
+```
+
 ### 11.4 Icono: nada de pelota
 
 Con un producto multi-deporte, el icono tiene que hablar de **eventos cerca tuyo**, no de fútbol.
@@ -920,9 +968,10 @@ métrica que importa en un ícono de app.
 Para aplicar: reemplazar `assets/icon.png` e `assets/icon_fg.png` y correr
 `dart run flutter_launcher_icons` + `dart run flutter_native_splash:create`.
 
-### 11.5 Antes de decidir
+### 11.6 Antes de decidir
 
-1. Comprar `nivel.club` (o el dominio elegido) el mismo día que decidas.
+1. Comprar `tande.club` (o el dominio elegido) el mismo día que decidas, y confirmar en el
+   registrador `tande.uy` y `tande.com.uy`.
 2. Búsqueda de marca en INPI (UY), USPTO (EE.UU.) y EUIPO (UE), clases 9 y 41: gratis, 20 minutos.
 3. Decí el nombre en voz alta a tres personas de países distintos y pediles que lo escriban.
 4. Si elegís Nivel, agregá el campo de nivel al torneo antes de publicar (el nombre tiene que ser
