@@ -2,6 +2,15 @@
 
 Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 
+> **Leer antes de seguir:** [`PLAN-PUBLICACION.md`](PLAN-PUBLICACION.md) — auditoría verificada
+> (26/10/2026), bloqueantes por tienda (iOS incluido), bug de pérdida de datos en el registro,
+> plan de publicación por fases, plan de marketing y modelo económico con escenarios.
+>
+> Dos cosas de este archivo quedaron desactualizadas y el plan las corrige: (1) el checklist
+> asume sólo Android — iOS es obligatorio si querés App Store y su camino no necesita Mac;
+> (2) §6 dice que la app "ya comparte el cuadro por WhatsApp": no comparte nada, y los cuadros
+> tampoco existen.
+
 ## Current state
 
 | Item | Status |
