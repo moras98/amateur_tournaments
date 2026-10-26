@@ -949,7 +949,7 @@ store/logo-concepts/pilvo-lockup.png     (icono pin+play + PILVO)
 store/logo-concepts/comparacion-nombres.png
 ```
 
-### 11.4 Icono: nada de pelota
+### 11.5 Icono: nada de pelota
 
 Con un producto multi-deporte, el icono tiene que hablar de **eventos cerca tuyo**, no de fútbol.
 Probé cuatro y los miré a 48 px reales:
