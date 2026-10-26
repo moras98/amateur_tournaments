@@ -15,7 +15,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 
 | Item | Status |
 |---|---|
-| App build | ✅ analyze clean, **107/107 tests**, `1.0.0+1` |
+| App build | ✅ analyze clean, **109/109 tests**, `1.0.0+1` |
 | Application ID | ✅ `com.bracket.torneos` (permanent — never change after publish) |
 | Git | ✅ 5 commits, secrets gitignored |
 | Upload keystore | ✅ `~/upload-keystore.jks` + `android/key.properties` |
@@ -25,7 +25,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 | Terms & conditions | 📝 draft `store/terms-and-conditions.md` — needs contact email + public URL (linked from the sign-up checkbox) |
 | Monetization | ✅ built, **inert** until Play products exist — launch after first users (§7) |
 | Supabase anon key in `.release.env` | ⬜ **not filled yet** |
-| Migrations `0005` / `0006` applied | ❓ unconfirmed |
+| Migrations `0005` / `0006` / `0007` applied | ❓ unconfirmed |
 | Play Console account | ⬜ |
 | Closed test (14 days) | ⬜ |
 
@@ -37,8 +37,11 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
       `storePassword` in `android/key.properties` → password manager.
       (Losing both = Google upload-key reset process.)
 - [ ] **Paste the Supabase anon key** into `.release.env` (URL already filled).
-- [ ] **Confirm migrations `0005_split_status_triggers.sql` and
-      `0006_signup_checks.sql`** are applied in the Supabase dashboard.
+- [ ] **Confirm migrations `0005_split_status_triggers.sql`,
+      `0006_signup_checks.sql` and `0007_signup_metadata.sql`** are applied
+      in the Supabase dashboard. **`0007` is the sign-up data-loss fix** —
+      until it runs, the confirm-email path keeps dropping username / birth
+      date / gender / sports (the app already sends them in the metadata).
 - [ ] **Real-backend smoke test on your phone**: install a release build with
       the Supabase defines, then sign up → create tournament → request
       inscription → share to WhatsApp → see it appear. Mock tests prove
@@ -53,7 +56,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 # after filling .release.env:
 ./scripts/build-release.sh
 # → build/app/outputs/bundle/release/app-release.aab
-# (runs gen-l10n + 107 tests, signs with the upload key, prints the signer)
+# (runs gen-l10n + 109 tests, signs with the upload key, prints the signer)
 ```
 
 - [ ] `.release.env` filled (never commit it — it's gitignored)
@@ -107,7 +110,7 @@ testing* track before production access. Internal testing does **not** count.
 - [ ] **Every tester must opt in via the link AND open the app daily** for 14
       unbroken days — track them with a WhatsApp group reminder
 - [ ] Day 15: **apply for production access** (dashboard questionnaire —
-      answer with real numbers: 107 automated tests + on-device manual QA)
+      answer with real numbers: 109 automated tests + on-device manual QA)
 
 ## 5. Production
 

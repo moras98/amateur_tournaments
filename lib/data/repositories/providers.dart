@@ -89,15 +89,28 @@ class AuthController extends Notifier<AuthSession?> {
   }
 
   /// Returns `null` when the backend requires email confirmation first —
-  /// the account exists but is not signed in yet.
+  /// the account exists (profile included, via the signup metadata) but
+  /// is not signed in yet.
   Future<AuthSession?> signUp({
     required String email,
     required String password,
     String fullName = '',
+    String username = '',
+    DateTime? birthDate,
+    String gender = '',
+    List<String> sports = const [],
   }) async {
     final session = await ref
         .read(authRepositoryProvider)
-        .signUp(email: email, password: password, fullName: fullName);
+        .signUp(
+          email: email,
+          password: password,
+          fullName: fullName,
+          username: username,
+          birthDate: birthDate,
+          gender: gender,
+          sports: sports,
+        );
     // Null keeps the user signed out (no state change needed).
     if (session != null) state = session;
     return session;

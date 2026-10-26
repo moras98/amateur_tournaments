@@ -2,6 +2,7 @@ import 'package:bracket/data/auth/auth_repository.dart';
 import 'package:bracket/data/auth/mock_auth_repository.dart';
 import 'package:bracket/data/repositories/mock/mock_profile_repository.dart';
 import 'package:bracket/data/repositories/mock/mock_store.dart';
+import 'package:bracket/core/utils/format.dart';
 import 'package:bracket/features/auth/profile_form_screen.dart';
 import 'package:bracket/features/auth/signup_screen.dart';
 import 'package:bracket/core/theme/app_theme.dart';
@@ -113,6 +114,32 @@ void main() {
       expect(profile, isNotNull);
       expect(profile!.fullName, 'New Bie');
       expect(profile.isComplete, isFalse);
+    });
+
+    test('signUp carries the collected profile fields (metadata)', () async {
+      final auth = MockAuthRepository(signedIn: false);
+      final store = MockStore();
+
+      final session = await auth.signUp(
+        email: 'newbie@demo.app',
+        password: 'password123',
+        fullName: 'New Bie',
+        username: 'newbie',
+        birthDate: DateTime(2001, 10, 15),
+        gender: 'female',
+        sports: const ['football', 'padel'],
+      );
+
+      // What the DB trigger writes from the metadata: every field the
+      // form collected lands with the account, complete from the start.
+      expect(session, isNotNull);
+      final profile = store.profileById(session!.userId)!;
+      expect(profile.username, 'newbie');
+      expect(profile.fullName, 'New Bie');
+      expect(profile.birthDate, DateTime(2001, 10, 15));
+      expect(profile.gender, 'female');
+      expect(profile.sports, ['football', 'padel']);
+      expect(profile.isComplete, isTrue);
     });
 
     test('signUp rejects a duplicate email', () async {
@@ -406,8 +433,142 @@ void main() {
       expect(find.byType(SignUpScreen), findsNothing);
       expect(find.text('New Bie'), findsOneWidget);
       expect(find.text('@newbie'), findsOneWidget);
-      expect(find.text('15 oct 2001'), findsOneWidget);
+      // The picker opens at `now.year - 25` and the tap lands on the 15th
+      // of whatever month it shows — format it the way the profile screen
+      // does instead of hardcoding a date that goes stale on month rollover.
+      final now = DateTime.now();
+      expect(
+        find.text(formatDate(DateTime(now.year - 25, now.month, 15))),
+        findsOneWidget,
+      );
       expect(find.text('Tu perfil está incompleto'), findsNothing);
+    });
+
+    testWidgets('confirm-email sign-up keeps every field the form collected', (
+      tester,
+    ) async {
+      // Supabase's default: the account (and profile, via the metadata and
+      // the DB trigger) is created, but there is no session until the
+      // email link is clicked — the exact cut that used to lose data.
+      final auth = MockAuthRepository(
+        signedIn: false,
+        requiresEmailConfirmation: true,
+      );
+      await tester.pumpWidget(appHarness(signedIn: false, auth: auth));
+      await tester.pumpAndSettle();
+      await openSignUp(tester);
+
+      // Step 1 — the account: name, email, password.
+      await tester.enterText(find.byType(TextFormField).at(0), 'New Bie');
+      await tester.enterText(
+        find.byType(TextFormField).at(1),
+        'newbie@demo.app',
+      );
+      await tester.pump(const Duration(milliseconds: 300)); // email check
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextFormField).at(2), 'Password123');
+      await tester.pumpAndSettle();
+
+      final next = find.widgetWithText(FilledButton, 'Siguiente');
+      await tester.scrollUntilVisible(
+        next,
+        300,
+        scrollable: signUpScrollable(),
+      );
+      await tester.pumpAndSettle();
+      await acceptTerms(tester);
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+
+      // Step 2 — username, birth date (Material calendar), gender.
+      await tester.enterText(find.byType(TextFormField).at(0), 'newbie');
+      await tester.pump(const Duration(milliseconds: 300)); // username check
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('Tocá para elegir'),
+        300,
+        scrollable: signUpScrollable(),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Tocá para elegir'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('15'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('ACEPTAR'));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.widgetWithText(ChoiceChip, 'Hombre'),
+        300,
+        scrollable: signUpScrollable(),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(ChoiceChip, 'Hombre'));
+      await tester.pumpAndSettle();
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+
+      // Step 3 — sports (football comes preselected; the tap adds Pádel).
+      await tester.scrollUntilVisible(
+        find.widgetWithText(ChoiceChip, 'Pádel'),
+        300,
+        scrollable: signUpScrollable(),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(ChoiceChip, 'Pádel'));
+      await tester.pumpAndSettle();
+
+      final submit = find.widgetWithText(FilledButton, 'Crear cuenta');
+      await tester.scrollUntilVisible(
+        submit,
+        300,
+        scrollable: signUpScrollable(),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(submit);
+      await tester.pumpAndSettle();
+
+      // No session: the informational cut lands back on login with the
+      // note — and, the point of the fix, the form data is kept.
+      expect(
+        find.text(
+          'Cuenta creada. Revisá tu email para confirmarla y luego iniciá sesión.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.byType(SignUpScreen), findsNothing);
+      expect(
+        find.widgetWithText(FilledButton, 'Iniciar sesión'),
+        findsOneWidget,
+      );
+
+      // What the trigger wrote from the metadata: every collected field.
+      final store = MockStore();
+      final id = store.profileIdForEmail('newbie@demo.app');
+      final profile = store.profileById(id!)!;
+      expect(profile.username, 'newbie');
+      expect(profile.fullName, 'New Bie');
+      expect(profile.gender, 'male');
+      expect(profile.sports, contains('padel'));
+      final now = DateTime.now();
+      expect(profile.birthDate, DateTime(now.year - 25, now.month, 15));
+      expect(profile.isComplete, isTrue);
+
+      // Confirming the email changes nothing: signing in finds the profile
+      // complete — no completion step, nothing to re-enter.
+      await tester.enterText(
+        find.byType(TextFormField).at(0),
+        'newbie@demo.app',
+      );
+      await tester.enterText(find.byType(TextFormField).at(1), 'Password123');
+      await tester.tap(find.widgetWithText(FilledButton, 'Iniciar sesión'));
+      await tester.pumpAndSettle();
+      expect(find.widgetWithText(FilledButton, 'Iniciar sesión'), findsNothing);
+
+      await tester.tap(navIcon(Icons.person_outline));
+      await tester.pumpAndSettle();
+      expect(find.text('Tu perfil está incompleto'), findsNothing);
+      expect(find.text('@newbie'), findsOneWidget);
+      expect(find.text('New Bie'), findsOneWidget);
     });
 
     testWidgets('signing up enforces a strong password', (tester) async {

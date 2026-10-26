@@ -64,15 +64,25 @@ abstract class AuthRepository {
   /// profile still needs completion, like after sign-up.
   Future<AuthSession> signInWithOAuth(SocialProvider provider);
 
-  /// Creates an account and signs in. The profile starts incomplete;
-  /// the user finishes it on the completion screen.
+  /// Creates an account and signs in.
   ///
-  /// Returns `null` when the backend requires email confirmation first
-  /// (Supabase's default): the account exists but there is no session yet.
+  /// The whole sign-up form travels as account metadata ([username],
+  /// [birthDate], [gender], [sports], [fullName]): with email
+  /// confirmation on (Supabase's default) there is no session to save a
+  /// profile through, so the `handle_new_user()` trigger (migration 0007)
+  /// copies the metadata into `profiles` at account creation. Without it
+  /// the user would retype everything after confirming the email.
+  ///
+  /// Returns `null` when the backend requires email confirmation first:
+  /// the account exists (profile included) but there is no session yet.
   Future<AuthSession?> signUp({
     required String email,
     required String password,
     String fullName = '',
+    String username = '',
+    DateTime? birthDate,
+    String gender = '',
+    List<String> sports = const [],
   });
 
   /// Best-effort duplicate-email check for the sign-up form's live hint

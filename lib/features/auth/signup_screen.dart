@@ -200,12 +200,18 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             email: _emailController.text.trim(),
             password: _passwordController.text,
             fullName: _nameController.text.trim(),
+            username: _usernameController.text.trim(),
+            birthDate: _birthDate,
+            gender: _gender,
+            sports: _sports,
           );
       if (!mounted) return;
       if (session == null) {
-        // Email confirmation pending (Supabase default): informational, not
-        // an error — the account was created. The profile form picks the
-        // rest up after confirming and signing in.
+        // Email confirmation pending (Supabase default): informational,
+        // not an error. Everything the form collected traveled in the
+        // sign-up metadata, and the DB trigger wrote it into the profile
+        // at account creation (migration 0007) — confirming the email and
+        // signing in later finds the profile complete, nothing to re-enter.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.accountCreatedConfirmEmail)),
         );
@@ -213,8 +219,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         return;
       }
 
-      // The sign-up already wrote the account row — top it up with what
-      // the form collected so the profile is complete from the start.
+      // The sign-up already wrote the account row with this same data
+      // (migration 0007) — re-saving covers the case where the trigger
+      // dropped a raced username, and refreshes the profile cache.
       final existing = await ref
           .read(profileRepositoryProvider)
           .fetchById(session.userId);

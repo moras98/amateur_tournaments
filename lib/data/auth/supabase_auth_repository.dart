@@ -47,12 +47,27 @@ class SupabaseAuthRepository implements AuthRepository {
     required String email,
     required String password,
     String fullName = '',
+    String username = '',
+    DateTime? birthDate,
+    String gender = '',
+    List<String> sports = const [],
   }) async {
     try {
       final response = await _client.auth.signUp(
         email: email,
         password: password,
-        data: {'full_name': fullName},
+        data: {
+          'full_name': fullName,
+          // The whole form travels here: with confirmation pending there
+          // is no session to save a profile through, so the DB trigger
+          // (migration 0007) writes these into profiles at account
+          // creation. The keys are sent unconditionally so the confirmed
+          // and the pending path stay identical.
+          'username': username,
+          'birth_date': birthDate?.toIso8601String(),
+          'gender': gender,
+          'sports': sports,
+        },
       );
       // Null session = email confirmation pending (Supabase default): the
       // caller shows an informational message, not an error.

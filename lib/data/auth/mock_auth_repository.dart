@@ -18,8 +18,12 @@ import 'package:bracket/models/user_model.dart';
 /// `signedIn: false` is passed; `userId` picks a different seeded account
 /// (e.g. `u-org-1` for organizer flows).
 class MockAuthRepository implements AuthRepository {
-  MockAuthRepository({MockStore? store, bool signedIn = true, String? userId})
-    : _store = store ?? MockStore() {
+  MockAuthRepository({
+    MockStore? store,
+    bool signedIn = true,
+    String? userId,
+    this.requiresEmailConfirmation = false,
+  }) : _store = store ?? MockStore() {
     if (signedIn) {
       final id = userId ?? _store.currentUserId;
       final email =
@@ -28,6 +32,11 @@ class MockAuthRepository implements AuthRepository {
       _session = _sessionFor(id, email);
     }
   }
+
+  /// Simulates Supabase's "Confirm email" setting (its default): signUp
+  /// creates the account and its profile but returns no session — the
+  /// same cut the real backend takes.
+  final bool requiresEmailConfirmation;
 
   final MockStore _store;
   final StreamController<AuthSession?> _controller =
@@ -64,6 +73,10 @@ class MockAuthRepository implements AuthRepository {
     required String email,
     required String password,
     String fullName = '',
+    String username = '',
+    DateTime? birthDate,
+    String gender = '',
+    List<String> sports = const [],
   }) async {
     _validate(email, password);
 
@@ -74,19 +87,32 @@ class MockAuthRepository implements AuthRepository {
       );
     }
 
+    // Mirrors `handle_new_user()` (migration 0007): the form's fields land
+    // with the account row, and a handle that raced away fails the way the
+    // DB's unique constraint does (the caller shows "username taken").
+    final handle = username.isNotEmpty ? username : _usernameFromEmail(email);
+    if (_store.profiles.any((p) => p.username == handle)) {
+      throw StateError('username taken: $handle');
+    }
+
     final profile = UserModel(
       id: _store.nextId('u'),
-      username: _usernameFromEmail(email),
+      username: handle,
       fullName: fullName,
-      gender: '',
-      // Starts incomplete: the completion screen fills the rest.
+      birthDate: birthDate,
+      gender: gender,
+      // Phone isn't collected at sign-up — the profile edit form has it.
       phone: '',
-      sports: const ['football'],
+      sports: sports.isNotEmpty ? sports : const ['football'],
     );
     _store.profiles.add(profile);
     _store.registerAccountEmail(profile.id, email);
     _store.bump();
 
+    if (requiresEmailConfirmation) {
+      // Account + profile exist; the session only lands after the link.
+      return null;
+    }
     return _keep(_sessionFor(profile.id, email));
   }
 

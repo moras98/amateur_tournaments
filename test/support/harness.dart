@@ -1,5 +1,6 @@
 import 'package:bracket/core/location/reverse_geocoder.dart';
 import 'package:bracket/core/map/tile_provider.dart';
+import 'package:bracket/data/auth/auth_repository.dart';
 import 'package:bracket/data/auth/mock_auth_repository.dart';
 import 'package:bracket/data/billing/billing_service.dart';
 import 'package:bracket/data/billing/mock_billing_service.dart';
@@ -97,6 +98,9 @@ class FakeReverseGeocoder implements ReverseGeocoder {
 ///   (paying mode off — the app stays free and ungated); inject
 ///   `MockBillingService(products: [...], pro: false)` to exercise the
 ///   paywall and the free-tier gate.
+/// - [auth] injects a preconfigured auth repository (e.g. a mock with
+///   `requiresEmailConfirmation: true` to exercise the confirm-email
+///   sign-up cut); without it, [signedIn]/[signedInAs] build the default.
 Widget appHarness({
   ExploreView initialView = ExploreView.map,
   bool signedIn = true,
@@ -105,6 +109,7 @@ Widget appHarness({
   String? signedInAs,
   String reverseCountryCode = 'ar',
   BillingService? billing,
+  AuthRepository? auth,
 }) {
   // The app follows the phone's locale: tests pin the simulated device to
   // Uruguayan Spanish so every assertion sees the Spanish copy (override
@@ -134,7 +139,9 @@ Widget appHarness({
         userLocationProvider.overrideWith(
           (ref) async => withLocation ? testUserLocation : null,
         ),
-      if (!signedIn || signedInAs != null)
+      if (auth != null)
+        authRepositoryProvider.overrideWithValue(auth)
+      else if (!signedIn || signedInAs != null)
         authRepositoryProvider.overrideWithValue(
           MockAuthRepository(signedIn: signedIn, userId: signedInAs),
         ),
