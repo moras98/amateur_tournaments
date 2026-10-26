@@ -837,67 +837,87 @@ no antes de salir de un metro.
 
 ---
 
-## 11. Nombres e identidad visual (evaluado 26/10/2026)
+## 11. Nombres e identidad visual
 
-### 11.1 Criterios
+### 11.0 Corrección de método (importante)
 
-1. **ASO**: el título tiene que tener la palabra que la gente escribe en la tienda ("torneo",
-   "fútbol", "pádel") — con 0 presupuesto de marketing, la búsqueda de la tienda es el canal.
-2. **Honestidad**: el nombre no puede prometer lo que la app no hace (adiós "Bracket" sin cuadros).
-3. **Dominio y tiendas libres**, verificado hoy, no supuesto.
-4. **Que funcione a 48 px** y en un solo color (icono adaptativo de Android 13+).
+En la primera versión de esta sección verifiqué disponibilidad de dominios `.app` con el RDAP de
+Google Registry. **Ese endpoint devuelve 404 hasta para dominios registrados** (probado con
+`cash.app`), así que las conclusiones de `.app` de esa versión no valían. Lo que sí es confiable:
 
-### 11.2 Qué hay en el mercado (verificado en Play/App Store, 26/10)
+- `.com` → RDAP de Verisign (`https://rdap.verisign.com/com/v1/domain/<dominio>`): 200 = registrado,
+  404 = libre. Control: `google.com` → 200.
+- `.app` → no hay RDAP usable; la señal es DNS (`getent hosts <dominio>.app`): si resuelve, está
+  tomado. Si no resuelve, **puede** estar libre o registrado sin configurar: confirmar en el
+  registrador antes de decidir.
 
-El nicho está partido en tres, y conviene no caer en ninguno:
+### 11.1 Criterios (los tuyos, en orden)
 
-| Grupo | Apps | Qué resuelven |
-|---|---|---|
-| "Me falta un jugador" | Falta 1 (¡Montevideo y Flores!), MeFalta1, Falta1 Chile | Completar un equipo |
-| "Gestión para organizadores" | PlayOff, GESPACH, APP Torneos, Deporstar, 4league, Torneos App | Ligas, fixture, planillas |
-| "Reserva de canchas" | Cancha, Donde Juego, Laro | Reservar la cancha |
+1. **Marca, no función**: el nombre no puede describir una pantalla, porque en 6 meses la app va a
+   tener otras. Tiene que ser un contenedor.
+2. **Llamativo y decible**: se tiene que poder dictar por audio de WhatsApp sin deletrear.
+3. **Lugar para crecer**: equipos, chat, estadísticas, clubes, ranking, pagos — todo tiene que caber
+   adentro del nombre sin que suene raro.
+4. **ASO**: la palabra clave no va en el nombre, va pegada: `Marca — torneos` (≤30 caracteres).
+   Ese es el patrón que resuelve "marca linda" + "que me encuentren".
+5. Dominio y tiendas libres, verificado.
 
-Tu producto es **descubrimiento**: mapa de eventos + contacto. Ese es el hueco menos poblado, y el
-nombre tiene que decir "torneos" y "cerca", no "faltan jugadores" ni "planillas".
+### 11.2 Lo que está ocupado (verificado hoy: 45 dominios .com chequeados)
 
-### 11.3 Opciones (disponibilidad chequeada por RDAP + búsqueda en tiendas)
+Todos los .com de una sola palabra del rubro están tomados: `alargue, silbato, tercertiempo,
+mediacancha, picado, cancha, arranque, laredonda, canchero, picadito, canchazo, rabona, gambeta,
+vestuario, pizarra, canchon, jugador12, chilena, contragolpe, palomita, canchea, arco, torneito,
+jugadita, pelotazo, armate, juntada, canchita, lajugada, fueradejuego, laprevia, potrero, elpotrero,
+tirolibre, juegolimpio, eldescanso, anotate, sumate, jugala, armala, elvestuario`.
 
-| Nombre | Dominio | Colisiones | Veredicto |
-|---|---|---|---|
-| **Torneos Cerca** | `torneoscerca.com` **libre**, `torneoscerca.app` **libre** | ninguna encontrada | **Recomendado**: ASO directo, honesto, título "Torneos Cerca — jugá hoy" (25) |
-| Bracket (actual) | — | 5+ apps en las dos tiendas | Costo 0, pero promete cuadros y compite contra apps que sí los hacen |
-| Cancha | tomado | "Cancha - Reserva tu jugada", CanchaYa | Descartado: es reserva de canchas |
-| Canchero | tomado | `com.canchero.app`, El Canchero | Descartado |
-| Picado / El Picado | tomado | 2 apps en Play | Descartado |
-| Silbato | tomado | 1 app en Play | Descartado |
-| Alargue | tomado (`alargue.com` es un sitio de fútbol en México) | El Alargue Torneo (IG) | Descartado |
-| Media Cancha / Tercer Tiempo / La Redonda / Arranque / Cancha Abierta / Torneo Vivo / Juega Hoy | **todos los .com tomados** | — | Sólo servirían con otro TLD |
+Y varias ya son apps (colisión directa en tienda): **Falta 1** (Montevideo y Flores), MeFalta1,
+Falta1 Chile, PlayOff, GESPACH, APP Torneos, Deporstar, 4league, Torneos App, Cancha, CanchaYa,
+Donde Juego, Laro, Canchita (ligas de fútbol), Canchero, El Canchero, Picado, El Picado,
+Picadito (2), Rabona (red social de fútbol), Gambeta, Tercer Tiempo (2), Silbato, Tiro Libre.
 
-Que un nombre sea descriptivo tiene un costo: "Torneos Cerca" no es registrable como marca y no se
-recuerda tan bien como un nombre inventado. Con 0 presupuesto de marketing y un mercado que busca
-"torneos", la búsqueda pesa más que la marca. Cuando haya audiencia, la marca se construye (y se
-puede renombrar entonces, que es cuando el costo vale la pena).
+**Conclusión: el nombre tiene que ser una frase corta de dos palabras o una palabra inventada.**
+No hay tercera opción en este rubro.
 
-**Costo del cambio ahora:** 3-4 h — `android:label`, `CFBundleDisplayName`, título y ficha en las
-dos tiendas, dominio, iconos regenerados. `applicationId` sigue siendo cambiable gratis porque no
-hay ningún upload; después es permanente.
+### 11.3 Opciones con disponibilidad verificada
 
-### 11.4 Logos (archivos en `store/logo-concepts/`)
+| Nombre | Dominio | Colisiones | Por qué tiene futuro | Riesgo |
+|---|---|---|---|---|
+| **La Otra Cancha** | `laotracancha.com` **libre** (`.app` sin DNS, probablemente libre) | **ninguna app**; la frase circula en medios de fútbol (videopodcast de Bumbox, ciclo de Caracol TV) | "La otra cancha" es descubrimiento puro y contenedor: otros deportes, otras ciudades, otros formatos, otros niveles. Admite equipos, chat, stats y clubes sin forzar | En inglés no significa nada (pero es corto y se pronuncia fácil) |
+| **Cancha Mayor** | `canchamayor.com` **libre** | ninguna app; sí existen "Cancha" y "CANCHA" | Suena a institución (club, liga, Federación): escala natural a clubes, ligas y torneos grandes | "Mayor" puede sonar a categoría senior |
+| **Tiempo Cumplido** | `tiempocumplido.com` **libre** | **0 resultados** en búsqueda de tienda | Marca de fútbol real, elegante, muy recordable; el "final del partido" da lugar a resultados, estadísticas y premiación | Semánticamente es *el final*: para una app de descubrir torneos puede sonar a cierre |
+| El Vestuario | `.com` tomado, `.app` sin DNS | **`vestuario.app` es un producto activo** (gestión de peñas de fútbol) | Es la mejor metáfora de contenedor que existe (el equipo, el chat, las stats, las multas) | Ya hay alguien usando exactamente esa idea |
+| Torneos Cerca | `torneoscerca.com` sin DNS | ninguna | — | Descartado por vos: describe una función y no deja crecer |
+
+**Recomendación: La Otra Cancha.** Es la única que cumple las cuatro cosas a la vez: no describe
+una pantalla, se dice de una, tiene .com libre y la metáfora invita a crecer (un torneo de pádel en
+otra ciudad es literalmente "la otra cancha"). Contra: al ser una frase hecha del fútbol no es
+defendible como marca registrada (por eso la usan podcast y TV). Si querés defensibilidad, el
+nombre tiene que ser inventado o `Cancha Mayor`. Título de tienda: `La Otra Cancha — torneos` (25), y
+la palabra clave también en la descripción corta. En inglés el título queda igual y los keywords
+ingleses van en la descripción corta: `Find amateur tournaments near you`.
+
+Alternativa si querés algo más "institucional" y orientado a clubes/ligas: `Cancha Mayor`.
+
+### 11.4 Logos para La Otra Cancha (archivos en `store/logo-concepts/`)
 
 | Concepto | Qué dice | A 48 px | Archivo |
 |---|---|---|---|
-| **A — pin con el círculo central de la cancha** | "cerca" + deporte, sin texto | **el más legible**: silueta fuerte, el hueco sobrevive | `a-pin-limpio.svg` + `a-pin-foreground.svg` (capa adaptativa) + `a-pin-monocromo.svg` |
-| B — cancha mínima (contorno + línea + círculo) | deporte, más literal | se lee, pero más ruido en chico | `b-cancha-minima.svg` |
-| C — llave que cierra sobre una pelota | cuadro/torneo | se empasta; el pentágono desaparece | descartado (y era la idea del cuadro, fuera de alcance) |
+| **A — cancha con la pelota saliendo del cuadro** | "hay otra cancha más allá de esta" | se lee bien: la pelota es la que sostiene el icono | `otra-cancha-a-linea.svg` |
+| B — dos canchas superpuestas | la cancha de al lado | la de atrás se desvanece y parece un artefacto | `otra-cancha-b-dos.svg` |
+| C — línea + pelota sola | minimalismo | no se entiende como cancha; composición desbalanceada | `otra-cancha-c-linea.svg` (descartado) |
+| Pin (versión anterior) | "cerca" | **el más legible de todos** a tamaño chico | `a-pin-limpio.svg` |
 
-Recomendación: **A con el nombre Torneos Cerca**. Aplicación: reemplazar `assets/icon.png` e
-`assets/icon_fg.png` por `a-pin-limpio.png` y `a-pin-foreground.png`, después
+Si priorizás legibilidad absoluta a 48 px, el pin sigue siendo mejor icono. Si priorizás marca
+propia, A es el camino y se puede limpiar (acercar la pelota al borde del cuadro para que la
+composición quede centrada).
 
-```bash
-dart run flutter_launcher_icons
-dart run flutter_native_splash:create
-```
+Para aplicar cualquiera: reemplazar `assets/icon.png` e `assets/icon_fg.png`, y correr
+`dart run flutter_launcher_icons` + `dart run flutter_native_splash:create`.
 
-El splash y la barra de estado quedan con `#0F3B2A` (ya configurado en `pubspec.yaml`), así que el
-cambio es sólo de archivo. Si te quedás con "Bracket", el concepto A igual sirve como evolución (es
-el pin, no la llave) y evita la asociación con cuadros.
+### 11.5 Antes de decidir
+
+1. Confirmar en el registrador (no por RDAP) que `laotracancha.com` y `laotracancha.app` se pueden
+   comprar, y comprar los dos el mismo día.
+2. Buscar "La Otra Cancha" en App Store Connect al crear la app: si el nombre está tomado ahí,
+   queda `La Otra Cancha App` o `LaOtraCancha`, que se ven peor pero funcionan.
+3. Que lo diga en voz alta alguien que no sea vos: si hay que deletrearlo, no sirve.
