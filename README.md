@@ -1,5 +1,9 @@
 # Bracket
 
+> **Publishing & first users:** see [`LAUNCH.md`](LAUNCH.md) · Store copy in
+> [`store/play-store.md`](store/play-store.md), privacy policy draft in
+> [`store/privacy-policy.md`](store/privacy-policy.md).
+
 Players discover amateur tournaments near them (map + list — open filtered
 to the sports in their profile), contact the
 organizer on WhatsApp to coordinate payment off-app, and the organizer
@@ -18,8 +22,8 @@ WhatsApp messages stay Spanish (they're addressed to Uruguayan organizers).
 
 The profile's phone field splits into a country dial code + national
 number; the dial code defaults to the device location's country (reverse
-geocoded via Nominatim, fallback `+54`) and is stored back as one
-international digit string (`5491122334455`, no `+`) for `wa.me` links.
+geocoded via Nominatim, fallback `+598`) and is stored back as one
+international digit string (`59899123456`, no `+`) for `wa.me` links.
 
 Visual design rules live in [`design.md`](design.md); the implementation is
 `lib/core/theme/app_theme.dart` (Material 3, brand green, Plus Jakarta Sans,
