@@ -1,4 +1,4 @@
-import 'package:bracket/models/inscription_model.dart';
+import 'package:tande/models/inscription_model.dart';
 
 /// Player registrations and the organizer's confirm/reject decisions.
 ///

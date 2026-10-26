@@ -1,7 +1,7 @@
-import 'package:bracket/data/repositories/mock/mock_store.dart';
-import 'package:bracket/features/explore/explore_providers.dart';
-import 'package:bracket/features/inscriptions/my_inscriptions_screen.dart';
-import 'package:bracket/features/tournament/tournament_detail_screen.dart';
+import 'package:tande/data/repositories/mock/mock_store.dart';
+import 'package:tande/features/explore/explore_providers.dart';
+import 'package:tande/features/inscriptions/my_inscriptions_screen.dart';
+import 'package:tande/features/tournament/tournament_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_test/flutter_test.dart';

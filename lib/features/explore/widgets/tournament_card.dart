@@ -1,8 +1,8 @@
-import 'package:bracket/core/sports.dart';
-import 'package:bracket/core/utils/format.dart';
-import 'package:bracket/l10n/generated/app_localizations.dart';
-import 'package:bracket/l10n/labels.dart';
-import 'package:bracket/models/tournament_model.dart';
+import 'package:tande/core/sports.dart';
+import 'package:tande/core/utils/format.dart';
+import 'package:tande/l10n/generated/app_localizations.dart';
+import 'package:tande/l10n/labels.dart';
+import 'package:tande/models/tournament_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

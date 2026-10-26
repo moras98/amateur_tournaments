@@ -1,4 +1,4 @@
-import 'package:bracket/core/utils/country_code.dart';
+import 'package:tande/core/utils/country_code.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

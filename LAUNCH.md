@@ -1,4 +1,4 @@
-# LAUNCH — publish Bracket and get the first users
+# LAUNCH — publish Tande and get the first users
 
 Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 
@@ -16,7 +16,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 | Item | Status |
 |---|---|
 | App build | ✅ analyze clean, **132/132 tests**, `1.0.0+1` |
-| Application ID | ✅ `com.bracket.torneos` (permanent — never change after publish) |
+| Application ID | ✅ `com.tande.app` (permanent — never change after publish) |
 | Git | ✅ 5 commits, secrets gitignored |
 | Upload keystore | ✅ `~/upload-keystore.jks` + `android/key.properties` |
 | Store AAB script | ✅ `scripts/build-release.sh` |
@@ -74,7 +74,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 ```
 
 - [ ] `.release.env` filled (never commit it — it's gitignored)
-- [ ] Script finishes and signer shows `CN=Bracket, OU=Bracket, O=Bracket, L=Montevideo, C=UY`
+- [ ] Script finishes and signer shows `CN=Tande, OU=Tande, O=Tande, L=Montevideo, C=UY`
 - [ ] Re-run the on-device smoke test with **this exact AAB's** build
 
 > The AAB already in `build/` was built with a placeholder key for pipeline
@@ -83,7 +83,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 
 ## 3. Play Console listing
 
-- [ ] **App identity**: name `Bracket`, application ID `com.bracket.torneos`
+- [ ] **App identity**: name `Tande`, application ID `com.tande.app`
       (autofills from the AAB), version `1.0.0+1`.
 - [ ] **Legal docs**: fill `EMAIL_DE_CONTACTO` in `store/privacy-policy.md`
       **and** `store/terms-and-conditions.md`, publish both (GitHub Pages on
@@ -105,11 +105,12 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 - [ ] **Target audience**: 13+ (matches the privacy policy).
 - [ ] **Graphics**:
       - Feature graphic 1024×500 (green `#1B8A5A` / mint `#34E0A1` on
-        `#0F3B2A`, bracket mark + "Tu torneo empieza acá")
-      - ≥ 2 phone screenshots (emulator or the YAL L21): explore map,
-        bracket/fixture, inscription flow — UI in **es**
-- [ ] **Copy** from `store/play-store.md`: title (28 chars), short description
-      (79 chars), full description, keyword list.
+        `#0F3B2A`, pin con play + "Tu torneo empieza acá")
+      - ≥ 2 phone screenshots (emulator or the YAL L21): mapa en Explore,
+        lista filtrada, detalle del torneo, inscripción — UI en **es**
+- [ ] **Copy** from `store/play-store.md`: título (26), descripción corta (77),
+      descripción larga, keywords de App Store. Ya está reescrita para decir sólo
+      lo que la app hace.
 
 ## 4. The 14-day clock (personal accounts, created after Nov 2023)
 
@@ -140,19 +141,20 @@ An empty tournament list = a dead app.
 - [ ] **Land 2–3 real Montevideo tournaments before launch.** Offer free
       white-glove setup ("armo tu torneo, no pagás nada"). Each organizer
       brings their whole roster — that's your launch audience
-- [ ] **WhatsApp**: the app already shares the bracket with a pre-filled
-      Spanish message — post it into the groups where teams coordinate
+- [ ] **WhatsApp**: por ahora la app abre el chat del organizador con el mensaje
+      ya escrito; **todavía no se puede compartir el evento** (§4.10-c del plan) —
+      hasta que exista, el link lo pegás vos en cada grupo
 - [ ] **Facebook groups**: Montevideo amateur football / pádel / "busco
       equipo" groups are where your exact audience already is
 - [ ] **Instagram Reels**: 15 s screen recording — "armás tu torneo en 30
       segundos"; hashtags `#futbol5 #montevideo #padel #torneo`
 - [ ] **Venues**: one poster with a QR code per fútbol‑5 complex and padel
       club (padel is booming — they want visibility)
-- [ ] **ASO**: keep `Bracket + torneos` together in the title; re-check the
+- [ ] **ASO**: keep `Tande + torneos` together in the title; re-check the
       keyword list in `store/play-store.md` after the first weeks of search
       impressions
 
-## 7. Monetization — "Bracket Pro" (only after real users)
+## 7. Monetization — "Tande Pro" (only after real users)
 
 Decision: **organizer-side subscription**; players never pay. Ads rejected —
 UY CPMs are tiny and AdMob would force privacy/data-safety churn before
@@ -175,12 +177,12 @@ the closed test** — never gate the 12 testers.
       paywall at `/pro` (profile card + free-tier gate), entitlement from
       Play. **Inert until products exist** — with no products configured the
       app is 100% free and ungated (entry points hidden), which is what
-      ships through the closed test. **Creating `bracket_pro_monthly` /
-      `bracket_pro_yearly` in Play Console switches paying mode ON for every
+      ships through the closed test. **Creating `tande_pro_monthly` /
+      `tande_pro_yearly` in Play Console switches paying mode ON for every
       user without an entitlement** — only do it when Pro launches, after
       the closed test, once the features below actually ship.
-- [ ] **Play Console**: subscription products `bracket_pro_monthly` +
-      `bracket_pro_yearly`, base plans, 7-day trial (mirror the trial length
+- [ ] **Play Console**: subscription products `tande_pro_monthly` +
+      `tande_pro_yearly`, base plans, 7-day trial (mirror the trial length
       in `AppConstants.proTrialDays` — the plugin can't read it); price in
       USD (confirm whether Play offers UYU pricing — USD is safe).
 - [ ] **Server-side verification** (before real money): Supabase edge
@@ -207,7 +209,7 @@ the closed test** — never gate the 12 testers.
 
 | | |
 |---|---|
-| Application ID | `com.bracket.torneos` — **permanent** |
+| Application ID | `com.tande.app` — **permanent** |
 | Version | `1.0.0+1` (bump in `pubspec.yaml` per release) |
 | Keystore | `~/upload-keystore.jks`, alias `upload`, password in `android/key.properties` |
 | Store build | `./scripts/build-release.sh` → `build/app/outputs/bundle/release/app-release.aab` |

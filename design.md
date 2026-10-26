@@ -1,4 +1,4 @@
-# Bracket — Design System
+# Tande — Design System
 
 Rules for keeping the UI consistent, modern and sporty. The code that
 implements this lives in `lib/core/theme/app_theme.dart` — change both
@@ -13,9 +13,9 @@ rounded shapes · bold headings · 8pt spacing · Uruguayan Spanish.
 
 | | |
 | --- | --- |
-| Name | Bracket |
-| Tagline | "Tu torneo empieza acá" (es) / "Your bracket starts here" (en) |
-| App icon | Mint bracket `#34E0A1` funneling to a champion dot on a deep-green `#0F3B2A` field — adaptive icon (16% inset, solid `#0F3B2A` background) plus an Android 13+ monochrome glyph; splash matches the same field color. Regenerate with `dart run flutter_launcher_icons` + `dart run flutter_native_splash:create` |
+| Name | Tande |
+| Tagline | "Tu torneo empieza acá" (es) / "Your tournament starts here" (en) |
+| App icon | Mint location pin with a play triangle cut out `#34E0A1` on a deep-green `#0F3B2A` field — neutral to any sport; adaptive icon (foreground at 66% safe zone, solid `#0F3B2A` background) plus an Android 13+ monochrome glyph; splash matches the same field color. Regenerate with `dart run flutter_launcher_icons` + `dart run flutter_native_splash:create` |
 | Color | Green `#1B8A5A` (sport pitch, "go", trust) |
 | Personality | Local, direct, energetic, friendly — pickup sports, not enterprise |
 | Iconography | Rounded Material Symbols, sport glyphs per modality |
@@ -348,7 +348,7 @@ button while saving.
 | iOS adaptation (dialogs, switches, pickers, transitions) | `lib/core/theme/adaptive.dart` |
 | Sign-up/profile fields (password rules, username, chips) | `lib/features/auth/widgets/profile_fields.dart` |
 | Terms acceptance (checkbox, inline legal links) | `lib/features/auth/widgets/terms_acceptance.dart` |
-| Bracket Pro (paywall, entitlement, Play Billing) | `lib/features/pro/`, `lib/data/billing/` |
+| Tande Pro (paywall, entitlement, Play Billing) | `lib/features/pro/`, `lib/data/billing/` |
 | Sport colors/icons | `lib/core/sports.dart` |
 | Date/money formatting | `lib/core/utils/format.dart` |
 | UI strings (es_UY source + English) | `lib/l10n/app_es_UY.arb`, `lib/l10n/app_en.arb` → `flutter gen-l10n` |

@@ -1,8 +1,8 @@
-import 'package:bracket/core/constants.dart';
-import 'package:bracket/core/router/app_router.dart';
-import 'package:bracket/core/theme/app_theme.dart';
-import 'package:bracket/core/utils/format.dart';
-import 'package:bracket/l10n/generated/app_localizations.dart';
+import 'package:tande/core/constants.dart';
+import 'package:tande/core/router/app_router.dart';
+import 'package:tande/core/theme/app_theme.dart';
+import 'package:tande/core/utils/format.dart';
+import 'package:tande/l10n/generated/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -26,11 +26,11 @@ Future<void> main() async {
     );
   }
 
-  runApp(const ProviderScope(child: BracketApp()));
+  runApp(const ProviderScope(child: TandeApp()));
 }
 
-class BracketApp extends ConsumerWidget {
-  const BracketApp({super.key});
+class TandeApp extends ConsumerWidget {
+  const TandeApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

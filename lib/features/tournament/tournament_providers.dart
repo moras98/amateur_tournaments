@@ -1,7 +1,7 @@
-import 'package:bracket/data/repositories/providers.dart';
-import 'package:bracket/models/inscription_model.dart';
-import 'package:bracket/models/tournament_model.dart';
-import 'package:bracket/models/user_model.dart';
+import 'package:tande/data/repositories/providers.dart';
+import 'package:tande/models/inscription_model.dart';
+import 'package:tande/models/tournament_model.dart';
+import 'package:tande/models/user_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// One tournament by id (`null` when it doesn't exist).

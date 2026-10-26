@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:bracket/core/sports.dart';
-import 'package:bracket/core/utils/format.dart';
-import 'package:bracket/core/utils/nav_geometry.dart';
-import 'package:bracket/core/widgets/search_capsule.dart';
-import 'package:bracket/features/inscriptions/inscriptions_providers.dart';
-import 'package:bracket/l10n/generated/app_localizations.dart';
-import 'package:bracket/l10n/labels.dart';
-import 'package:bracket/models/inscription_model.dart';
+import 'package:tande/core/sports.dart';
+import 'package:tande/core/utils/format.dart';
+import 'package:tande/core/utils/nav_geometry.dart';
+import 'package:tande/core/widgets/search_capsule.dart';
+import 'package:tande/features/inscriptions/inscriptions_providers.dart';
+import 'package:tande/l10n/generated/app_localizations.dart';
+import 'package:tande/l10n/labels.dart';
+import 'package:tande/models/inscription_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

@@ -1,8 +1,8 @@
-import 'package:bracket/core/constants.dart';
-import 'package:bracket/data/billing/billing_service.dart';
-import 'package:bracket/data/billing/mock_billing_service.dart';
-import 'package:bracket/features/organizer/event_form_screen.dart';
-import 'package:bracket/features/pro/paywall_screen.dart';
+import 'package:tande/core/constants.dart';
+import 'package:tande/data/billing/billing_service.dart';
+import 'package:tande/data/billing/mock_billing_service.dart';
+import 'package:tande/features/organizer/event_form_screen.dart';
+import 'package:tande/features/pro/paywall_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -27,19 +27,19 @@ void main() {
   final monthly = ProProduct(
     id: AppConstants.proMonthlyId,
     price: 'US\$ 4.99',
-    title: 'Bracket Pro Monthly',
+    title: 'Tande Pro Monthly',
   );
   final yearly = ProProduct(
     id: AppConstants.proYearlyId,
     price: 'US\$ 39.99',
-    title: 'Bracket Pro Yearly',
+    title: 'Tande Pro Yearly',
   );
 
   final ctaLabel = AppConstants.proTrialDays == null
       ? 'Suscribirme'
       : 'Probar gratis';
 
-  group('Bracket Pro (widgets)', () {
+  group('Tande Pro (widgets)', () {
     testWidgets('before Play has products the app stays free and ungated', (
       tester,
     ) async {
@@ -49,7 +49,7 @@ void main() {
       // No paywall entry on the profile while paying mode is off.
       await tester.tap(navIcon(Icons.person_outline));
       await tester.pumpAndSettle();
-      expect(find.text('Bracket Pro'), findsNothing);
+      expect(find.text('Tande Pro'), findsNothing);
 
       // Creation opens the plain form — the closed-test invariant.
       await tester.tap(navIcon(Icons.emoji_events_outlined));
@@ -74,7 +74,7 @@ void main() {
       await tester.tap(navIcon(Icons.person_outline));
       await tester.pumpAndSettle();
 
-      final card = find.widgetWithText(ListTile, 'Bracket Pro');
+      final card = find.widgetWithText(ListTile, 'Tande Pro');
       expect(card, findsOneWidget);
       await tester.tap(card);
       await tester.pumpAndSettle();
@@ -88,7 +88,7 @@ void main() {
       // The mock grants on buy: the paywall flips to the subscribed state.
       await tester.tap(find.widgetWithText(FilledButton, ctaLabel));
       await tester.pumpAndSettle();
-      expect(find.text('Ya tenés Bracket Pro'), findsOneWidget);
+      expect(find.text('Ya tenés Tande Pro'), findsOneWidget);
       expect(
         find.text('Tus torneos activos no tienen límite.'),
         findsOneWidget,
@@ -108,7 +108,7 @@ void main() {
 
       await tester.tap(navIcon(Icons.person_outline));
       await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(ListTile, 'Bracket Pro'));
+      await tester.tap(find.widgetWithText(ListTile, 'Tande Pro'));
       await tester.pumpAndSettle();
 
       final restore = find.widgetWithText(TextButton, 'Restaurar compras');

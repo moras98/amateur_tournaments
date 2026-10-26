@@ -10,7 +10,7 @@ abstract class AppConstants {
   static bool get hasSupabase =>
       supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty;
 
-  static const appName = 'Bracket';
+  static const appName = 'Tande';
 
   /// Where Supabase sends the user back after the browser OAuth flow
   /// (Google, Apple). Registered as a deep-link scheme in AndroidManifest.xml
@@ -18,7 +18,7 @@ abstract class AppConstants {
   static const oauthRedirectUrl =
       'io.supabase.amateurtournaments://login-callback';
 
-  // --- Bracket Pro (LAUNCH.md §7) ------------------------------------
+  // --- Tande Pro (LAUNCH.md §7) ------------------------------------
 
   /// Play Console product ids (one subscription each, base plans on top).
   ///
@@ -26,8 +26,8 @@ abstract class AppConstants {
   /// user without an entitlement: paywall entry points appear and the
   /// free-tier gate starts enforcing. Do it only when Pro really launches
   /// (after the closed test, once the Pro features ship).
-  static const proMonthlyId = 'bracket_pro_monthly';
-  static const proYearlyId = 'bracket_pro_yearly';
+  static const proMonthlyId = 'tande_pro_monthly';
+  static const proYearlyId = 'tande_pro_yearly';
   static const proProductIds = [proMonthlyId, proYearlyId];
 
   /// Free tier: active tournaments an organizer runs without Pro

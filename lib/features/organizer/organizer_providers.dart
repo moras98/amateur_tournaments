@@ -1,8 +1,8 @@
-import 'package:bracket/data/repositories/providers.dart';
-import 'package:bracket/features/explore/explore_providers.dart';
-import 'package:bracket/features/tournament/tournament_providers.dart';
-import 'package:bracket/models/inscription_model.dart';
-import 'package:bracket/models/tournament_model.dart';
+import 'package:tande/data/repositories/providers.dart';
+import 'package:tande/features/explore/explore_providers.dart';
+import 'package:tande/features/tournament/tournament_providers.dart';
+import 'package:tande/models/inscription_model.dart';
+import 'package:tande/models/tournament_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Tournaments owned by the signed-in user (upcoming first, past last).

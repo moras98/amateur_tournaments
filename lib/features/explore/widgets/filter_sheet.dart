@@ -1,9 +1,9 @@
-import 'package:bracket/core/constants.dart';
-import 'package:bracket/core/theme/adaptive.dart';
-import 'package:bracket/data/repositories/providers.dart';
-import 'package:bracket/features/explore/explore_providers.dart';
-import 'package:bracket/l10n/generated/app_localizations.dart';
-import 'package:bracket/l10n/labels.dart';
+import 'package:tande/core/constants.dart';
+import 'package:tande/core/theme/adaptive.dart';
+import 'package:tande/data/repositories/providers.dart';
+import 'package:tande/features/explore/explore_providers.dart';
+import 'package:tande/l10n/generated/app_localizations.dart';
+import 'package:tande/l10n/labels.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

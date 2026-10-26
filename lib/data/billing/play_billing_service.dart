@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:bracket/core/constants.dart';
-import 'package:bracket/data/billing/billing_service.dart';
+import 'package:tande/core/constants.dart';
+import 'package:tande/data/billing/billing_service.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 /// Real [BillingService] backed by Google Play Billing.

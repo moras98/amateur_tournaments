@@ -1,14 +1,14 @@
-import 'package:bracket/data/auth/auth_repository.dart';
-import 'package:bracket/data/auth/mock_auth_repository.dart';
-import 'package:bracket/data/repositories/mock/mock_profile_repository.dart';
-import 'package:bracket/data/repositories/mock/mock_store.dart';
-import 'package:bracket/core/utils/age.dart';
-import 'package:bracket/core/utils/format.dart';
-import 'package:bracket/core/theme/app_theme.dart';
-import 'package:bracket/features/auth/forgot_password_screen.dart';
-import 'package:bracket/features/auth/profile_form_screen.dart';
-import 'package:bracket/features/auth/reset_password_screen.dart';
-import 'package:bracket/features/auth/signup_screen.dart';
+import 'package:tande/data/auth/auth_repository.dart';
+import 'package:tande/data/auth/mock_auth_repository.dart';
+import 'package:tande/data/repositories/mock/mock_profile_repository.dart';
+import 'package:tande/data/repositories/mock/mock_store.dart';
+import 'package:tande/core/utils/age.dart';
+import 'package:tande/core/utils/format.dart';
+import 'package:tande/core/theme/app_theme.dart';
+import 'package:tande/features/auth/forgot_password_screen.dart';
+import 'package:tande/features/auth/profile_form_screen.dart';
+import 'package:tande/features/auth/reset_password_screen.dart';
+import 'package:tande/features/auth/signup_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -237,7 +237,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(registerLink);
       await tester.pumpAndSettle();
-      expect(find.text('Unite a Bracket'), findsOneWidget);
+      expect(find.text('Unite a Tande'), findsOneWidget);
       expect(find.byType(AppBar), findsNothing);
     });
 
@@ -390,7 +390,7 @@ void main() {
       // survives the round trip.
       await tester.tap(find.byTooltip('Atrás'));
       await tester.pumpAndSettle();
-      expect(find.text('Unite a Bracket'), findsOneWidget);
+      expect(find.text('Unite a Tande'), findsOneWidget);
       expect(find.text('Sobre vos'), findsNothing);
 
       // Step 1 remounts unscrolled: bring the action back into view.
@@ -843,7 +843,7 @@ void main() {
       await tester.tap(next);
       await tester.pumpAndSettle();
       expect(
-        find.text('Tenés que tener 18 años o más para usar Bracket.'),
+        find.text('Tenés que tener 18 años o más para usar Tande.'),
         findsOneWidget,
       );
       expect(find.text('Sobre vos'), findsOneWidget);

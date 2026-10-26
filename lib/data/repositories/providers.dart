@@ -1,20 +1,20 @@
-import 'package:bracket/core/constants.dart';
-import 'package:bracket/data/auth/auth_repository.dart';
-import 'package:bracket/data/auth/mock_auth_repository.dart';
-import 'package:bracket/data/auth/supabase_auth_repository.dart';
-import 'package:bracket/data/billing/billing_service.dart';
-import 'package:bracket/data/billing/mock_billing_service.dart';
-import 'package:bracket/data/billing/play_billing_service.dart';
-import 'package:bracket/data/repositories/inscription_repository.dart';
-import 'package:bracket/data/repositories/mock/mock_inscription_repository.dart';
-import 'package:bracket/data/repositories/mock/mock_profile_repository.dart';
-import 'package:bracket/data/repositories/mock/mock_tournament_repository.dart';
-import 'package:bracket/data/repositories/profile_repository.dart';
-import 'package:bracket/data/repositories/supabase/supabase_inscription_repository.dart';
-import 'package:bracket/data/repositories/supabase/supabase_profile_repository.dart';
-import 'package:bracket/data/repositories/supabase/supabase_tournament_repository.dart';
-import 'package:bracket/data/repositories/tournament_repository.dart';
-import 'package:bracket/models/user_model.dart';
+import 'package:tande/core/constants.dart';
+import 'package:tande/data/auth/auth_repository.dart';
+import 'package:tande/data/auth/mock_auth_repository.dart';
+import 'package:tande/data/auth/supabase_auth_repository.dart';
+import 'package:tande/data/billing/billing_service.dart';
+import 'package:tande/data/billing/mock_billing_service.dart';
+import 'package:tande/data/billing/play_billing_service.dart';
+import 'package:tande/data/repositories/inscription_repository.dart';
+import 'package:tande/data/repositories/mock/mock_inscription_repository.dart';
+import 'package:tande/data/repositories/mock/mock_profile_repository.dart';
+import 'package:tande/data/repositories/mock/mock_tournament_repository.dart';
+import 'package:tande/data/repositories/profile_repository.dart';
+import 'package:tande/data/repositories/supabase/supabase_inscription_repository.dart';
+import 'package:tande/data/repositories/supabase/supabase_profile_repository.dart';
+import 'package:tande/data/repositories/supabase/supabase_tournament_repository.dart';
+import 'package:tande/data/repositories/tournament_repository.dart';
+import 'package:tande/models/user_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -50,7 +50,7 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return MockAuthRepository();
 });
 
-/// Play Billing (Bracket Pro). Real on release builds (the Supabase
+/// Play Billing (Tande Pro). Real on release builds (the Supabase
 /// defines are the release marker — same switch as the repositories),
 /// mock otherwise: tests and dev builds never touch the billing channel.
 final billingServiceProvider = Provider<BillingService>((ref) {

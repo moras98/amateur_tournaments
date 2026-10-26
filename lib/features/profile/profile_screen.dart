@@ -1,11 +1,11 @@
-import 'package:bracket/core/sports.dart';
-import 'package:bracket/core/theme/adaptive.dart';
-import 'package:bracket/core/theme/app_gradients.dart';
-import 'package:bracket/core/utils/format.dart';
-import 'package:bracket/data/repositories/providers.dart';
-import 'package:bracket/features/pro/pro_providers.dart';
-import 'package:bracket/l10n/generated/app_localizations.dart';
-import 'package:bracket/l10n/labels.dart';
+import 'package:tande/core/sports.dart';
+import 'package:tande/core/theme/adaptive.dart';
+import 'package:tande/core/theme/app_gradients.dart';
+import 'package:tande/core/utils/format.dart';
+import 'package:tande/data/repositories/providers.dart';
+import 'package:tande/features/pro/pro_providers.dart';
+import 'package:tande/l10n/generated/app_localizations.dart';
+import 'package:tande/l10n/labels.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -151,7 +151,7 @@ class ProfileScreen extends ConsumerWidget {
                     ),
                   ),
                 ],
-                // Bracket Pro entry: only in paying mode (Play products
+                // Tande Pro entry: only in paying mode (Play products
                 // configured) and only while this user isn't subscribed —
                 // organizers are the ones who can use it.
                 if (profile.isOrganizer && pro.available && !pro.isPro) ...[

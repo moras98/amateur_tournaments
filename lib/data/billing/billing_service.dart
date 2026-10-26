@@ -1,4 +1,4 @@
-/// A purchasable Bracket Pro plan, as shown on the paywall.
+/// A purchasable Tande Pro plan, as shown on the paywall.
 ///
 /// Play's formatted price is carried verbatim — the store decides the
 /// currency and locale for the buyer.
@@ -21,7 +21,7 @@ class ProProduct {
   final String description;
 }
 
-/// Subscription plumbing behind Bracket Pro (LAUNCH.md §7).
+/// Subscription plumbing behind Tande Pro (LAUNCH.md §7).
 ///
 /// Entitlement contract: [isPro] starts `true` and only becomes a real
 /// gate once Play reports configured products — an app without products

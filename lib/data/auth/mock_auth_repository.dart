@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:bracket/data/auth/auth_repository.dart';
-import 'package:bracket/data/repositories/mock/mock_store.dart';
-import 'package:bracket/models/user_model.dart';
+import 'package:tande/data/auth/auth_repository.dart';
+import 'package:tande/data/repositories/mock/mock_store.dart';
+import 'package:tande/models/user_model.dart';
 
 /// In-memory auth for local development and tests.
 ///

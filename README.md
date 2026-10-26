@@ -1,4 +1,4 @@
-# Bracket
+# Tande
 
 > **Publishing & first users:** see [`LAUNCH.md`](LAUNCH.md) · Store copy in
 > [`store/play-store.md`](store/play-store.md), privacy policy draft in

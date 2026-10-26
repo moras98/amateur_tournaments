@@ -1,5 +1,5 @@
-import 'package:bracket/data/repositories/inscription_repository.dart';
-import 'package:bracket/models/inscription_model.dart';
+import 'package:tande/data/repositories/inscription_repository.dart';
+import 'package:tande/models/inscription_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Supabase-backed inscriptions (`public.inscriptions`). Selected by the

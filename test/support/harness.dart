@@ -1,12 +1,12 @@
-import 'package:bracket/core/location/reverse_geocoder.dart';
-import 'package:bracket/core/map/tile_provider.dart';
-import 'package:bracket/data/auth/auth_repository.dart';
-import 'package:bracket/data/auth/mock_auth_repository.dart';
-import 'package:bracket/data/billing/billing_service.dart';
-import 'package:bracket/data/billing/mock_billing_service.dart';
-import 'package:bracket/data/repositories/providers.dart';
-import 'package:bracket/features/explore/explore_providers.dart';
-import 'package:bracket/main.dart';
+import 'package:tande/core/location/reverse_geocoder.dart';
+import 'package:tande/core/map/tile_provider.dart';
+import 'package:tande/data/auth/auth_repository.dart';
+import 'package:tande/data/auth/mock_auth_repository.dart';
+import 'package:tande/data/billing/billing_service.dart';
+import 'package:tande/data/billing/mock_billing_service.dart';
+import 'package:tande/data/repositories/providers.dart';
+import 'package:tande/features/explore/explore_providers.dart';
+import 'package:tande/main.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -94,7 +94,7 @@ class FakeReverseGeocoder implements ReverseGeocoder {
 ///   pending one pins the map in its loading state)
 /// - [reverseCountryCode] controls which country the fake reverse geocoder
 ///   reports (the phone field's dial-code default)
-/// - [billing] drives Bracket Pro: the default mock has no Play products
+/// - [billing] drives Tande Pro: the default mock has no Play products
 ///   (paying mode off — the app stays free and ungated); inject
 ///   `MockBillingService(products: [...], pro: false)` to exercise the
 ///   paywall and the free-tier gate.
@@ -146,7 +146,7 @@ Widget appHarness({
           MockAuthRepository(signedIn: signedIn, userId: signedInAs),
         ),
     ],
-    child: const BracketApp(),
+    child: const TandeApp(),
   );
 }
 

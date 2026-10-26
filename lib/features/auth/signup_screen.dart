@@ -1,15 +1,15 @@
 import 'dart:async';
 
-import 'package:bracket/core/theme/app_gradients.dart';
-import 'package:bracket/core/utils/age.dart';
-import 'package:bracket/core/theme/adaptive.dart';
-import 'package:bracket/data/auth/auth_repository.dart';
-import 'package:bracket/data/repositories/providers.dart';
-import 'package:bracket/features/auth/widgets/profile_fields.dart';
-import 'package:bracket/features/auth/widgets/terms_acceptance.dart';
-import 'package:bracket/l10n/generated/app_localizations.dart';
-import 'package:bracket/l10n/labels.dart';
-import 'package:bracket/models/user_model.dart';
+import 'package:tande/core/theme/app_gradients.dart';
+import 'package:tande/core/utils/age.dart';
+import 'package:tande/core/theme/adaptive.dart';
+import 'package:tande/data/auth/auth_repository.dart';
+import 'package:tande/data/repositories/providers.dart';
+import 'package:tande/features/auth/widgets/profile_fields.dart';
+import 'package:tande/features/auth/widgets/terms_acceptance.dart';
+import 'package:tande/l10n/generated/app_localizations.dart';
+import 'package:tande/l10n/labels.dart';
+import 'package:tande/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

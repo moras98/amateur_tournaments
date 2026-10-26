@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:bracket/core/location/location_service.dart';
-import 'package:bracket/data/repositories/providers.dart';
-import 'package:bracket/data/repositories/tournament_repository.dart';
-import 'package:bracket/models/tournament_model.dart';
+import 'package:tande/core/location/location_service.dart';
+import 'package:tande/data/repositories/providers.dart';
+import 'package:tande/data/repositories/tournament_repository.dart';
+import 'package:tande/models/tournament_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 

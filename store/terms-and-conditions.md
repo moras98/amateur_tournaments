@@ -1,4 +1,4 @@
-# Términos y condiciones — Bracket
+# Términos y condiciones — Tande
 
 > **Borrador.** Publicar en una URL pública (junto con la política de
 > privacidad) y enlazar desde el registro y desde Play Console. Reemplazar
@@ -7,15 +7,15 @@
 **Última actualización:** 25 de octubre de 2026
 
 Estos Términos y condiciones ("Términos") regulan el uso de la aplicación
-Bracket ("la app"), operada por EMAIL_DE_CONTACTO. Al crear una cuenta
+Tande ("la app"), operada por EMAIL_DE_CONTACTO. Al crear una cuenta
 marcando la casilla de aceptación, o al continuar con Google o Apple, aceptás
 estos Términos y la [Política de privacidad](privacy-policy.md). Si no estás
 de acuerdo, no uses la app.
 
-## 1. Qué es Bracket
+## 1. Qué es Tande
 
-Bracket es una herramienta para descubrir, crear e inscribirse a torneos
-amateur (fútbol, pádel, tenis, básquet). Bracket **no organiza torneos, no
+Tande es una herramienta para descubrir, crear e inscribirse a torneos
+amateur (fútbol, pádel, tenis, básquet). Tande **no organiza torneos, no
 cobra inscripciones ni intermedia pagos**: la coordinación del pago y la
 organización ocurre directamente entre el organizador y los participantes
 (fuera de la app, habitualmente por WhatsApp).
@@ -44,7 +44,7 @@ Quien crea un torneo es el único responsable de:
 - la organización real del evento y el cumplimiento de la normativa local,
 - la gestión de inscripciones y la comunicación con los participantes.
 
-Bracket muestra la información tal como la carga el organizador y no verifica
+Tande muestra la información tal como la carga el organizador y no verifica
 la existencia, seguridad o calidad de los eventos.
 
 ## 5. Responsabilidades de los participantes
@@ -53,13 +53,13 @@ la existencia, seguridad o calidad de los eventos.
 - Coordiná el pago directamente con el organizador: **ningún pago se realiza
   dentro de la app**.
 - El uso de sedes, instalaciones y actividades deporticas es bajo tu propio
-  riesgo; Bracket no es responsable de lesiones, daños o incidentes.
+  riesgo; Tande no es responsable de lesiones, daños o incidentes.
 
 ## 6. Uso aceptable
 
 No podés: publicar contenido ilegal, ofensivo o engañoso; suplantar
 organizadores; publicar torneos falsos; intentar acceder a cuentas ajenas;
-extraer datos de la app de forma masiva; ni usar la marca Bracket para
+extraer datos de la app de forma masiva; ni usar la marca Tande para
 actividades no autorizadas.
 
 ## 7. Propiedad intelectual
@@ -89,4 +89,4 @@ Cualquier consulta: **EMAIL_DE_CONTACTO**.
 
 ---
 
-*Bracket · com.bracket.torneos · versión 1.0.0*
+*Tande · com.tande.app · versión 1.0.0*

@@ -1,4 +1,4 @@
-package com.bracket.torneos
+package com.tande.app
 
 import io.flutter.embedding.android.FlutterActivity
 

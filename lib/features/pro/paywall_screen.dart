@@ -1,12 +1,12 @@
-import 'package:bracket/core/constants.dart';
-import 'package:bracket/data/billing/billing_service.dart';
-import 'package:bracket/features/auth/widgets/terms_acceptance.dart';
-import 'package:bracket/features/pro/pro_providers.dart';
-import 'package:bracket/l10n/generated/app_localizations.dart';
+import 'package:tande/core/constants.dart';
+import 'package:tande/data/billing/billing_service.dart';
+import 'package:tande/features/auth/widgets/terms_acceptance.dart';
+import 'package:tande/features/pro/pro_providers.dart';
+import 'package:tande/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// The Bracket Pro paywall (LAUNCH.md §7): benefits, plans, Play purchase.
+/// The Tande Pro paywall (LAUNCH.md §7): benefits, plans, Play purchase.
 ///
 /// Reached from the profile card and from the free-tier gate. Three
 /// states: products not configured yet ("Próximamente"), already

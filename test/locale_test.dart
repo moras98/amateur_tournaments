@@ -1,4 +1,4 @@
-import 'package:bracket/features/explore/explore_providers.dart';
+import 'package:tande/features/explore/explore_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

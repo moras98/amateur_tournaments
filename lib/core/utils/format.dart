@@ -1,4 +1,4 @@
-import 'package:bracket/core/utils/country_code.dart';
+import 'package:tande/core/utils/country_code.dart';
 import 'package:intl/intl.dart';
 
 /// The app's Spanish locale: Uruguayan dates and the house money style.

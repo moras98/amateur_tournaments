@@ -165,7 +165,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inscriptionCancelled => 'Cancelled';
 
   @override
-  String get loginTagline => 'Your bracket starts here';
+  String get loginTagline => 'Your tournament starts here';
 
   @override
   String get emailLabel => 'Email';
@@ -257,7 +257,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authOAuthCancelled => 'Sign-in with the provider was cancelled.';
 
   @override
-  String get signupHeroTitle => 'Join Bracket';
+  String get signupHeroTitle => 'Join Tande';
 
   @override
   String get signupHeroSubtitle =>
@@ -292,7 +292,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseBirthDate => 'Choose your date of birth';
 
   @override
-  String get mustBe18 => 'You must be 18 or older to use Bracket.';
+  String get mustBe18 => 'You must be 18 or older to use Tande.';
 
   @override
   String get chooseSport => 'Choose at least one sport';
@@ -311,7 +311,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get socialTermsPrefix => 'By continuing you accept the ';
 
   @override
-  String get proTitle => 'Bracket Pro';
+  String get proTitle => 'Tande Pro';
 
   @override
   String get proProfileHint => 'Unlimited tournaments for organizers';
@@ -368,10 +368,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get proComingSoon => 'Coming soon';
 
   @override
-  String get proComingSoonBody => 'Bracket Pro is launching soon. Check back!';
+  String get proComingSoonBody => 'Tande Pro is launching soon. Check back!';
 
   @override
-  String get proAlready => 'You already have Bracket Pro';
+  String get proAlready => 'You already have Tande Pro';
 
   @override
   String get proAlreadyBody => 'Your active tournaments have no limit.';

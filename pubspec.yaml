@@ -1,5 +1,5 @@
-name: bracket
-description: "A new Flutter project."
+name: tande
+description: "Tande — encontrá torneos amateur cerca tuyo y contactá al organizador."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -116,7 +116,7 @@ flutter:
 
   assets:
     - assets/icon.png
-    # Mint bracket on transparent — bare logo mark for in-app hero headers.
+    # Mint pin-with-play on transparent — bare logo mark for in-app hero headers.
     - assets/icon_fg.png
 
   # Plus Jakarta Sans, variable weight (SIL OFL 1.1 — see assets/fonts/OFL.txt)

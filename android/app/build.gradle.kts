@@ -17,7 +17,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.bracket.torneos"
+    namespace = "com.tande.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -29,7 +29,7 @@ android {
     defaultConfig {
         // PERMANENT: after the first Play publish this can never change
         // (changing it would create a brand-new listing).
-        applicationId = "com.bracket.torneos"
+        applicationId = "com.tande.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

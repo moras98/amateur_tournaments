@@ -1,7 +1,7 @@
-import 'package:bracket/data/auth/auth_repository.dart';
-import 'package:bracket/l10n/generated/app_localizations.dart';
-import 'package:bracket/models/inscription_model.dart';
-import 'package:bracket/models/tournament_model.dart';
+import 'package:tande/data/auth/auth_repository.dart';
+import 'package:tande/l10n/generated/app_localizations.dart';
+import 'package:tande/models/inscription_model.dart';
+import 'package:tande/models/tournament_model.dart';
 
 /// Localized vocabulary lookups keyed by the values the app stores.
 ///

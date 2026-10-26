@@ -260,7 +260,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Se canceló el inicio de sesión con el proveedor.';
 
   @override
-  String get signupHeroTitle => 'Unite a Bracket';
+  String get signupHeroTitle => 'Unite a Tande';
 
   @override
   String get signupHeroSubtitle =>
@@ -295,7 +295,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get chooseBirthDate => 'Elegí tu fecha de nacimiento';
 
   @override
-  String get mustBe18 => 'Tenés que tener 18 años o más para usar Bracket.';
+  String get mustBe18 => 'Tenés que tener 18 años o más para usar Tande.';
 
   @override
   String get chooseSport => 'Elegí al menos un deporte';
@@ -314,7 +314,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get socialTermsPrefix => 'Al continuar, aceptás los ';
 
   @override
-  String get proTitle => 'Bracket Pro';
+  String get proTitle => 'Tande Pro';
 
   @override
   String get proProfileHint => 'Torneos sin límites para organizadores';
@@ -372,10 +372,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proComingSoonBody =>
-      'Bracket Pro se está por lanzar. ¡Volvé pronto!';
+      'Tande Pro se está por lanzar. ¡Volvé pronto!';
 
   @override
-  String get proAlready => 'Ya tenés Bracket Pro';
+  String get proAlready => 'Ya tenés Tande Pro';
 
   @override
   String get proAlreadyBody => 'Tus torneos activos no tienen límite.';
@@ -1284,7 +1284,7 @@ class AppLocalizationsEsUy extends AppLocalizationsEs {
       'Se canceló el inicio de sesión con el proveedor.';
 
   @override
-  String get signupHeroTitle => 'Unite a Bracket';
+  String get signupHeroTitle => 'Unite a Tande';
 
   @override
   String get signupHeroSubtitle =>
@@ -1319,7 +1319,7 @@ class AppLocalizationsEsUy extends AppLocalizationsEs {
   String get chooseBirthDate => 'Elegí tu fecha de nacimiento';
 
   @override
-  String get mustBe18 => 'Tenés que tener 18 años o más para usar Bracket.';
+  String get mustBe18 => 'Tenés que tener 18 años o más para usar Tande.';
 
   @override
   String get chooseSport => 'Elegí al menos un deporte';
@@ -1338,7 +1338,7 @@ class AppLocalizationsEsUy extends AppLocalizationsEs {
   String get socialTermsPrefix => 'Al continuar, aceptás los ';
 
   @override
-  String get proTitle => 'Bracket Pro';
+  String get proTitle => 'Tande Pro';
 
   @override
   String get proProfileHint => 'Torneos sin límites para organizadores';
@@ -1396,10 +1396,10 @@ class AppLocalizationsEsUy extends AppLocalizationsEs {
 
   @override
   String get proComingSoonBody =>
-      'Bracket Pro se está por lanzar. ¡Volvé pronto!';
+      'Tande Pro se está por lanzar. ¡Volvé pronto!';
 
   @override
-  String get proAlready => 'Ya tenés Bracket Pro';
+  String get proAlready => 'Ya tenés Tande Pro';
 
   @override
   String get proAlreadyBody => 'Tus torneos activos no tienen límite.';

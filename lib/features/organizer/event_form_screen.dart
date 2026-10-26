@@ -1,18 +1,18 @@
 import 'dart:async';
 
-import 'package:bracket/core/constants.dart';
-import 'package:bracket/core/location/reverse_geocoder.dart';
-import 'package:bracket/core/map/tile_provider.dart';
-import 'package:bracket/core/theme/adaptive.dart';
-import 'package:bracket/core/utils/country_code.dart';
-import 'package:bracket/core/utils/format.dart';
-import 'package:bracket/data/repositories/providers.dart';
-import 'package:bracket/features/explore/explore_providers.dart';
-import 'package:bracket/features/organizer/organizer_providers.dart';
-import 'package:bracket/features/tournament/tournament_providers.dart';
-import 'package:bracket/l10n/generated/app_localizations.dart';
-import 'package:bracket/l10n/labels.dart';
-import 'package:bracket/models/tournament_model.dart';
+import 'package:tande/core/constants.dart';
+import 'package:tande/core/location/reverse_geocoder.dart';
+import 'package:tande/core/map/tile_provider.dart';
+import 'package:tande/core/theme/adaptive.dart';
+import 'package:tande/core/utils/country_code.dart';
+import 'package:tande/core/utils/format.dart';
+import 'package:tande/data/repositories/providers.dart';
+import 'package:tande/features/explore/explore_providers.dart';
+import 'package:tande/features/organizer/organizer_providers.dart';
+import 'package:tande/features/tournament/tournament_providers.dart';
+import 'package:tande/l10n/generated/app_localizations.dart';
+import 'package:tande/l10n/labels.dart';
+import 'package:tande/models/tournament_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -356,7 +356,7 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
                       children: [
                         TileLayer(
                           urlTemplate: osmTileUrl,
-                          userAgentPackageName: 'com.bracket.torneos',
+                          userAgentPackageName: 'com.tande.app',
                           tileProvider: ref.watch(tileProviderProvider),
                         ),
                         if (_pin != null)

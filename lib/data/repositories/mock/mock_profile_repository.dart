@@ -1,6 +1,6 @@
-import 'package:bracket/data/repositories/mock/mock_store.dart';
-import 'package:bracket/data/repositories/profile_repository.dart';
-import 'package:bracket/models/user_model.dart';
+import 'package:tande/data/repositories/mock/mock_store.dart';
+import 'package:tande/data/repositories/profile_repository.dart';
+import 'package:tande/models/user_model.dart';
 
 /// In-memory [ProfileRepository] backed by [MockStore].
 class MockProfileRepository implements ProfileRepository {

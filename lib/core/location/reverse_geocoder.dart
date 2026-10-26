@@ -57,8 +57,8 @@ class NominatimReverseGeocoder implements ReverseGeocoder {
           uri,
           headers: const {
             'User-Agent':
-                'bracket/1.0.0 '
-                '(com.bracket.torneos)',
+                'tande/1.0.0 '
+                '(com.tande.app)',
           },
         )
         .timeout(const Duration(seconds: 10));

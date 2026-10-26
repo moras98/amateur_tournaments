@@ -1,5 +1,5 @@
-import 'package:bracket/data/repositories/profile_repository.dart';
-import 'package:bracket/models/user_model.dart';
+import 'package:tande/data/repositories/profile_repository.dart';
+import 'package:tande/models/user_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Supabase-backed profiles (`public.profiles` table).

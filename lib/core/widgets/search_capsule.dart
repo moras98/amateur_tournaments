@@ -1,5 +1,5 @@
-import 'package:bracket/core/utils/nav_geometry.dart';
-import 'package:bracket/l10n/generated/app_localizations.dart';
+import 'package:tande/core/utils/nav_geometry.dart';
+import 'package:tande/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 /// The app's search bar: a floating rounded capsule pinned under the status

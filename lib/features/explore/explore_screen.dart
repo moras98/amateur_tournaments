@@ -1,10 +1,10 @@
-import 'package:bracket/core/utils/nav_geometry.dart';
-import 'package:bracket/core/widgets/search_capsule.dart';
-import 'package:bracket/features/explore/explore_providers.dart';
-import 'package:bracket/features/explore/widgets/filter_sheet.dart';
-import 'package:bracket/features/explore/widgets/tournament_list.dart';
-import 'package:bracket/features/explore/widgets/tournament_map.dart';
-import 'package:bracket/l10n/generated/app_localizations.dart';
+import 'package:tande/core/utils/nav_geometry.dart';
+import 'package:tande/core/widgets/search_capsule.dart';
+import 'package:tande/features/explore/explore_providers.dart';
+import 'package:tande/features/explore/widgets/filter_sheet.dart';
+import 'package:tande/features/explore/widgets/tournament_list.dart';
+import 'package:tande/features/explore/widgets/tournament_map.dart';
+import 'package:tande/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

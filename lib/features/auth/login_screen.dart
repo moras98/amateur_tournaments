@@ -1,9 +1,10 @@
-import 'package:bracket/core/theme/app_gradients.dart';
-import 'package:bracket/data/auth/auth_repository.dart';
-import 'package:bracket/data/repositories/providers.dart';
-import 'package:bracket/features/auth/widgets/terms_acceptance.dart';
-import 'package:bracket/l10n/generated/app_localizations.dart';
-import 'package:bracket/l10n/labels.dart';
+import 'package:tande/core/theme/app_gradients.dart';
+import 'package:tande/core/constants.dart';
+import 'package:tande/data/auth/auth_repository.dart';
+import 'package:tande/data/repositories/providers.dart';
+import 'package:tande/features/auth/widgets/terms_acceptance.dart';
+import 'package:tande/l10n/generated/app_localizations.dart';
+import 'package:tande/l10n/labels.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -144,7 +145,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'Bracket',
+                          AppConstants.appName,
                           style: theme.textTheme.headlineSmall?.copyWith(
                             color: Colors.white,
                           ),

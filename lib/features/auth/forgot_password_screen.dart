@@ -1,7 +1,7 @@
-import 'package:bracket/data/auth/auth_repository.dart';
-import 'package:bracket/data/repositories/providers.dart';
-import 'package:bracket/l10n/generated/app_localizations.dart';
-import 'package:bracket/l10n/labels.dart';
+import 'package:tande/data/auth/auth_repository.dart';
+import 'package:tande/data/repositories/providers.dart';
+import 'package:tande/l10n/generated/app_localizations.dart';
+import 'package:tande/l10n/labels.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

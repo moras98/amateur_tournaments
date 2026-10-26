@@ -1,4 +1,4 @@
-import 'package:bracket/models/tournament_model.dart';
+import 'package:tande/models/tournament_model.dart';
 import 'package:latlong2/latlong.dart';
 
 /// Filter/sort options shared by map and list views.

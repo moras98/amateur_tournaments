@@ -1,4 +1,4 @@
-# Política de Privacidad — Bracket
+# Política de Privacidad — Tande
 
 > **Borrador.** Antes de enviar la app a Google Play hay que publicarla en una
 > URL pública (GitHub Pages o similar) y registrarla en el formulario de
@@ -6,7 +6,7 @@
 
 **Última actualización:** 25 de octubre de 2026
 
-Bracket ("la app") es una aplicación para crear, organizar e inscribirse a
+Tande ("la app") es una aplicación para crear, organizar e inscribirse a
 torneos amateur. Esta política explica qué datos personales recopilamos, para
 qué los usamos y qué derechos tenés. Al usar la app aceptás esta política.
 
@@ -85,4 +85,4 @@ EMAIL_DE_CONTACTO — consultas sobre privacidad y ejercicios de derechos.
 
 ---
 
-*Bracket · com.bracket.torneos · versión 1.0.0*
+*Tande · com.tande.app · versión 1.0.0*

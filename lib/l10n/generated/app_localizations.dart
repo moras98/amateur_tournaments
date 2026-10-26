@@ -582,7 +582,7 @@ abstract class AppLocalizations {
   /// No description provided for @signupHeroTitle.
   ///
   /// In es_UY, this message translates to:
-  /// **'Unite a Bracket'**
+  /// **'Unite a Tande'**
   String get signupHeroTitle;
 
   /// No description provided for @signupHeroSubtitle.
@@ -648,7 +648,7 @@ abstract class AppLocalizations {
   /// No description provided for @mustBe18.
   ///
   /// In es_UY, this message translates to:
-  /// **'Tenés que tener 18 años o más para usar Bracket.'**
+  /// **'Tenés que tener 18 años o más para usar Tande.'**
   String get mustBe18;
 
   /// No description provided for @chooseSport.
@@ -684,7 +684,7 @@ abstract class AppLocalizations {
   /// No description provided for @proTitle.
   ///
   /// In es_UY, this message translates to:
-  /// **'Bracket Pro'**
+  /// **'Tande Pro'**
   String get proTitle;
 
   /// No description provided for @proProfileHint.
@@ -792,13 +792,13 @@ abstract class AppLocalizations {
   /// No description provided for @proComingSoonBody.
   ///
   /// In es_UY, this message translates to:
-  /// **'Bracket Pro se está por lanzar. ¡Volvé pronto!'**
+  /// **'Tande Pro se está por lanzar. ¡Volvé pronto!'**
   String get proComingSoonBody;
 
   /// No description provided for @proAlready.
   ///
   /// In es_UY, this message translates to:
-  /// **'Ya tenés Bracket Pro'**
+  /// **'Ya tenés Tande Pro'**
   String get proAlready;
 
   /// No description provided for @proAlreadyBody.

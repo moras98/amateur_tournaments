@@ -1,6 +1,6 @@
-import 'package:bracket/core/utils/country_code.dart';
-import 'package:bracket/core/utils/format.dart';
-import 'package:bracket/models/tournament_model.dart';
+import 'package:tande/core/utils/country_code.dart';
+import 'package:tande/core/utils/format.dart';
+import 'package:tande/models/tournament_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Currency contract (audit 4.9): every tournament stores the ISO 4217

@@ -1,8 +1,8 @@
-import 'package:bracket/core/utils/nav_geometry.dart';
+import 'package:tande/core/utils/nav_geometry.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-/// Material 3 theme for Bracket.
+/// Material 3 theme for Tande.
 ///
 /// The visual rules behind this file live in `design.md` — when changing
 /// values here, keep the document in sync (and vice versa).

@@ -1,7 +1,7 @@
-import 'package:bracket/core/constants.dart';
-import 'package:bracket/core/utils/format.dart';
-import 'package:bracket/l10n/generated/app_localizations.dart';
-import 'package:bracket/l10n/labels.dart';
+import 'package:tande/core/constants.dart';
+import 'package:tande/core/utils/format.dart';
+import 'package:tande/l10n/generated/app_localizations.dart';
+import 'package:tande/l10n/labels.dart';
 import 'package:flutter/material.dart';
 
 /// Account-creation password rules (design.md §7 "Password rules"): at

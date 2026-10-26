@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:bracket/data/billing/billing_service.dart';
-import 'package:bracket/data/repositories/providers.dart';
+import 'package:tande/data/billing/billing_service.dart';
+import 'package:tande/data/repositories/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Paywall + entitlement state.

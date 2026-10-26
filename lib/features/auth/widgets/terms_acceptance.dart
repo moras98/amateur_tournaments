@@ -1,5 +1,5 @@
-import 'package:bracket/core/constants.dart';
-import 'package:bracket/l10n/generated/app_localizations.dart';
+import 'package:tande/core/constants.dart';
+import 'package:tande/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 

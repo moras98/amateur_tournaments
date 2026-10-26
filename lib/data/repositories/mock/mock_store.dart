@@ -1,6 +1,6 @@
-import 'package:bracket/models/inscription_model.dart';
-import 'package:bracket/models/tournament_model.dart';
-import 'package:bracket/models/user_model.dart';
+import 'package:tande/models/inscription_model.dart';
+import 'package:tande/models/tournament_model.dart';
+import 'package:tande/models/user_model.dart';
 import 'package:latlong2/latlong.dart';
 
 /// In-memory data shared by the mock repositories.

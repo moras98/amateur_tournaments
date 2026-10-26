@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:bracket/core/constants.dart';
-import 'package:bracket/data/auth/auth_repository.dart';
+import 'package:tande/core/constants.dart';
+import 'package:tande/data/auth/auth_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 

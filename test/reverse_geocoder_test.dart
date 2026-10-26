@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:bracket/core/location/reverse_geocoder.dart';
+import 'package:tande/core/location/reverse_geocoder.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

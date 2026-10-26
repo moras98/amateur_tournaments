@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:bracket/data/billing/billing_service.dart';
+import 'package:tande/data/billing/billing_service.dart';
 
 /// Fake [BillingService] for tests and non-release builds.
 ///

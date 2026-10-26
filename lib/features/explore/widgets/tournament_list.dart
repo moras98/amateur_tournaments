@@ -1,9 +1,9 @@
-import 'package:bracket/core/utils/nav_geometry.dart';
-import 'package:bracket/core/widgets/animate_in.dart';
-import 'package:bracket/features/explore/explore_providers.dart';
-import 'package:bracket/features/explore/widgets/tournament_card.dart';
-import 'package:bracket/l10n/generated/app_localizations.dart';
-import 'package:bracket/models/tournament_model.dart';
+import 'package:tande/core/utils/nav_geometry.dart';
+import 'package:tande/core/widgets/animate_in.dart';
+import 'package:tande/features/explore/explore_providers.dart';
+import 'package:tande/features/explore/widgets/tournament_card.dart';
+import 'package:tande/l10n/generated/app_localizations.dart';
+import 'package:tande/models/tournament_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';

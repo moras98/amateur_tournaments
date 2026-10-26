@@ -1,6 +1,6 @@
-import 'package:bracket/data/repositories/mock/mock_store.dart';
-import 'package:bracket/data/repositories/tournament_repository.dart';
-import 'package:bracket/models/tournament_model.dart';
+import 'package:tande/data/repositories/mock/mock_store.dart';
+import 'package:tande/data/repositories/tournament_repository.dart';
+import 'package:tande/models/tournament_model.dart';
 import 'package:latlong2/latlong.dart';
 
 /// In-memory [TournamentRepository] backed by [MockStore].

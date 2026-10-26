@@ -1,4 +1,4 @@
-import 'package:bracket/core/utils/country_code.dart';
+import 'package:tande/core/utils/country_code.dart';
 import 'package:latlong2/latlong.dart';
 
 /// Lifecycle of a tournament as seen by players.

@@ -1,4 +1,4 @@
-import 'package:bracket/models/user_model.dart';
+import 'package:tande/models/user_model.dart';
 
 /// Player/organizer profiles.
 ///

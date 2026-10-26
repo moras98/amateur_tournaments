@@ -1,7 +1,7 @@
-import 'package:bracket/data/repositories/inscription_repository.dart';
-import 'package:bracket/data/repositories/mock/mock_store.dart';
-import 'package:bracket/data/repositories/mock/mock_tournament_repository.dart';
-import 'package:bracket/models/inscription_model.dart';
+import 'package:tande/data/repositories/inscription_repository.dart';
+import 'package:tande/data/repositories/mock/mock_store.dart';
+import 'package:tande/data/repositories/mock/mock_tournament_repository.dart';
+import 'package:tande/models/inscription_model.dart';
 
 /// In-memory [InscriptionRepository] backed by [MockStore].
 ///

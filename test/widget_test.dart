@@ -1,7 +1,7 @@
-import 'package:bracket/data/repositories/mock/mock_store.dart';
-import 'package:bracket/data/repositories/providers.dart';
-import 'package:bracket/features/auth/login_screen.dart';
-import 'package:bracket/main.dart';
+import 'package:tande/data/repositories/mock/mock_store.dart';
+import 'package:tande/data/repositories/providers.dart';
+import 'package:tande/features/auth/login_screen.dart';
+import 'package:tande/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,7 +22,7 @@ void main() {
     // Explore: search bar + map (fake tiles, no network).
     expect(find.byType(TextField), findsOneWidget);
     expect(find.byType(FlutterMap), findsOneWidget);
-    expect(find.byType(BracketApp), findsOneWidget);
+    expect(find.byType(TandeApp), findsOneWidget);
   });
 
   testWidgets('tapping a tab switches the root destination', (tester) async {
@@ -74,7 +74,7 @@ void main() {
     expect(find.byType(LoginScreen), findsNothing);
     expect(find.text('Sofia Ramirez'), findsOneWidget);
     final container = ProviderScope.containerOf(
-      tester.element(find.byType(BracketApp)),
+      tester.element(find.byType(TandeApp)),
     );
     expect(container.read(authStateProvider)!.userId, MockStore.socialGoogleId);
   });
@@ -106,7 +106,7 @@ void main() {
     expect(find.byType(LoginScreen), findsNothing);
     expect(find.text('Martin Lopez'), findsOneWidget);
     final container = ProviderScope.containerOf(
-      tester.element(find.byType(BracketApp)),
+      tester.element(find.byType(TandeApp)),
     );
     expect(container.read(authStateProvider)!.userId, MockStore.socialAppleId);
   });

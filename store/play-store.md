@@ -1,133 +1,113 @@
-# Play Store listing — Bracket
+# Ficha de tienda — Tande (Google Play + App Store)
 
-Base market: **Uruguay**; the listing travels to all of Latin America and
-English-speaking markets. Two Play Console locales ship at launch:
+Base: **global**, primer mercado Uruguay. Copy en `es-419` (neutro: sin voseo rioplatense
+cerrado, sin modismos) y en `en`. Nada de lo que dice acá puede ser mentira: la ficha promete
+exactamente lo que la app hace hoy (mapa de eventos + inscripción + contacto por WhatsApp).
 
-| Play Console locale | Copy in this file |
-|---|---|
-| **es-419** (Español de América Latina) | "es-419" section below — **neutral** Spanish |
-| **en** (English) | "English" section below |
+> **Regla:** si una función no está en `lib/`, no entra en la ficha. Pendientes (cuadros,
+> resultados, notificaciones, compartir) quedan para la release que las construya.
 
-## Locale rules
+---
 
-- **es-419, not es-ES.** Latin-American phones (incl. Uruguay) resolve to
-  es-419; it is where the whole regional market searches. es-ES would
-  read foreign to the target audience.
-- **The store copy is neutral Spanish** (tú/usted imperatives: "Crea",
-  "Elige", "cerca de ti") — no voseo. Play copy must travel beyond
-  Uruguay.
-- **The app itself stays voseo (es_UY) — do not rewrite it.** The two
-  intentionally differ: the store is discovery for everyone, the app is
-  the home market's voice. Screenshots show the real app in es_UY
-  (voseo, `$ 25.000` prices) — that is correct, not a bug to fix.
-- **Only promise what ships.** Google removes listings for misleading
-  descriptions and early churn is worse. "Do not promise" list at the
-  bottom — re-check it whenever a feature lands.
+## Google Play
 
-## Store fields — es-419
-
-**Title** (≤ 30 chars)
+**Título** (≤ 30) — 26 caracteres
 
 ```
-Bracket - Torneos cerca de ti
+Tande - Torneos cerca tuyo
 ```
 
-**Short description** (≤ 80 chars) — first thing in search results:
+**Descripción corta** (≤ 80) — 77 caracteres
 
 ```
-Crea tu torneo, aprueba inscripciones en la app y descubre torneos cerca de ti.
+Inscribite a torneos amateur cerca tuyo. Organizá el tuyo y confirmá equipos.
 ```
 
-**Full description** (≤ 4000 chars)
+**Descripción larga** (≤ 4000) — 827 caracteres
 
 ```
-Bracket es la app para organizar y seguir torneos amateur desde el celular.
+Tande es la app para encontrar y organizar torneos amateur cerca tuyo.
 
-Crea tu torneo en minutos: elige el deporte (fútbol 5, pádel, tenis o básquet), el formato (eliminatoria o liga), la fecha, la sede y el precio de la inscripción en tu moneda. Publícalo y recibe las inscripciones de los equipos en la app.
+Para jugadores: mirá en el mapa los torneos de fútbol 5, fútbol 7, pádel, tenis y básquet que se juegan cerca, filtrá por deporte y distancia, y anotate en segundos. Coordinás el pago directo con el organizador por WhatsApp, sin comisiones ni pagos dentro de la app.
 
-- Inscripciones online: los equipos se anotan desde el enlace del torneo y tú apruebas o rechazas cada solicitud desde el celular.
-- Coordinación por WhatsApp: al inscribirse, el equipo abre WhatsApp con un mensaje listo para acordar el pago, y tú puedes avisarle la decisión desde la app.
-- Equipos confirmados fuera de la app: cuenta los que se anotaron en persona o en efectivo, sin perder su lugar.
-- Estado claro: cada torneo se ve abierto, lleno o cerrado, con los lugares libres a la vista.
-- Mapa y búsqueda: descubre torneos amateur cerca de ti, por ciudad, por deporte o por nombre.
-- Entra con email, Google o Apple.
+Para organizadores: creá el torneo con fecha, sede y cupo; recibí solicitudes de inscripción; confirmá o rechazá equipos y avisales por WhatsApp con un toque. También podés sumar los equipos que confirmaste en persona, para que el cupo siempre esté al día.
 
-Organiza como un profesional, juega como siempre. Tu torneo empieza aquí.
+- Mapa y lista de torneos cerca tuyo
+- Inscripción desde el celular, sin filas ni planillas
+- Confirmación del organizador con aviso por WhatsApp
+- Cupos actualizados en tiempo real
+- Gratis para jugadores
 
-Gratis para jugadores y organizadores. Crea tu primer torneo hoy.
+Tu torneo empieza acá.
 ```
 
-(≈ 1 100 chars — room left for a line about the launch city once the
-first real tournaments are listed.)
+Play no tiene campo de keywords: la descripción es el índice. Palabras que tienen que aparecer
+naturalmente arriba (primeros 250 caracteres): **torneo, torneos, inscripción, fútbol 5, pádel,
+amateur, cerca**.
 
-## Store fields — English
+---
 
-**Title** (≤ 30 chars)
+## App Store
 
-```
-Bracket - Tournaments near you
-```
-
-**Short description** (≤ 80 chars)
+**Nombre** (≤ 30) — 26
 
 ```
-Run your tournament: create events, approve sign-ups and find events near you.
+Tande - Torneos cerca tuyo
 ```
 
-**Full description** (≤ 4000 chars)
+**Subtítulo** (≤ 30) — 26
 
 ```
-Bracket is the app to run amateur tournaments from your phone.
-
-Create your tournament in minutes: pick the sport (5-a-side football, padel, tennis or basketball), the format (elimination or league), the date, the venue and the entry fee in your currency. Publish it and take team sign-ups right in the app.
-
-- Online sign-ups: teams register from the tournament's link; you approve or reject each request from your phone.
-- WhatsApp coordination: when a team signs up, WhatsApp opens with a ready-made message to arrange payment, and you can send the decision back from the app.
-- Off-app teams: count the teams that signed up in person or paid cash, without losing their spot.
-- Clear status: every tournament shows as open, full or closed, with remaining spots visible.
-- Map and search: find amateur tournaments near you by city, sport or name.
-- Sign in with email, Google or Apple.
-
-Run it like a pro, play like always. Your tournament starts here.
-
-Free for players and organizers. Create your first tournament today.
+Torneos amateur cerca tuyo
 ```
 
-## Keywords (Play has no keyword field — the description is indexed, so
-## these must appear naturally)
+**Keywords** (≤ 100, separadas por coma, sin repetir el nombre) — 91
 
-Spanish (es-419):
+```
+torneos,futbol 5,padel,tenis,basquet,inscripcion,fixture,deporte amateur,montevideo,uruguay
+```
 
-- Primarios: **torneo**, **torneos**, **inscripción**, **eliminatoria**, **liga**
-- Deportes: **fútbol 5**, **pádel**, **tenis**, **básquet**
-- Acciones: **organizar torneo**, **anotar equipo**, **aprobar inscripción**
-- Locales: **uruguay**, **montevideo** (add the launch city; Play indexes
-  city terms well for local discovery)
+**Descripción** — misma que Play, en español (`es-419`). Para el locale `en`:
 
-English:
+```
+Tande is the app to find and organize amateur tournaments near you.
 
-- **tournament**, **amateur tournament**, **league**, **elimination**,
-  **sign-up**, **padel**, **5-a-side football**
+For players: see football 5-a-side, football 7-a-side, padel, tennis and basketball tournaments around you on the map, filter by sport and distance, and sign up in seconds. You arrange payment directly with the organizer on WhatsApp — no fees, no payments inside the app.
 
-## Ranking notes
+For organizers: create your tournament with date, venue and team limit; receive sign-up requests; confirm or reject teams and notify them on WhatsApp in one tap. You can also add the teams you confirmed in person so your open spots always match reality.
 
-- The word "bracket" alone is crowded abroad — the ASO battle is won on
-  Spanish terms: keep **Bracket + "torneos"** together in the title, and
-  "torneo/inscripción/eliminatoria" in the first 250 chars of the
-  description.
-- Screenshots in **es-419** show the app in es_UY (voseo, Montevideo-area
-  map data, `$ 25.000`-style prices) — real UI, intentionally. One
-  English set for the `en` listing.
-- Category: **Sports** (secondary: Events). Content rating: low-maturity
-  utility app. Free; no in-app purchases at launch (Terms §1 says so).
+- Map and list of tournaments near you
+- Sign up from your phone — no spreadsheets, no group-chat chaos
+- Organizer confirmation with a WhatsApp notice
+- Open spots always up to date
+- Free for players
 
-## Do not promise (not built yet)
+Your tournament starts here.
+```
 
-- **Automatic brackets / live results / standings** — the app registers
-  the format (elimination or league) but does not generate or track
-  brackets/results yet.
-- **In-app payments** — entry fees are shown and coordinated off-app
-  (WhatsApp). Terms §1 promises no in-app payment; keep it until Pro.
-- **Push notifications** — none exist.
+---
 
-Move an item out of this list only when the feature actually ships.
+## Gráficos
+
+| Pieza | Especificación | Estado |
+|---|---|---|
+| Icono de tienda | 512×512 PNG (Play) / 1024×1024 sin alpha (App Store) | ✅ generado desde `assets/icon.png` |
+| Feature graphic (Play) | 1024×500, fondo `#0F3B2A`, marca menta `#34E0A1`, texto "Tande — Tu torneo empieza acá" | ⬜ |
+| Capturas teléfono | ≥ 2 (recomendado 4): mapa en Explore · lista filtrada · detalle del torneo · inscripción | ⬜ |
+| Capturas iPad (App Store) | sólo si se declara soporte iPad | ⬜ |
+
+Las capturas van en **es** con el mapa de Montevideo y precios `$ 25.000`. Para el locale `en`,
+las mismas pantallas con la UI en inglés.
+
+---
+
+## Lo que la ficha NO debe decir (hoy)
+
+- "El cuadro se arma solo", "resultados", "posiciones", "fixture en vivo" → no existe
+  (`grep -rn "cuadro\|llave\|partido\|resultado" lib` = 0).
+- "Notificaciones / no te pierdas ningún cambio" → no hay push.
+- "Compartir el cuadro por WhatsApp" → no hay hoja de compartir; lo que existe es el mensaje
+  uno-a-uno al organizador y el aviso al jugador.
+- "Inscripción desde un link" → la inscripción es desde la app, no desde un link web.
+
+Cuando se construyan, entran a la ficha en el mismo commit que las publica.

@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:bracket/data/repositories/tournament_repository.dart';
-import 'package:bracket/models/tournament_model.dart';
+import 'package:tande/data/repositories/tournament_repository.dart';
+import 'package:tande/models/tournament_model.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

@@ -1,7 +1,7 @@
-# Publicación iOS + Android — Bracket
+# Publicación iOS + Android — Tande
 
 Auditoría técnica, plan de publicación, plan de marketing y modelo económico.
-Base: `main` @ `c30ecd7` (incluye el scaffolding de Bracket Pro, ya commiteado). Fecha: 26 de
+Base: `main` @ `c30ecd7` (incluye el scaffolding de Tande Pro, ya commiteado). Fecha: 26 de
 octubre de 2026. **Alcance: publicación global (todas las tiendas/territorios) + emails por
 Resend.** Lo global cambia tres cosas: el modelo de ingresos (§8), la estrategia de crecimiento
 (§6) y dos límites del código que hoy sólo se ven con datos de un país (§4.8 y §4.9).
@@ -26,11 +26,11 @@ porque el B2B era la línea que pagaba el tiempo. Con este alcance, año 1 esper
 en el mejor caso de un metro con tracción (§8). Es el costo de aprender si el marketplace funciona,
 no un ingreso, y conviene decirlo así desde el principio.
 
-**La decisión que vence con el primer upload: el nombre.** "Bracket" promete cuadros que ya
+**La decisión que vence con el primer upload: el nombre.** "Tande" promete cuadros que ya
 decidiste no construir, está tomado por 5+ apps en las dos tiendas y no aporta nada al ASO de un
 marketplace de eventos. Mientras no subas nada, `applicationId` todavía se puede cambiar gratis
 (después es permanente). Alternativas alineadas al alcance: `Torneos`, `Cancha`, `Juega`,
-`Torneo Cerca`, o un nombre propio sin significado (marca registrable). Si te quedás con Bracket,
+`Torneo Cerca`, o un nombre propio sin significado (marca registrable). Si te quedás con Tande,
 es una decisión consciente: el título de la ficha tiene que compensar con "torneos" y "eventos".
 No hay una respuesta correcta; lo que no es correcto es descubrirlo después del primer upload.
 
@@ -38,7 +38,7 @@ No hay una respuesta correcta; lo que no es correcto es descubrirlo después del
 
 ## 1. Veredicto
 
-El código está sano: `flutter analyze` limpio y **107/107 tests** en verde. Lo que falta
+El código está sano: `flutter analyze` limpio y **132/132 tests** en verde. Lo que falta
 para publicar **no es código de pantallas** ni funciones nuevas: son cuatro cosas operativas y un
 puñado de arreglos chicos.
 
@@ -90,16 +90,16 @@ gente que llegó desde el mapa.
 | Ítem | Valor | Cómo se verifica |
 |---|---|---|
 | Analyze | limpio, 0 issues | `flutter analyze` |
-| Tests | **107 / 107** | `flutter test` |
+| Tests | **132 / 132** | `flutter test` |
 | Código | 59 archivos Dart, 11.130 LOC (+2.559 en `l10n/generated`) | `find lib -name '*.dart' -not -path '*/generated/*' \| wc -l` |
 | Flutter / Dart | 3.44.4 stable / Dart 3.12.2 | `flutter --version` |
 | Versión app | `1.0.0+1` | `pubspec.yaml` |
-| applicationId | `com.bracket.torneos` (permanente) | `android/app/build.gradle.kts` |
+| applicationId | `com.tande.app` (permanente) | `android/app/build.gradle.kts` |
 | targetSdk / minSdk | **36 / 24** | `build/app/intermediates/merged_manifests/release/.../AndroidManifest.xml` |
 | Firma Android | `~/upload-keystore.jks` + `android/key.properties` presentes | `ls -la` |
 | Backend | `.release.env`: URL cargada (40 chars), **anon key vacía** → `build-release.sh` aborta | `awk -F= '{print $1, length($2)}' .release.env` (no imprime el valor) |
 | Migraciones | 0001-0006 en repo | `ls supabase/migrations` |
-| Proyecto iOS | bundle id `com.bracket.torneos`, iOS 13.0, **sin Podfile, sin Team** | `ls ios/`, `grep DEVELOPMENT_TEAM ios/Runner.xcodeproj/project.pbxproj` |
+| Proyecto iOS | bundle id `com.tande.app`, iOS 13.0, **sin Podfile, sin Team** | `ls ios/`, `grep DEVELOPMENT_TEAM ios/Runner.xcodeproj/project.pbxproj` |
 | Push / analytics / crash | **0 dependencias** | `grep -rn "firebase\|sentry\|analytics" lib pubspec.yaml` |
 | Borrar cuenta | **no existe** (solo `signOut`) | `grep -rn "deleteAccount" lib` |
 | Compartir | **no existe** (solo abrir chat de WhatsApp con el organizador) | `grep -rn "share_plus\|Share\." lib` |
@@ -152,7 +152,7 @@ trabajo y desbloquea todo lo demás.
 | I10 | Pipeline de build macOS (no tenés Mac → Codemagic) | ❌ | **Sí** |
 | I11 | Un iPhone físico para QA/TestFlight | ❓ | **Sí** |
 | I12 | App Store Connect: registro de la app, categoría, age rating 13+, capturas 6.7"/6.1"/iPad | ⬜ | **Sí** |
-| I13 | Productos `bracket_pro_monthly` / `bracket_pro_yearly` en App Store Connect | ⬜ | Sólo si Pro se lanza |
+| I13 | Productos `tande_pro_monthly` / `tande_pro_yearly` en App Store Connect | ⬜ | Sólo si Pro se lanza |
 | I14 | Guideline 4.2 (minimum functionality) | ✅ app con backend real y UGC | No |
 
 **Sobre "no tenés Mac":** no es bloqueante. Codemagic da 500 minutos macOS gratis por mes
@@ -191,7 +191,7 @@ correr el simulador localmente — el QA se hace en device por TestFlight.
 | Escala de datos | ❌ sin filtro geográfico ni paginación (§4.8) | Con 1000+ torneos el "cerca tuyo" empieza a mentir en silencio |
 | Precios por país | ⬜ | Activar tiers por poder de compra (Apple "alternate tiers", Google PPP): US$ 4,99 en Brasil es caro, en Suiza es barato |
 | Impuestos | ✅ | Apple y Google son merchant of record y liquidan VAT/GST; vos facturás exportación de servicios en UY |
-| ASO | ❌ "Bracket" está tomado 5+ veces | Global empeora la colisión: el título solo no te encuentra nadie. Se gana con "torneos/cuadro/inscripción" en la descripción |
+| ASO | ❌ "Tande" está tomado 5+ veces | Global empeora la colisión: el título solo no te encuentra nadie. Se gana con "torneos/cuadro/inscripción" en la descripción |
 | Soporte | ⬜ | Global = husos horarios y otro idioma en las reviews. Responder en 24 h desde el día 1 |
 
 **Decisión estratégica: publicar global ≠ lanzar global.** El producto es un marketplace por
@@ -210,7 +210,7 @@ direcciones pre-autorizadas del equipo** — con eso no se puede registrar nadie
 |---|---|
 | Dominio | Verificar un dominio propio en Resend con **SPF + DKIM** (y DMARC). No se puede enviar desde gmail/outlook |
 | Supabase → Auth → SMTP | Host `smtp.resend.com` · Puerto `465` (SSL) · Usuario `resend` · Contraseña = API key de Resend |
-| Sender | `no-reply@tudominio` con nombre "Bracket" (no uses una dirección que reciba: sin buzón, las respuestas se pierden) |
+| Sender | `no-reply@tudominio` con nombre "Tande" (no uses una dirección que reciba: sin buzón, las respuestas se pierden) |
 | Rate limit | Al habilitar SMTP propio Supabase queda en **30 correos/hora** por defecto → subilo en Auth → Rate Limits (100-200/h) |
 | Límite real | Resend Free = **3.000/mes y 100/día** → día de lanzamiento con 300 altas te quedás sin emails. Pro US$ 20/mes = 50.000 |
 | Plantillas | Dashboard → Auth → Email Templates: confirmación y recuperación, con la marca (`#0F3B2A` / `#1B8A5A`). Supabase **no** tiene plantillas multi-idioma: o una bilingüe, o el "Send Email Hook" con la API de Resend para elegir idioma por `user_metadata.locale` (verificar disponibilidad en tu dashboard) |
@@ -318,10 +318,10 @@ en el aire y el organizador pierde el pedido. **Fix mínimo (6-8 h):** Supabase 
 ### 4.7 🟢 Deuda menor
 
 - `lib/core/utils/format.dart:3,39` — comentarios dicen "ARS" (resabio del rebase argentino).
-- `README.md:118` dice "103 tests", son 107.
+- `README.md` decía "103 tests" cuando eran 107; hoy son 132.
 - `LAUNCH.md:117` dice que la app "ya comparte el cuadro por WhatsApp": no comparte nada.
-- Nombre: "Bracket" está tomado por al menos 5 apps (`Bracket App`, `My Bracket`,
-  `Bracket Maker` ×3) en App Store y Play. El título funciona, pero perdés toda la búsqueda
+- Nombre: "Tande" está tomado por al menos 5 apps (`Tande App`, `My Tande`,
+  `Tande Maker` ×3) en App Store y Play. El título funciona, pero perdés toda la búsqueda
   genérica; el ASO se gana en "torneos" + "cuadro", no en "bracket".
 
 ---
@@ -406,7 +406,7 @@ salen 8-16 personas que ya tienen el problema que la app resuelve. Sin esto, cad
 sólo por ads o por el póster del complejo.
 
 **Fix (3-4 h):** `share_plus` con texto + link a la tienda:
-`"Torneo {título} — {día} {hora} en {sede}. Cupo {n} equipos. Anotate en Bracket: {link}"`.
+`"Torneo {título} — {día} {hora} en {sede}. Cupo {n} equipos. Anotate en Tande: {link}"`.
 En Android el link de Play; en iOS el de App Store (o un `onelink`/`app.link` si después querés
 medir mejor). No hace falta página web: la tienda es la landing.
 
@@ -422,7 +422,7 @@ Cada fase tiene criterio de aceptación. No arranques la siguiente sin cerrar la
 - [ ] **Decisión de producto:** ¿el cuadro se construye antes de publicar o se reescribe la ficha?
 - [ ] Crear Apple Developer Program (US$ 99) y Play Console (US$ 25). La verificación de
       identidad tarda días: hacelo el día 1.
-- [ ] **Dominio propio** (Bracket + Resend lo necesitan: no se puede verificar un dominio que no
+- [ ] **Dominio propio** (Tande + Resend lo necesitan: no se puede verificar un dominio que no
       tenés, y sin dominio verificado Resend no entrega).
 - [ ] **Resend**: cuenta, dominio verificado (SPF/DKIM/DMARC), SMTP en Supabase (§3.5), rate
       limit a 100-200/h, plantillas de confirmación y recuperación con la marca.
@@ -458,7 +458,7 @@ Cada fase tiene criterio de aceptación. No arranques la siguiente sin cerrar la
 - **Criterio:** 12+ testers opt-in durante 14 días corridos y app abierta a diario.
 
 ### Fase 3 — iOS (semanas 3-4, 8-10 h, en paralelo con el reloj)
-- [ ] `com.bracket.torneos` en App Store Connect; Apple Service ID + `.p8` para el provider
+- [ ] `com.tande.app` en App Store Connect; Apple Service ID + `.p8` para el provider
       Apple de Supabase; redirect URL ya declarada.
 - [ ] `ios/Podfile` (se genera al primer build), `flutter_launcher_icons` ya tiene los assets.
 - [ ] `PrivacyInfo.xcprivacy` + `ITSAppUsesNonExemptEncryption=false` + descripción de
@@ -557,14 +557,14 @@ Sin analytics (§4.5) no vas a poder responder "¿funcionó el Reel?" — instal
 
 ### 6.6 Ficha corregida en español (para lo que la app hace hoy)
 
-**Título:** `Bracket - Torneos cerca tuyo` (29 caracteres, está bien).
+**Título:** `Tande - Torneos cerca tuyo` (29 caracteres, está bien).
 
 **Descripción corta (79):**
 `Inscribite a torneos amateur cerca tuyo. Organizá el tuyo y confirmá equipos.`
 
 **Descripción larga (honesta):**
 ```
-Bracket es la app para encontrar y organizar torneos amateur cerca tuyo.
+Tande es la app para encontrar y organizar torneos amateur cerca tuyo.
 
 Para jugadores: mirá en el mapa los torneos de fútbol 5, fútbol 7, pádel, tenis y básquet
 que se juegan cerca, filtrá por deporte y distancia, y anotate en segundos. Coordinás el pago
@@ -593,14 +593,14 @@ una decisión aparte (cambiarlo toca ~60 claves del ARB y, si algún día se hac
 
 ### 6.7 Ficha en inglés (locale `en` — obligatorio para publicar global)
 
-**Title** (≤ 30): `Bracket - Tournaments near you`
+**Title** (≤ 30): `Tande - Tournaments near you`
 
 **Short description** (≤ 80):
 `Find amateur tournaments near you, or organize yours and confirm teams.`
 
 **Full description:**
 ```
-Bracket is the app to find and organize amateur tournaments near you.
+Tande is the app to find and organize amateur tournaments near you.
 
 For players: see football 5-a-side, football 7-a-side, padel, tennis and basketball
 tournaments around you on the map, filter by sport and distance, and sign up in seconds.
@@ -650,7 +650,7 @@ Your tournament starts here.
 | Contenido y marketing | 78 (1,5 h/sem) |
 | **Total** | **≈ 266 h/año ≈ 5 h/semana** |
 
-Eso es exactamente tu presupuesto semanal para el emprendimiento. Es decir: **Bracket consume
+Eso es exactamente tu presupuesto semanal para el emprendimiento. Es decir: **Tande consume
 todo el tiempo disponible**. Si además querés construir el cuadro (2-3 semanas) y push
 (1 semana), el mes 1 está copado antes de empezar.
 
@@ -708,7 +708,7 @@ costo es **US$ 679 + 266 horas**. Ese es el precio de averiguar si el marketplac
 
 Con este alcance **no hay línea de ingresos que cubra el tiempo**: la suscripción sola no llega
 ni a un cuarto de lo necesario ni en el escenario optimista. Decirlo claro: en el alcance actual,
-Bracket **no es un negocio, es una audiencia**. Está bien que sea eso en el año 1 — pero hay que
+Tande **no es un negocio, es una audiencia**. Está bien que sea eso en el año 1 — pero hay que
 saberlo, porque cambia cómo se decide cada hora: se invierte en lo que consigue organizadores y
 jugadores, no en lo que agrega features.
 
@@ -742,7 +742,7 @@ probablemente te baja la conversión. El problema es cuántos organizadores ten�
 estas aparece como "es rapidito", la respuesta es que cambia a qué se dedica la app:
 
 - **Cuadros, llaves, fixtures, resultados, posiciones y estadísticas.** Es otra app (la que la
-  ficha prometía). Con el alcance actual, "Bracket" es el nombre de un marketplace de eventos.
+  ficha prometía). Con el alcance actual, "Tande" es el nombre de un marketplace de eventos.
 - **Clubes / B2B / white label.** Es la línea que paga el tiempo (§8.3-3), pero no es el producto
   de esta etapa. Si algún día entra, entra como oferta separada, no como feature de la app.
 - **Notificaciones push.** Fuera de alcance, aunque sea la causa de que un pedido de inscripción
@@ -977,3 +977,32 @@ Para aplicar: reemplazar `assets/icon.png` e `assets/icon_fg.png` y correr
 4. Si elegís Nivel, agregá el campo de nivel al torneo antes de publicar (el nombre tiene que ser
    verdad desde el día uno).
 5. Recién ahí: renombrar label, display name, ficha y bundle id (todavía es gratis: no hay upload).
+
+### 11.7 Decisión: Tande (26/10/2026) — qué se cambió en el repo
+
+Cerrado el nombre: **Tande**, una palabra inventada, sin significado en ningún idioma, sin
+colisiones en Play/App Store y con `tande.club` libre. El logo es el pin con el play recortado:
+sirve para pádel, tenis o básquet porque no dibuja ningún deporte.
+
+Qué quedó hecho en el código y la configuración:
+
+| Pieza | Antes | Ahora |
+|---|---|---|
+| Paquete Dart e imports | `package:bracket/` (301 imports en 61 archivos) | `package:tande/` |
+| Nombre visible / `AppConstants.appName` | Bracket | **Tande** (y el login usa la constante en vez del literal) |
+| applicationId / bundle id | `com.bracket.torneos` | **`com.tande.app`** (Android namespace + `MainActivity` movida a `com/tande/app/`, iOS en las 4 configuraciones + RunnerTests) |
+| Product ids de Play Billing | `bracket_pro_*` | **`tande_pro_*`** (todavía no existen en Console: cambio gratis) |
+| Copy de la app | "Unite a Bracket", "Bracket Pro" | "Unite a Tande", "Tande Pro" (ARB es/en + `gen-l10n`) |
+| Iconos | llave/cuadro heredado | pin + play, adaptive foreground al 66%, monocromo Android 13+, splash con el mismo campo `#0F3B2A` |
+| Ficha de tienda | prometía cuadros, resultados y notificaciones | reescrita: sólo mapa, inscripción y contacto por WhatsApp, en es y en |
+| Docs | `Bracket` en README/LAUNCH/design/política y términos | `Tande`, bundle id actualizado |
+
+**Lo que no se tocó, a propósito:** el esquema de deep link del OAuth sigue siendo
+`io.supabase.amateurtournaments://login-callback`. No tiene relación con el nombre y ya está
+declarado en el manifest, el Info.plist y (eventualmente) el dashboard de Supabase; cambiarlo
+obliga a tocar los tres lados a la vez. Se puede renombrar a `io.supabase.tande` en el mismo
+momento en que se configuren los providers de Google y Apple.
+
+**Verificación de esta tanda:** `flutter analyze` limpio · **132/132 tests** · iconos y splash
+regenerados para Android (incluye monocromo) e iOS · `grep -ri bracket` sin coincidencias fuera
+de las menciones históricas de esta documentación.
