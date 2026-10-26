@@ -5,6 +5,7 @@ import 'package:tande/core/sports.dart';
 import 'package:tande/core/utils/format.dart';
 import 'package:tande/core/utils/nav_geometry.dart';
 import 'package:tande/core/widgets/search_capsule.dart';
+import 'package:tande/core/widgets/tournament_banner.dart';
 import 'package:tande/data/repositories/providers.dart';
 import 'package:tande/features/organizer/organizer_providers.dart';
 import 'package:tande/features/pro/pro_providers.dart';
@@ -384,87 +385,99 @@ class _EventCard extends ConsumerWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () => context.push('/organize/event/${event.id}'),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: sportColor(event.sport).withValues(alpha: 0.15),
-                ),
-                child: Icon(
-                  sportIcon(event.sport),
-                  color: sportColor(event.sport),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      event.title,
-                      style: theme.textTheme.titleMedium,
-                      maxLines: 2,
+        child: Column(
+          children: [
+            // The organizer sees their own banners the way players do.
+            if (event.bannerPath != null) TournamentBanner(tournament: event),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: sportColor(event.sport).withValues(alpha: 0.15),
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      formatEventDate(event.startTime, end: event.endTime),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
+                    child: Icon(
+                      sportIcon(event.sport),
+                      color: sportColor(event.sport),
                     ),
-                    const SizedBox(height: 6),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 4,
-                      crossAxisAlignment: WrapCrossAlignment.center,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _StatusBadge(status: event.status),
                         Text(
-                          l10n.spotsOf(event.totalConfirmed, event.totalTeams),
-                          style: theme.textTheme.labelSmall,
+                          event.title,
+                          style: theme.textTheme.titleMedium,
+                          maxLines: 2,
                         ),
-                        if (pending > 0)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.tertiaryContainer,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.hourglass_top,
-                                  size: 12,
-                                  color: theme.colorScheme.onTertiaryContainer,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  l10n.requestsCount(pending),
-                                  style: theme.textTheme.labelSmall?.copyWith(
-                                    color:
-                                        theme.colorScheme.onTertiaryContainer,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
+                        const SizedBox(height: 2),
+                        Text(
+                          formatEventDate(event.startTime, end: event.endTime),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
                           ),
+                        ),
+                        const SizedBox(height: 6),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 4,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            _StatusBadge(status: event.status),
+                            Text(
+                              l10n.spotsOf(
+                                event.totalConfirmed,
+                                event.totalTeams,
+                              ),
+                              style: theme.textTheme.labelSmall,
+                            ),
+                            if (pending > 0)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: theme.colorScheme.tertiaryContainer,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.hourglass_top,
+                                      size: 12,
+                                      color:
+                                          theme.colorScheme.onTertiaryContainer,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      l10n.requestsCount(pending),
+                                      style: theme.textTheme.labelSmall
+                                          ?.copyWith(
+                                            color: theme
+                                                .colorScheme
+                                                .onTertiaryContainer,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                  Icon(Icons.chevron_right, color: theme.colorScheme.outline),
+                ],
               ),
-              Icon(Icons.chevron_right, color: theme.colorScheme.outline),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

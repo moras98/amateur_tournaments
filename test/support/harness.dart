@@ -1,5 +1,6 @@
 import 'package:tande/core/location/reverse_geocoder.dart';
 import 'package:tande/core/map/tile_provider.dart';
+import 'package:tande/core/utils/banner_picker.dart';
 import 'package:tande/data/auth/auth_repository.dart';
 import 'package:tande/data/auth/mock_auth_repository.dart';
 import 'package:tande/data/billing/billing_service.dart';
@@ -86,6 +87,17 @@ class FakeReverseGeocoder implements ReverseGeocoder {
   );
 }
 
+/// Returns fixed bytes (or `null`, as if cancelled) instead of opening
+/// the platform gallery.
+class FakeBannerPicker implements BannerPicker {
+  const FakeBannerPicker({this.bytes});
+
+  final Uint8List? bytes;
+
+  @override
+  Future<Uint8List?> pick() async => bytes;
+}
+
 /// The whole app under test, with deterministic overrides:
 /// - fake map tiles (no network)
 /// - mock auth (signed in unless [signedIn] is false)
@@ -101,6 +113,8 @@ class FakeReverseGeocoder implements ReverseGeocoder {
 /// - [auth] injects a preconfigured auth repository (e.g. a mock with
 ///   `requiresEmailConfirmation: true` to exercise the confirm-email
 ///   sign-up cut); without it, [signedIn]/[signedInAs] build the default.
+/// - [bannerPicker] drives the event form's "Agregar imagen" (the default
+///   fake cancels every pick, so the platform image channel is never hit).
 Widget appHarness({
   ExploreView initialView = ExploreView.map,
   bool signedIn = true,
@@ -110,6 +124,7 @@ Widget appHarness({
   String reverseCountryCode = 'ar',
   BillingService? billing,
   AuthRepository? auth,
+  BannerPicker? bannerPicker,
 }) {
   // The app follows the phone's locale: tests pin the simulated device to
   // Uruguayan Spanish so every assertion sees the Spanish copy (override
@@ -130,6 +145,9 @@ Widget appHarness({
       billingServiceProvider.overrideWithValue(billing ?? MockBillingService()),
       reverseGeocodeProvider.overrideWithValue(
         FakeReverseGeocoder(countryCode: reverseCountryCode),
+      ),
+      bannerPickerProvider.overrideWithValue(
+        bannerPicker ?? const FakeBannerPicker(),
       ),
       if (locationOverride != null)
         userLocationProvider.overrideWith((ref) => locationOverride)

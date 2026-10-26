@@ -298,6 +298,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseSport => 'Choose at least one sport';
 
   @override
+  String get bannerSectionLabel => 'Tournament image';
+
+  @override
+  String get bannerHint => 'Optional. Shown in Explore and on the event page.';
+
+  @override
+  String get bannerAdd => 'Add image';
+
+  @override
+  String get bannerChange => 'Change image';
+
+  @override
+  String get bannerRemove => 'Remove image';
+
+  @override
+  String get bannerSaveFailed =>
+      'The event was saved, but the image couldn\'t be uploaded. Try again from Edit.';
+
+  @override
   String get acceptTermsPrefix => 'I accept the ';
 
   @override

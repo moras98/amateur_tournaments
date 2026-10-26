@@ -95,6 +95,10 @@ Run the migrations in order (Supabase SQL editor, or `supabase db push`):
 9. `supabase/migrations/0009_currency.sql` — per-tournament `currency`
    (ISO 4217, default `UYU`, CHECK on the 13 offered codes): the event
    form prices each tournament in its own currency.
+10. `supabase/migrations/0010_tournament_banners.sql` — optional
+    organizer-uploaded banner: `banner_path` on `tournaments`, the public
+    `tournament-banners` storage bucket, and owner-scoped upload/delete
+    policies keyed on the tournament id folder.
 
 All are idempotent (`if not exists` / `drop policy if exists`) — safe to
 re-run. Tournament locations are plain `latitude`/`longitude` columns; **no
@@ -125,7 +129,7 @@ starts empty); returning users go straight to their destination.
 
 ```bash
 flutter analyze
-flutter test        # 132 tests
+flutter test        # 140 tests
 ```
 
 Widget tests drive the app through `test/support/harness.dart`

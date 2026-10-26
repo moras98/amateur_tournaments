@@ -15,7 +15,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 
 | Item | Status |
 |---|---|
-| App build | ✅ analyze clean, **132/132 tests**, `1.0.0+1` |
+| App build | ✅ analyze clean, **140/140 tests**, `1.0.0+1` |
 | Application ID | ✅ `com.tande.app` (permanent — never change after publish) |
 | Git | ✅ 5 commits, secrets gitignored |
 | Upload keystore | ✅ `~/upload-keystore.jks` + `android/key.properties` |
@@ -25,7 +25,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 | Terms & conditions | 📝 draft `store/terms-and-conditions.md` — needs contact email + public URL (linked from the sign-up checkbox) |
 | Monetization | ✅ built, **inert** until Play products exist — launch after first users (§7) |
 | Supabase anon key in `.release.env` | ⬜ **not filled yet** |
-| Migrations `0005` … `0009` applied | ❓ unconfirmed |
+| Migrations `0005` … `0010` applied | ❓ unconfirmed |
 | Auth email links (confirm + reset) | ⬜ dashboard allow-list + templates |
 | Play Console account | ⬜ |
 | Closed test (14 days) | ⬜ |
@@ -40,8 +40,9 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 - [ ] **Paste the Supabase anon key** into `.release.env` (URL already filled).
 - [ ] **Confirm migrations `0005_split_status_triggers.sql`,
       `0006_signup_checks.sql`, `0007_signup_metadata.sql`,
-      `0008_explore_indexes.sql` and `0009_currency.sql`** are applied in
-      the Supabase dashboard. **`0007` is the sign-up data-loss fix** —
+      `0008_explore_indexes.sql`, `0009_currency.sql` and
+      `0010_tournament_banners.sql`** are applied in the Supabase
+      dashboard. **`0007` is the sign-up data-loss fix** —
       until it runs, the confirm-email path keeps dropping username /
       birth date / gender / sports (the app already sends them in the
       metadata). `0008` indexes the Explore query (date cut, radius box,
@@ -70,7 +71,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 # after filling .release.env:
 ./scripts/build-release.sh
 # → build/app/outputs/bundle/release/app-release.aab
-# (runs gen-l10n + 132 tests, signs with the upload key, prints the signer)
+# (runs gen-l10n + 140 tests, signs with the upload key, prints the signer)
 ```
 
 - [ ] `.release.env` filled (never commit it — it's gitignored)
@@ -125,7 +126,7 @@ testing* track before production access. Internal testing does **not** count.
 - [ ] **Every tester must opt in via the link AND open the app daily** for 14
       unbroken days — track them with a WhatsApp group reminder
 - [ ] Day 15: **apply for production access** (dashboard questionnaire —
-      answer with real numbers: 132 automated tests + on-device manual QA)
+      answer with real numbers: 140 automated tests + on-device manual QA)
 
 ## 5. Production
 

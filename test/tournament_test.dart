@@ -1,4 +1,8 @@
+import 'dart:typed_data';
+
+import 'package:tande/core/widgets/tournament_banner.dart';
 import 'package:tande/data/repositories/mock/mock_store.dart';
+import 'package:tande/data/repositories/mock/mock_tournament_repository.dart';
 import 'package:tande/features/explore/explore_providers.dart';
 import 'package:tande/features/inscriptions/my_inscriptions_screen.dart';
 import 'package:tande/features/tournament/tournament_detail_screen.dart';
@@ -50,10 +54,22 @@ void main() {
       expect(find.byType(TournamentDetailScreen), findsOneWidget);
       expect(inDetail(find.text('Copa Centro 7v7')), findsOneWidget);
       expect(inDetail(find.text(r'$ 25.000')), findsOneWidget);
-      expect(
-        inDetail(find.byType(FlutterMap)), // location preview
-        findsOneWidget,
+
+      // The banner pushes the mini-map below the fold (and below the
+      // cache extent): bring it into view before asserting it.
+      final detailScrollable = find.descendant(
+        of: find.byType(TournamentDetailScreen),
+        matching: find.byWidgetPredicate(
+          (widget) => widget is Scrollable && widget.axis == Axis.vertical,
+        ),
       );
+      await tester.scrollUntilVisible(
+        inDetail(find.byType(FlutterMap)), // location preview
+        400,
+        scrollable: detailScrollable,
+      );
+      await tester.pumpAndSettle();
+      expect(inDetail(find.byType(FlutterMap)), findsOneWidget);
       // The demo player has a seeded confirmed inscription for this event.
       expect(inDetail(find.text('Estás inscripto')), findsOneWidget);
 
@@ -61,12 +77,7 @@ void main() {
       await tester.scrollUntilVisible(
         find.text('Carlos Ruiz'),
         400,
-        scrollable: find.descendant(
-          of: find.byType(TournamentDetailScreen),
-          matching: find.byWidgetPredicate(
-            (widget) => widget is Scrollable && widget.axis == Axis.vertical,
-          ),
-        ),
+        scrollable: detailScrollable,
       );
       await tester.pumpAndSettle();
 
@@ -254,6 +265,77 @@ void main() {
 
       expect(find.byType(TournamentDetailScreen), findsNothing);
       expect(find.byType(TextFormField), findsNWidgets(2));
+    });
+
+    testWidgets('shows the organizer banner on card and detail', (
+      tester,
+    ) async {
+      // t-1 ("Copa Centro 7v7") ships with the seeded banner; t-2 has none.
+      await tester.pumpWidget(appHarness(initialView: ExploreView.list));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.descendant(
+          of: find.widgetWithText(Card, 'Copa Centro 7v7'),
+          matching: find.byType(TournamentBanner),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.widgetWithText(Card, 'Liga Abierta de Padel Parque Rodó'),
+          matching: find.byType(TournamentBanner),
+        ),
+        findsNothing,
+      );
+
+      await tester.tap(find.text('Copa Centro 7v7'));
+      await tester.pumpAndSettle();
+
+      expect(inDetail(find.byType(TournamentBanner)), findsOneWidget);
+    });
+  });
+
+  group('Banner storage', () {
+    test('upload stores bytes and replaces the previous object', () async {
+      final store = MockStore();
+      final repository = MockTournamentRepository();
+
+      final first = await repository.uploadBanner('t-2', kTransparentGif);
+      expect(store.banners[first], kTransparentGif);
+
+      final second = await repository.uploadBanner(
+        't-2',
+        Uint8List.fromList(const [1, 2, 3]),
+      );
+      expect(second, isNot(first));
+      // The tournament keeps a single object — the stale upload is gone.
+      expect(store.banners.containsKey(first), isFalse);
+      expect(store.banners[second], const [1, 2, 3]);
+      // Other tournaments' banners are untouched.
+      expect(store.banners.containsKey('t-1/banner-seed.jpg'), isTrue);
+    });
+
+    test('removeBanner deletes the stored object', () async {
+      final store = MockStore();
+      final repository = MockTournamentRepository();
+
+      final path = await repository.uploadBanner('t-3', kTransparentGif);
+      await repository.removeBanner(path);
+
+      expect(store.banners.containsKey(path), isFalse);
+    });
+
+    test('deleting a tournament removes its banner object too', () async {
+      final store = MockStore();
+      final repository = MockTournamentRepository();
+      final seeded = store.tournamentById('t-1')!.bannerPath!;
+      expect(store.banners.containsKey(seeded), isTrue);
+
+      await repository.delete('t-1');
+
+      expect(store.tournamentById('t-1'), isNull);
+      expect(store.banners.containsKey(seeded), isFalse);
     });
   });
 

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:tande/models/inscription_model.dart';
 import 'package:tande/models/tournament_model.dart';
 import 'package:tande/models/user_model.dart';
@@ -30,6 +33,10 @@ class MockStore {
   late List<TournamentModel> tournaments;
   late List<InscriptionModel> inscriptions;
 
+  /// Banner image bytes keyed by storage path (the mock's stand-in for
+  /// the `tournament-banners` bucket; see [MockBannerStorage]).
+  late Map<String, Uint8List> banners;
+
   /// Account emails keyed by profile id (the mock has no auth table).
   /// Sign-in matches this map — like Supabase's `auth.users` — so renaming
   /// a username can never lock you out of your account.
@@ -52,6 +59,7 @@ class MockStore {
     profiles = _seedProfiles();
     tournaments = _seedTournaments();
     inscriptions = _seedInscriptions();
+    banners = _seedBanners();
     // Demo logins (see MockAuthRepository's doc). Social demo accounts are
     // included: their password is the provider flow itself, but keeping
     // the email registered resolves their session's address uniformly.
@@ -166,6 +174,16 @@ List<UserModel> _seedProfiles() => [
   ),
 ];
 
+/// Solid brand-green 16x9 PNG — the seeded demo banner (mock mode only;
+/// real banners come from the `tournament-banners` bucket).
+final Uint8List _seedBannerPng = Uint8List.fromList(
+  base64Decode(_seedBannerBase64),
+);
+
+const _seedBannerBase64 =
+    'iVBORw0KGgoAAAANSUhEUgAAABAAAAAJCAIAAAC0SDtlAAAAE0lEQVR42mPgt9Yi'
+    'CTGMahgUGgApcUFBv3kIqAAAAABJRU5ErkJggg==';
+
 List<TournamentModel> _seedTournaments() {
   final now = DateTime.now();
 
@@ -192,6 +210,9 @@ List<TournamentModel> _seedTournaments() {
       address: 'Bulevar España 1470',
       city: 'Montevideo',
       location: const LatLng(-34.9040, -56.1660),
+      // The one seeded banner, so the mock app and the widget tests see
+      // the banner rendering without uploading anything.
+      bannerPath: 't-1/banner-seed.jpg',
       createdAt: now.subtract(const Duration(days: 10)),
     ),
     TournamentModel(
@@ -295,6 +316,11 @@ List<TournamentModel> _seedTournaments() {
     ),
   ];
 }
+
+Map<String, Uint8List> _seedBanners() => {
+  // Matches the seeded t-1 tournament's `bannerPath`.
+  't-1/banner-seed.jpg': _seedBannerPng,
+};
 
 List<InscriptionModel> _seedInscriptions() {
   final now = DateTime.now();

@@ -1,13 +1,20 @@
+import 'dart:typed_data';
+
 import 'package:tande/data/repositories/mock/mock_store.dart';
 import 'package:tande/data/repositories/tournament_repository.dart';
+import 'package:tande/data/storage/banner_storage.dart';
+import 'package:tande/data/storage/mock_banner_storage.dart';
 import 'package:tande/models/tournament_model.dart';
 import 'package:latlong2/latlong.dart';
 
 /// In-memory [TournamentRepository] backed by [MockStore].
 class MockTournamentRepository implements TournamentRepository {
-  MockTournamentRepository([MockStore? store]) : _store = store ?? MockStore();
+  MockTournamentRepository([MockStore? store, BannerStorage? banners])
+    : _store = store ?? MockStore(),
+      _banners = banners ?? MockBannerStorage(store);
 
   final MockStore _store;
+  final BannerStorage _banners;
 
   @override
   Future<List<TournamentModel>> fetchTournaments(TournamentQuery query) async {
@@ -139,11 +146,20 @@ class MockTournamentRepository implements TournamentRepository {
 
   @override
   Future<void> delete(String id) async {
+    final stored = _store.tournamentById(id);
+    if (stored?.bannerPath != null) await _banners.remove(stored!.bannerPath!);
     _store.tournaments.removeWhere((t) => t.id == id);
     // Mirrors the FK's `on delete cascade`.
     _store.inscriptions.removeWhere((i) => i.tournamentId == id);
     _store.bump();
   }
+
+  @override
+  Future<String> uploadBanner(String tournamentId, Uint8List bytes) =>
+      _banners.upload(tournamentId: tournamentId, bytes: bytes);
+
+  @override
+  Future<void> removeBanner(String path) => _banners.remove(path);
 }
 
 /// Applies an inscriptions-change to a tournament's confirmed count.

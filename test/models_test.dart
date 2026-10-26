@@ -174,6 +174,40 @@ void main() {
       expect(original.copyWith().location, isNotNull);
       expect(original.copyWith().createdAt, isNotNull);
     });
+
+    test('parses and round-trips the optional banner path', () {
+      final withBanner = TournamentModel.fromJson({
+        'id': 't-1',
+        'title': 'Cup',
+        'banner_path': 't-1/123.jpg',
+      });
+      expect(withBanner.bannerPath, 't-1/123.jpg');
+      expect(withBanner.toJson()['banner_path'], 't-1/123.jpg');
+
+      // Rows written before migration 0010 arrive without the column.
+      final withoutBanner = TournamentModel.fromJson({'id': 't-2'});
+      expect(withoutBanner.bannerPath, isNull);
+      expect(withoutBanner.toJson()['banner_path'], isNull);
+    });
+
+    test('copyWith keeps the banner and clears it through a closure', () {
+      final original = TournamentModel(
+        id: 't-1',
+        ownerId: 'u-1',
+        sport: 'football',
+        title: 'Cup',
+        startTime: DateTime(2026, 11, 1, 18),
+        endTime: DateTime(2026, 11, 1, 21),
+        bannerPath: 't-1/a.jpg',
+      );
+
+      expect(original.copyWith().bannerPath, 't-1/a.jpg');
+      expect(
+        original.copyWith(bannerPath: () => 't-1/b.jpg').bannerPath,
+        't-1/b.jpg',
+      );
+      expect(original.copyWith(bannerPath: () => null).bannerPath, isNull);
+    });
   });
 
   group('InscriptionModel', () {

@@ -291,6 +291,121 @@ void main() {
     await tester.pumpAndSettle();
   });
 
+  testWidgets('the event form picks and publishes a banner', (tester) async {
+    final store = MockStore();
+    final bannerBytes = Uint8List.fromList(const [9, 9, 9]);
+    await tester.pumpWidget(
+      appHarness(
+        signedInAs: 'u-org-1',
+        initialView: ExploreView.list,
+        bannerPicker: FakeBannerPicker(bytes: bannerBytes),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await openOrganizeTab(tester);
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const Key('event-title')),
+      'Copa con Banner',
+    );
+
+    // The banner section sits below the title (same lazy list as
+    // teams/cost in the create test above).
+    final formScrollable = find
+        .descendant(
+          of: find.descendant(
+            of: find.byType(EventFormScreen),
+            matching: find.byType(ListView),
+          ),
+          matching: find.byType(Scrollable),
+        )
+        .first;
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('event-banner-add')),
+      300,
+      scrollable: formScrollable,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('event-banner-add')));
+    await tester.pumpAndSettle();
+
+    // The pick previews in place (these bytes are undecodable, so the
+    // neutral placeholder renders — enough to prove the pick landed).
+    expect(find.byKey(const Key('event-banner-preview')), findsOneWidget);
+    expect(find.byKey(const Key('event-banner-add')), findsNothing);
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Publicar evento'));
+    await tester.pumpAndSettle();
+    expect(find.text('Evento publicado'), findsOneWidget);
+
+    // The published row points at the uploaded object, whose bytes the
+    // storage layer holds.
+    final created = store.tournaments.lastWhere(
+      (t) => t.title == 'Copa con Banner',
+    );
+    expect(created.bannerPath, isNotNull);
+    expect(created.bannerPath, startsWith('${created.id}/'));
+    expect(store.banners[created.bannerPath], bannerBytes);
+
+    // Let the snackbar dismiss so no timers leak into teardown.
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('editing an event can remove its banner', (tester) async {
+    final store = MockStore();
+    await tester.pumpWidget(
+      appHarness(signedInAs: 'u-org-1', initialView: ExploreView.list),
+    );
+    await tester.pumpAndSettle();
+
+    // "Copa Centro 7v7" (t-1) ships with the seeded banner.
+    await openOrganizeTab(tester);
+    await tester.tap(find.text('Copa Centro 7v7'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.edit_outlined));
+    await tester.pumpAndSettle();
+
+    final seeded = store.tournamentById('t-1')!.bannerPath!;
+    final formScrollable = find
+        .descendant(
+          of: find.descendant(
+            of: find.byType(EventFormScreen),
+            matching: find.byType(ListView),
+          ),
+          matching: find.byType(Scrollable),
+        )
+        .first;
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('event-banner-preview')),
+      300,
+      scrollable: formScrollable,
+    );
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('event-banner-preview')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('event-banner-remove')));
+    await tester.pumpAndSettle();
+    // Removing swaps the preview back to the plain "add" button.
+    expect(find.byKey(const Key('event-banner-add')), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Guardar cambios'));
+    await tester.pumpAndSettle();
+    expect(find.text('Evento guardado'), findsOneWidget);
+
+    // Row cleared, and the object deleted once the row stopped pointing
+    // at it.
+    expect(store.tournamentById('t-1')!.bannerPath, isNull);
+    expect(store.banners.containsKey(seeded), isFalse);
+
+    // Let the snackbar dismiss so no timers leak into teardown.
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+  });
+
   testWidgets(
     'cost accepts the Uruguayan format ("20.000" is twenty thousand)',
     (tester) async {

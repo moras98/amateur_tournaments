@@ -36,6 +36,7 @@ class TournamentModel {
     this.address = '',
     this.city = '',
     this.location,
+    this.bannerPath,
     this.status = TournamentStatus.open,
     this.createdAt,
   });
@@ -70,6 +71,12 @@ class TournamentModel {
   final String address;
   final String city;
   final LatLng? location;
+
+  /// Optional organizer-uploaded banner: the object path inside the
+  /// `tournament-banners` storage bucket. `null` = no banner — cards and
+  /// the detail screen fall back to the sport-icon look.
+  final String? bannerPath;
+
   final TournamentStatus status;
   final DateTime? createdAt;
 
@@ -110,6 +117,7 @@ class TournamentModel {
     // Closure pattern (see TournamentQuery.copyWith): plain nullable params
     // can't express "reset to null" — `location: () => null` clears the pin.
     LatLng? Function()? location,
+    String? Function()? bannerPath,
     TournamentStatus? status,
     DateTime? Function()? createdAt,
   }) {
@@ -132,6 +140,9 @@ class TournamentModel {
       address: address ?? this.address,
       city: city ?? this.city,
       location: location != null ? location() : this.location,
+      // `bannerPath: () => null` removes the banner (the stored object is
+      // deleted separately by the repository).
+      bannerPath: bannerPath != null ? bannerPath() : this.bannerPath,
       status: status ?? this.status,
       createdAt: createdAt != null ? createdAt() : this.createdAt,
     );
@@ -170,6 +181,8 @@ class TournamentModel {
       address: json['address'] as String? ?? '',
       city: json['city'] as String? ?? '',
       location: _locationFromJson(json),
+      // Rows written before migration 0010 arrive without the column.
+      bannerPath: json['banner_path'] as String?,
       status: TournamentStatus.fromValue(json['status'] as String?),
       createdAt: json['created_at'] == null
           ? null
@@ -200,6 +213,7 @@ class TournamentModel {
       'city': city,
       'latitude': location?.latitude,
       'longitude': location?.longitude,
+      'banner_path': bannerPath,
       'status': status.value,
       'created_at': createdAt?.toUtc().toIso8601String(),
     };

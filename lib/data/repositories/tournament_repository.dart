@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:tande/models/tournament_model.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -75,5 +77,15 @@ abstract class TournamentRepository {
   Future<void> setManualConfirmed(TournamentModel tournament, int amount);
 
   /// Deletes an event and its inscriptions (owner only; RLS enforces it).
+  /// The stored banner object, if any, is removed with it.
   Future<void> delete(String id);
+
+  /// Stores the optional banner image for [tournamentId]; returns the path
+  /// for `TournamentModel.bannerPath` (the caller persists it through
+  /// [create]/[update]). Replaces any previous banner.
+  Future<String> uploadBanner(String tournamentId, Uint8List bytes);
+
+  /// Deletes the banner object at [path] — called once the row stopped
+  /// pointing at it ([update] with `bannerPath: () => null`).
+  Future<void> removeBanner(String path);
 }

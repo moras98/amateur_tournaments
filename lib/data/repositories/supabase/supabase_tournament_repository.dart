@@ -1,6 +1,8 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:tande/data/repositories/tournament_repository.dart';
+import 'package:tande/data/storage/banner_storage.dart';
 import 'package:tande/models/tournament_model.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -8,9 +10,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 /// Supabase-backed tournaments (`public.tournaments` + the `spots_left`
 /// view). Selected by the providers once `AppConstants.hasSupabase` is true.
 class SupabaseTournamentRepository implements TournamentRepository {
-  SupabaseTournamentRepository(this._client);
+  SupabaseTournamentRepository(this._client, {BannerStorage? banners})
+    : _banners = banners ?? SupabaseBannerStorage(_client);
 
   final SupabaseClient _client;
+  final BannerStorage _banners;
 
   /// Plain tournament columns. The confirmed count comes from the
   /// `spots_left` view in a separate query ([_confirmedCounts]) — never
@@ -203,9 +207,26 @@ class SupabaseTournamentRepository implements TournamentRepository {
 
   @override
   Future<void> delete(String id) async {
+    final row = await _client
+        .from('tournaments')
+        .select('banner_path')
+        .eq('id', id)
+        .maybeSingle();
+    // The banner object goes before the row: the storage delete policy
+    // checks the caller owns the tournament by folder id, which stops
+    // holding the moment the row is gone.
+    final bannerPath = row?['banner_path'] as String?;
+    if (bannerPath != null) await _banners.remove(bannerPath);
     // RLS restricts this to the owner; inscriptions cascade in the DB.
     await _client.from('tournaments').delete().eq('id', id);
   }
+
+  @override
+  Future<String> uploadBanner(String tournamentId, Uint8List bytes) =>
+      _banners.upload(tournamentId: tournamentId, bytes: bytes);
+
+  @override
+  Future<void> removeBanner(String path) => _banners.remove(path);
 
   Map<String, dynamic> _payload(TournamentModel tournament) {
     // Plain `latitude`/`longitude` columns (no PostGIS dependency);

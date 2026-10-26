@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:tande/core/constants.dart';
 import 'package:tande/core/location/reverse_geocoder.dart';
@@ -51,6 +52,13 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
   late DateTime _start;
   late DateTime _end;
   LatLng? _pin;
+
+  /// Banner state: freshly picked bytes (not uploaded yet), the stored
+  /// path when editing, and a removed path whose object is deleted after
+  /// the save lands.
+  Uint8List? _bannerBytes;
+  String? _bannerPath;
+  String? _clearedBanner;
 
   final _mapController = MapController();
 
@@ -124,6 +132,7 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
     _start = tournament.startTime;
     _end = tournament.endTime;
     _pin = tournament.location;
+    _bannerPath = tournament.bannerPath;
   }
 
   @override
@@ -217,6 +226,16 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
                 hintText: r'Trofeo + $150.000',
               ),
             ),
+            const SizedBox(height: 12),
+            _sectionLabel(context, l10n.bannerSectionLabel),
+            Text(
+              l10n.bannerHint,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 8),
+            _bannerField(l10n),
             const SizedBox(height: 8),
             _dateTile(
               label: l10n.startsLabel,
@@ -464,6 +483,87 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
     );
   }
 
+  /// Optional banner: nothing → "add" button; a pick or a stored banner →
+  /// preview with change/remove. Nothing here is required to save.
+  Widget _bannerField(AppLocalizations l10n) {
+    final theme = Theme.of(context);
+    final pending = _bannerBytes != null;
+    if (!pending && _bannerPath == null) {
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: OutlinedButton.icon(
+          key: const Key('event-banner-add'),
+          onPressed: _pickBanner,
+          icon: const Icon(Icons.add_photo_alternate_outlined, size: 18),
+          label: Text(l10n.bannerAdd),
+        ),
+      );
+    }
+    // Pending picks preview their own bytes; stored ones resolve through
+    // the storage service (public URL / in-memory mock).
+    final ImageProvider image = pending
+        ? MemoryImage(_bannerBytes!)
+        : ref.read(bannerStorageProvider).imageFor(_bannerPath!);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Image(
+            key: const Key('event-banner-preview'),
+            image: image,
+            height: 120,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => ColoredBox(
+              color: theme.colorScheme.surfaceContainerHighest,
+              child: const SizedBox(height: 120),
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Row(
+          children: [
+            TextButton.icon(
+              key: const Key('event-banner-change'),
+              onPressed: _pickBanner,
+              icon: const Icon(Icons.edit_outlined, size: 18),
+              label: Text(l10n.bannerChange),
+            ),
+            const Spacer(),
+            IconButton(
+              key: const Key('event-banner-remove'),
+              onPressed: _removeBanner,
+              tooltip: l10n.bannerRemove,
+              icon: const Icon(Icons.delete_outline),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// Opens the gallery; a cancelled pick keeps whatever was there.
+  Future<void> _pickBanner() async {
+    final bytes = await ref.read(bannerPickerProvider).pick();
+    if (bytes == null || !mounted) return;
+    setState(() {
+      _bannerBytes = bytes;
+      _clearedBanner = null; // A pick after a remove restores the banner.
+    });
+  }
+
+  void _removeBanner() {
+    setState(() {
+      if (_bannerBytes != null) {
+        // Only the unsaved pick goes; the stored banner (if any) stays.
+        _bannerBytes = null;
+      } else if (_bannerPath != null) {
+        _clearedBanner = _bannerPath;
+        _bannerPath = null;
+      }
+    });
+  }
+
   Widget _dateTile({
     required String label,
     required IconData icon,
@@ -693,6 +793,22 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
             : _parsedTeams <= existing.totalConfirmed
             ? TournamentStatus.full
             : TournamentStatus.open;
+        // A fresh pick uploads before the update so its path rides the
+        // single row write; a removal clears the column (its object goes
+        // after the save). An upload failure keeps the stored banner
+        // (and is reported after the save, which still goes through).
+        var bannerPath = existing.bannerPath;
+        var bannerFailed = false;
+        final picked = _bannerBytes;
+        if (picked != null) {
+          try {
+            bannerPath = await repository.uploadBanner(existing.id, picked);
+          } catch (_) {
+            bannerFailed = true;
+          }
+        } else if (_clearedBanner != null) {
+          bannerPath = null;
+        }
         final updated = existing.copyWith(
           sport: _sport,
           kind: _kind,
@@ -708,16 +824,30 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
           address: _address.text.trim(),
           city: _city.text.trim(),
           location: () => _pin,
+          bannerPath: () => bannerPath,
           status: status,
         );
         await repository.update(updated);
+        // The removed banner's object only goes once the row stopped
+        // pointing at it.
+        if (_clearedBanner != null) {
+          await repository.removeBanner(_clearedBanner!);
+        }
         invalidateOrganizerState(container, tournamentId: updated.id);
+        // Explore caches its results: an edit changes what the cards show
+        // (title, cost, dates, banner), so refresh it like the create path
+        // does.
+        container.invalidate(exploreResultsProvider);
         if (!mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.eventSaved)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              bannerFailed ? l10n.bannerSaveFailed : l10n.eventSaved,
+            ),
+          ),
+        );
       } else {
-        await repository.create(
+        final created = await repository.create(
           TournamentModel(
             // The repository assigns the id.
             id: '',
@@ -738,13 +868,30 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
             location: _pin,
           ),
         );
+        // The banner needs the assigned id, so it uploads (and persists
+        // its path) right after the row exists. A failure keeps the event
+        // — the organizer just re-adds the image from Editar.
+        var bannerFailed = false;
+        final picked = _bannerBytes;
+        if (picked != null) {
+          try {
+            final path = await repository.uploadBanner(created.id, picked);
+            await repository.update(created.copyWith(bannerPath: () => path));
+          } catch (_) {
+            bannerFailed = true;
+          }
+        }
         container
           ..invalidate(myTournamentsProvider)
           ..invalidate(exploreResultsProvider);
         if (!mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.eventPublished)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              bannerFailed ? l10n.bannerSaveFailed : l10n.eventPublished,
+            ),
+          ),
+        );
       }
 
       if (mounted) context.pop();

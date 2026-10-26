@@ -301,6 +301,26 @@ class AppLocalizationsEs extends AppLocalizations {
   String get chooseSport => 'Elegí al menos un deporte';
 
   @override
+  String get bannerSectionLabel => 'Imagen del torneo';
+
+  @override
+  String get bannerHint =>
+      'Opcional. Se muestra en Explorar y en la ficha del torneo.';
+
+  @override
+  String get bannerAdd => 'Agregar imagen';
+
+  @override
+  String get bannerChange => 'Cambiar imagen';
+
+  @override
+  String get bannerRemove => 'Quitar imagen';
+
+  @override
+  String get bannerSaveFailed =>
+      'Se guardó el evento, pero la imagen no se pudo subir. Probá de nuevo desde Editar.';
+
+  @override
   String get acceptTermsPrefix => 'Acepto los ';
 
   @override
@@ -1323,6 +1343,26 @@ class AppLocalizationsEsUy extends AppLocalizationsEs {
 
   @override
   String get chooseSport => 'Elegí al menos un deporte';
+
+  @override
+  String get bannerSectionLabel => 'Imagen del torneo';
+
+  @override
+  String get bannerHint =>
+      'Opcional. Se muestra en Explorar y en la ficha del torneo.';
+
+  @override
+  String get bannerAdd => 'Agregar imagen';
+
+  @override
+  String get bannerChange => 'Cambiar imagen';
+
+  @override
+  String get bannerRemove => 'Quitar imagen';
+
+  @override
+  String get bannerSaveFailed =>
+      'Se guardó el evento, pero la imagen no se pudo subir. Probá de nuevo desde Editar.';
 
   @override
   String get acceptTermsPrefix => 'Acepto los ';

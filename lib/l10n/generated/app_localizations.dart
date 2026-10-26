@@ -657,6 +657,42 @@ abstract class AppLocalizations {
   /// **'Elegí al menos un deporte'**
   String get chooseSport;
 
+  /// No description provided for @bannerSectionLabel.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Imagen del torneo'**
+  String get bannerSectionLabel;
+
+  /// No description provided for @bannerHint.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Opcional. Se muestra en Explorar y en la ficha del torneo.'**
+  String get bannerHint;
+
+  /// No description provided for @bannerAdd.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Agregar imagen'**
+  String get bannerAdd;
+
+  /// No description provided for @bannerChange.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Cambiar imagen'**
+  String get bannerChange;
+
+  /// No description provided for @bannerRemove.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Quitar imagen'**
+  String get bannerRemove;
+
+  /// No description provided for @bannerSaveFailed.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Se guardó el evento, pero la imagen no se pudo subir. Probá de nuevo desde Editar.'**
+  String get bannerSaveFailed;
+
   /// No description provided for @acceptTermsPrefix.
   ///
   /// In es_UY, this message translates to:

@@ -3,6 +3,7 @@ import 'package:tande/core/sports.dart';
 import 'package:tande/core/theme/adaptive.dart';
 import 'package:tande/core/utils/contact.dart';
 import 'package:tande/core/utils/format.dart';
+import 'package:tande/core/widgets/tournament_banner.dart';
 import 'package:tande/data/auth/auth_repository.dart';
 import 'package:tande/data/repositories/providers.dart';
 import 'package:tande/features/explore/explore_providers.dart';
@@ -212,6 +213,17 @@ class _TournamentDetailScreenState
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
+              // Banner (when the organizer uploaded one): flies in from
+              // the Explore card's strip through the shared Hero tag.
+              if (tournament.bannerPath != null) ...[
+                TournamentBanner(
+                  tournament: tournament,
+                  height: 160,
+                  radius: 16,
+                ),
+                const SizedBox(height: 16),
+              ],
+
               // Header
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,

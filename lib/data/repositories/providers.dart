@@ -1,4 +1,5 @@
 import 'package:tande/core/constants.dart';
+import 'package:tande/core/utils/banner_picker.dart';
 import 'package:tande/data/auth/auth_repository.dart';
 import 'package:tande/data/auth/mock_auth_repository.dart';
 import 'package:tande/data/auth/supabase_auth_repository.dart';
@@ -14,6 +15,8 @@ import 'package:tande/data/repositories/supabase/supabase_inscription_repository
 import 'package:tande/data/repositories/supabase/supabase_profile_repository.dart';
 import 'package:tande/data/repositories/supabase/supabase_tournament_repository.dart';
 import 'package:tande/data/repositories/tournament_repository.dart';
+import 'package:tande/data/storage/banner_storage.dart';
+import 'package:tande/data/storage/mock_banner_storage.dart';
 import 'package:tande/models/user_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -42,6 +45,22 @@ final inscriptionRepositoryProvider = Provider<InscriptionRepository>((ref) {
   }
   return MockInscriptionRepository();
 });
+
+/// Optional tournament banners: Supabase Storage (public bucket) on real
+/// builds, [MockStore.banners] in memory otherwise. The tournament
+/// repositories and the card/detail displays share this instance.
+final bannerStorageProvider = Provider<BannerStorage>((ref) {
+  if (AppConstants.hasSupabase) {
+    return SupabaseBannerStorage(Supabase.instance.client);
+  }
+  return MockBannerStorage();
+});
+
+/// The gallery picker behind the event form's "Agregar imagen" (overridden
+/// in tests so the platform image channel is never hit).
+final bannerPickerProvider = Provider<BannerPicker>(
+  (ref) => const GalleryBannerPicker(),
+);
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   if (AppConstants.hasSupabase) {

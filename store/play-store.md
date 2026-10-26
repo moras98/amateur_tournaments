@@ -23,14 +23,14 @@ Tande - Torneos cerca tuyo
 Inscribite a torneos amateur cerca tuyo. Organizá el tuyo y confirmá equipos.
 ```
 
-**Descripción larga** (≤ 4000) — 827 caracteres
+**Descripción larga** (≤ 4000) — 891 caracteres
 
 ```
 Tande es la app para encontrar y organizar torneos amateur cerca tuyo.
 
 Para jugadores: mirá en el mapa los torneos de fútbol 5, fútbol 7, pádel, tenis y básquet que se juegan cerca, filtrá por deporte y distancia, y anotate en segundos. Coordinás el pago directo con el organizador por WhatsApp, sin comisiones ni pagos dentro de la app.
 
-Para organizadores: creá el torneo con fecha, sede y cupo; recibí solicitudes de inscripción; confirmá o rechazá equipos y avisales por WhatsApp con un toque. También podés sumar los equipos que confirmaste en persona, para que el cupo siempre esté al día.
+Para organizadores: creá el torneo con fecha, sede y cupo; recibí solicitudes de inscripción; confirmá o rechazá equipos y avisales por WhatsApp con un toque. También podés sumar los equipos que confirmaste en persona, para que el cupo siempre esté al día. Y si querés, agregale una imagen para que destaque en Explorar.
 
 - Mapa y lista de torneos cerca tuyo
 - Inscripción desde el celular, sin filas ni planillas
@@ -74,7 +74,7 @@ Tande is the app to find and organize amateur tournaments near you.
 
 For players: see football 5-a-side, football 7-a-side, padel, tennis and basketball tournaments around you on the map, filter by sport and distance, and sign up in seconds. You arrange payment directly with the organizer on WhatsApp — no fees, no payments inside the app.
 
-For organizers: create your tournament with date, venue and team limit; receive sign-up requests; confirm or reject teams and notify them on WhatsApp in one tap. You can also add the teams you confirmed in person so your open spots always match reality.
+For organizers: create your tournament with date, venue and team limit; receive sign-up requests; confirm or reject teams and notify them on WhatsApp in one tap. You can also add the teams you confirmed in person so your open spots always match reality. And if you want, add an image so your tournament stands out in Explore.
 
 - Map and list of tournaments near you
 - Sign up from your phone — no spreadsheets, no group-chat chaos
