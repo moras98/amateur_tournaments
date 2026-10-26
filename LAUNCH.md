@@ -14,6 +14,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 | Store copy | ✅ `store/play-store.md` |
 | Privacy policy | 📝 draft `store/privacy-policy.md` — needs contact email + public URL |
 | Terms & conditions | 📝 draft `store/terms-and-conditions.md` — needs contact email + public URL (linked from the sign-up checkbox) |
+| Monetization | ⏸️ decided: organizer subscription "Bracket Pro" — build only after real users (§7) |
 | Supabase anon key in `.release.env` | ⬜ **not filled yet** |
 | Migrations `0005` / `0006` applied | ❓ unconfirmed |
 | Play Console account | ⬜ |
@@ -43,7 +44,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 # after filling .release.env:
 ./scripts/build-release.sh
 # → build/app/outputs/bundle/release/app-release.aab
-# (runs gen-l10n + 102 tests, signs with the upload key, prints the signer)
+# (runs gen-l10n + 103 tests, signs with the upload key, prints the signer)
 ```
 
 - [ ] `.release.env` filled (never commit it — it's gitignored)
@@ -97,7 +98,7 @@ testing* track before production access. Internal testing does **not** count.
 - [ ] **Every tester must opt in via the link AND open the app daily** for 14
       unbroken days — track them with a WhatsApp group reminder
 - [ ] Day 15: **apply for production access** (dashboard questionnaire —
-      answer with real numbers: 102 automated tests + on-device manual QA)
+      answer with real numbers: 103 automated tests + on-device manual QA)
 
 ## 5. Production
 
@@ -125,11 +126,42 @@ An empty tournament list = a dead app.
       keyword list in `store/play-store.md` after the first weeks of search
       impressions
 
+## 7. Monetization — "Bracket Pro" (only after real users)
+
+Decision: **organizer-side subscription**; players never pay. Ads rejected —
+UY CPMs are tiny and AdMob would force privacy/data-safety churn before
+launch. Entry-fee commission rejected — "ningún pago se realiza dentro de la
+app" (terms §1) is a selling point, and taking a cut would need Play Billing
++ local payment rails. Everything ships **100% free through production and
+the closed test** — never gate the 12 testers.
+
+- [ ] **Trigger**: a handful of organizers running repeat tournaments (or one
+      asking for exports / limits lifted) → then build. No users yet = no
+      product to charge for.
+- [ ] **Free tier stays generous**: everything a player does is free forever;
+      organizers get something real for free (e.g. 1 active tournament).
+- [ ] **Pro features** — validate which ones organizers actually want before
+      building them all: unlimited active tournaments · PDF/CSV exports
+      (planillas) · waitlists/substitutes · stats · boost in Explore
+      (the boost can become a one-off non-subscription SKU later).
+- [ ] **Play Console**: subscription products `bracket_pro_monthly` +
+      `bracket_pro_yearly`, base plans, 7-day trial; price in USD (confirm
+      whether Play offers UYU pricing — USD is safe).
+- [ ] **Code**: `in_app_purchase` package → entitlement flag on the Supabase
+      profile → later, server-side purchase verification (Supabase edge
+      function) + restore on reinstall.
+- [ ] **Fee & payouts**: Google keeps **15%** of subscription revenue; fill
+      tax info + bank payout details in Console when revenue starts.
+- [ ] **Docs**: update `store/terms-and-conditions.md` §1/§5 and the privacy
+      policy — both currently state that no payment happens in the app.
+
 ## Later
 
 - [ ] **iOS**: needs a Mac + Apple Developer Program ($99/yr). Uruguay has
       real iPhone share — do it after Play validates the product
 - [ ] Crash reporting (Sentry/Firebase) if vitals show crashes
+- [ ] **B2B / white label** (clubes, municipios, federaciones): sold and
+      delivered outside Play — no billing issue; needs a real offer first
 - [ ] OSM tile usage: fine at small scale; if the app grows, move to a paid
       tile provider (public tile servers forbid heavy commercial use)
 
