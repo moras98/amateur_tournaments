@@ -347,6 +347,8 @@ button while saving.
 | Theme (all tokens) | `lib/core/theme/app_theme.dart` |
 | iOS adaptation (dialogs, switches, pickers, transitions) | `lib/core/theme/adaptive.dart` |
 | Sign-up/profile fields (password rules, username, chips) | `lib/features/auth/widgets/profile_fields.dart` |
+| Terms acceptance (checkbox, inline legal links) | `lib/features/auth/widgets/terms_acceptance.dart` |
+| Bracket Pro (paywall, entitlement, Play Billing) | `lib/features/pro/`, `lib/data/billing/` |
 | Sport colors/icons | `lib/core/sports.dart` |
 | Date/money formatting | `lib/core/utils/format.dart` |
 | UI strings (es_UY source + English) | `lib/l10n/app_es_UY.arb`, `lib/l10n/app_en.arb` → `flutter gen-l10n` |

@@ -609,6 +609,150 @@ abstract class AppLocalizations {
   /// **'Al continuar, aceptás los '**
   String get socialTermsPrefix;
 
+  /// No description provided for @proTitle.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Bracket Pro'**
+  String get proTitle;
+
+  /// No description provided for @proProfileHint.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Torneos sin límites para organizadores'**
+  String get proProfileHint;
+
+  /// No description provided for @proChoosePlan.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Elegí tu plan'**
+  String get proChoosePlan;
+
+  /// No description provided for @proBenefit1.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Torneos activos ilimitados'**
+  String get proBenefit1;
+
+  /// No description provided for @proBenefit2.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Exportar planillas a PDF y CSV'**
+  String get proBenefit2;
+
+  /// No description provided for @proBenefit3.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Listas de espera y suplentes'**
+  String get proBenefit3;
+
+  /// No description provided for @proBenefit4.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Estadísticas de tu torneo'**
+  String get proBenefit4;
+
+  /// No description provided for @proBenefit5.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Destacado en Explorar'**
+  String get proBenefit5;
+
+  /// No description provided for @proMonthly.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Mensual'**
+  String get proMonthly;
+
+  /// No description provided for @proYearly.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Anual'**
+  String get proYearly;
+
+  /// No description provided for @proBestValue.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Mejor valor'**
+  String get proBestValue;
+
+  /// No description provided for @proTrialCta.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Probar gratis'**
+  String get proTrialCta;
+
+  /// No description provided for @proSubscribeCta.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Suscribirme'**
+  String get proSubscribeCta;
+
+  /// No description provided for @proTrialNotice.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Prueba gratis por {days} días. Después se cobra la suscripción, salvo que la canceles antes.'**
+  String proTrialNotice(Object days);
+
+  /// No description provided for @proDisclosure.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Suscripción con cargo a tu cuenta de Google Play. Se renueva automáticamente hasta que la cancelás; podés cancelarla cuando quieras desde Google Play.'**
+  String get proDisclosure;
+
+  /// No description provided for @proRestore.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Restaurar compras'**
+  String get proRestore;
+
+  /// No description provided for @proRestoreMissing.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'No encontramos compras para restaurar.'**
+  String get proRestoreMissing;
+
+  /// No description provided for @proComingSoon.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Próximamente'**
+  String get proComingSoon;
+
+  /// No description provided for @proComingSoonBody.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Bracket Pro se está por lanzar. ¡Volvé pronto!'**
+  String get proComingSoonBody;
+
+  /// No description provided for @proAlready.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Ya tenés Bracket Pro'**
+  String get proAlready;
+
+  /// No description provided for @proAlreadyBody.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Tus torneos activos no tienen límite.'**
+  String get proAlreadyBody;
+
+  /// No description provided for @proPurchaseError.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'No se pudo completar la compra. Intentá de nuevo.'**
+  String get proPurchaseError;
+
+  /// No description provided for @proLegalPrefix.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Leé los '**
+  String get proLegalPrefix;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Política de privacidad'**
+  String get privacyPolicy;
+
   /// No description provided for @accountCreatedConfirmEmail.
   ///
   /// In es_UY, this message translates to:

@@ -3,6 +3,7 @@ import 'package:bracket/core/theme/adaptive.dart';
 import 'package:bracket/core/theme/app_gradients.dart';
 import 'package:bracket/core/utils/format.dart';
 import 'package:bracket/data/repositories/providers.dart';
+import 'package:bracket/features/pro/pro_providers.dart';
 import 'package:bracket/l10n/generated/app_localizations.dart';
 import 'package:bracket/l10n/labels.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final profileAsync = ref.watch(currentProfileProvider);
+    final pro = ref.watch(proProvider);
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -146,6 +148,24 @@ class ProfileScreen extends ConsumerWidget {
                         ),
                         onPressed: () => context.push('/complete-profile'),
                       ),
+                    ),
+                  ),
+                ],
+                // Bracket Pro entry: only in paying mode (Play products
+                // configured) and only while this user isn't subscribed —
+                // organizers are the ones who can use it.
+                if (profile.isOrganizer && pro.available && !pro.isPro) ...[
+                  const SizedBox(height: 16),
+                  Card(
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.workspace_premium,
+                        color: theme.colorScheme.primary,
+                      ),
+                      title: Text(l10n.proTitle),
+                      subtitle: Text(l10n.proProfileHint),
+                      trailing: const Icon(Icons.arrow_forward),
+                      onTap: () => context.push('/pro'),
                     ),
                   ),
                 ],

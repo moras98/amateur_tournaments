@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:bracket/core/constants.dart';
 import 'package:bracket/core/sports.dart';
 import 'package:bracket/core/utils/format.dart';
 import 'package:bracket/core/utils/nav_geometry.dart';
 import 'package:bracket/core/widgets/search_capsule.dart';
 import 'package:bracket/data/repositories/providers.dart';
 import 'package:bracket/features/organizer/organizer_providers.dart';
+import 'package:bracket/features/pro/pro_providers.dart';
 import 'package:bracket/l10n/generated/app_localizations.dart';
 import 'package:bracket/l10n/labels.dart';
 import 'package:bracket/models/tournament_model.dart';
@@ -61,6 +63,37 @@ class _OrganizerScreenState extends ConsumerState<OrganizerScreen> {
   void _searchNow(String value) {
     _debounce?.cancel();
     setState(() => _search = value);
+  }
+
+  /// Create. In paying mode the free tier stops at
+  /// `AppConstants.freeActiveTournaments` active events — the overflow
+  /// opens the paywall instead of the form. Before Play has products
+  /// configured (paying mode off) this is always the plain create flow,
+  /// exactly as before.
+  Future<void> _createEvent() async {
+    final pro = ref.read(proProvider);
+    if (pro.available && !pro.isPro) {
+      List<TournamentModel> tournaments;
+      try {
+        tournaments = await ref.read(myTournamentsProvider.future);
+      } catch (_) {
+        // Never block creation on a load failure — same as before Pro.
+        tournaments = const [];
+      }
+      if (!mounted) return;
+      final now = DateTime.now();
+      final active = tournaments
+          .where(
+            (t) =>
+                t.status != TournamentStatus.closed && t.endTime.isAfter(now),
+          )
+          .length;
+      if (active >= AppConstants.freeActiveTournaments) {
+        context.push('/pro');
+        return;
+      }
+    }
+    context.push('/organize/create');
   }
 
   /// Sort menu — the capsule's trailing control.
@@ -144,7 +177,7 @@ class _OrganizerScreenState extends ConsumerState<OrganizerScreen> {
       ),
       floatingActionButton: isOrganizer
           ? FloatingActionButton.extended(
-              onPressed: () => context.push('/organize/create'),
+              onPressed: _createEvent,
               icon: const Icon(Icons.add),
               label: Text(l10n.createEvent),
             )

@@ -2,6 +2,9 @@ import 'package:bracket/core/constants.dart';
 import 'package:bracket/data/auth/auth_repository.dart';
 import 'package:bracket/data/auth/mock_auth_repository.dart';
 import 'package:bracket/data/auth/supabase_auth_repository.dart';
+import 'package:bracket/data/billing/billing_service.dart';
+import 'package:bracket/data/billing/mock_billing_service.dart';
+import 'package:bracket/data/billing/play_billing_service.dart';
 import 'package:bracket/data/repositories/inscription_repository.dart';
 import 'package:bracket/data/repositories/mock/mock_inscription_repository.dart';
 import 'package:bracket/data/repositories/mock/mock_profile_repository.dart';
@@ -45,6 +48,16 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
     return SupabaseAuthRepository(Supabase.instance.client);
   }
   return MockAuthRepository();
+});
+
+/// Play Billing (Bracket Pro). Real on release builds (the Supabase
+/// defines are the release marker — same switch as the repositories),
+/// mock otherwise: tests and dev builds never touch the billing channel.
+final billingServiceProvider = Provider<BillingService>((ref) {
+  if (AppConstants.hasSupabase) {
+    return PlayBillingService();
+  }
+  return MockBillingService();
 });
 
 /// The signed-in session, or `null`.

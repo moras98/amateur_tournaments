@@ -6,15 +6,15 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 
 | Item | Status |
 |---|---|
-| App build | ✅ analyze clean, **103/103 tests**, `1.0.0+1` |
+| App build | ✅ analyze clean, **107/107 tests**, `1.0.0+1` |
 | Application ID | ✅ `com.bracket.torneos` (permanent — never change after publish) |
-| Git | ✅ 4 commits, secrets gitignored |
+| Git | ✅ 5 commits, secrets gitignored |
 | Upload keystore | ✅ `~/upload-keystore.jks` + `android/key.properties` |
 | Store AAB script | ✅ `scripts/build-release.sh` |
 | Store copy | ✅ `store/play-store.md` |
 | Privacy policy | 📝 draft `store/privacy-policy.md` — needs contact email + public URL |
 | Terms & conditions | 📝 draft `store/terms-and-conditions.md` — needs contact email + public URL (linked from the sign-up checkbox) |
-| Monetization | ⏸️ decided: organizer subscription "Bracket Pro" — build only after real users (§7) |
+| Monetization | ✅ built, **inert** until Play products exist — launch after first users (§7) |
 | Supabase anon key in `.release.env` | ⬜ **not filled yet** |
 | Migrations `0005` / `0006` applied | ❓ unconfirmed |
 | Play Console account | ⬜ |
@@ -44,7 +44,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 # after filling .release.env:
 ./scripts/build-release.sh
 # → build/app/outputs/bundle/release/app-release.aab
-# (runs gen-l10n + 103 tests, signs with the upload key, prints the signer)
+# (runs gen-l10n + 107 tests, signs with the upload key, prints the signer)
 ```
 
 - [ ] `.release.env` filled (never commit it — it's gitignored)
@@ -98,7 +98,7 @@ testing* track before production access. Internal testing does **not** count.
 - [ ] **Every tester must opt in via the link AND open the app daily** for 14
       unbroken days — track them with a WhatsApp group reminder
 - [ ] Day 15: **apply for production access** (dashboard questionnaire —
-      answer with real numbers: 103 automated tests + on-device manual QA)
+      answer with real numbers: 107 automated tests + on-device manual QA)
 
 ## 5. Production
 
@@ -136,20 +136,30 @@ app" (terms §1) is a selling point, and taking a cut would need Play Billing
 the closed test** — never gate the 12 testers.
 
 - [ ] **Trigger**: a handful of organizers running repeat tournaments (or one
-      asking for exports / limits lifted) → then build. No users yet = no
-      product to charge for.
+      asking for exports / limits lifted) → then turn Pro on. No users yet =
+      no product to charge for.
 - [ ] **Free tier stays generous**: everything a player does is free forever;
-      organizers get something real for free (e.g. 1 active tournament).
+      organizers get 1 active tournament
+      (`AppConstants.freeActiveTournaments`).
 - [ ] **Pro features** — validate which ones organizers actually want before
-      building them all: unlimited active tournaments · PDF/CSV exports
-      (planillas) · waitlists/substitutes · stats · boost in Explore
-      (the boost can become a one-off non-subscription SKU later).
+      building them all: unlimited active tournaments (the gate exists) ·
+      PDF/CSV exports (planillas) · waitlists/substitutes · stats · boost in
+      Explore (the boost can become a one-off non-subscription SKU later).
+- [x] **Code (scaffolding)**: `in_app_purchase` wired in `lib/data/billing/`,
+      paywall at `/pro` (profile card + free-tier gate), entitlement from
+      Play. **Inert until products exist** — with no products configured the
+      app is 100% free and ungated (entry points hidden), which is what
+      ships through the closed test. **Creating `bracket_pro_monthly` /
+      `bracket_pro_yearly` in Play Console switches paying mode ON for every
+      user without an entitlement** — only do it when Pro launches, after
+      the closed test, once the features below actually ship.
 - [ ] **Play Console**: subscription products `bracket_pro_monthly` +
-      `bracket_pro_yearly`, base plans, 7-day trial; price in USD (confirm
-      whether Play offers UYU pricing — USD is safe).
-- [ ] **Code**: `in_app_purchase` package → entitlement flag on the Supabase
-      profile → later, server-side purchase verification (Supabase edge
-      function) + restore on reinstall.
+      `bracket_pro_yearly`, base plans, 7-day trial (mirror the trial length
+      in `AppConstants.proTrialDays` — the plugin can't read it); price in
+      USD (confirm whether Play offers UYU pricing — USD is safe).
+- [ ] **Server-side verification** (before real money): Supabase edge
+      function validating purchases against Google's API — today the
+      entitlement is client-side only (Play query + restore on startup).
 - [ ] **Fee & payouts**: Google keeps **15%** of subscription revenue; fill
       tax info + bank payout details in Console when revenue starts.
 - [ ] **Docs**: update `store/terms-and-conditions.md` §1/§5 and the privacy

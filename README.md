@@ -115,7 +115,7 @@ starts empty); returning users go straight to their destination.
 
 ```bash
 flutter analyze
-flutter test        # 103 tests
+flutter test        # 107 tests
 ```
 
 Widget tests drive the app through `test/support/harness.dart`

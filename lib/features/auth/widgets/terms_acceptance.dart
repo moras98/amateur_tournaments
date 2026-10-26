@@ -3,27 +3,28 @@ import 'package:bracket/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// Opens the hosted terms in the external browser (like the WhatsApp links).
-Future<void> _openTerms() => launchUrl(
-  Uri.parse(AppConstants.termsUrl),
-  mode: LaunchMode.externalApplication,
-);
+/// A styled tappable link to a legal document (terms, privacy) — opens in
+/// the external browser, like the WhatsApp links.
+class LegalLink extends StatelessWidget {
+  const LegalLink({
+    super.key,
+    required this.label,
+    required this.url,
+    this.style,
+  });
 
-/// The tappable "Términos y condiciones" link, styled as one.
-class _TermsLink extends StatelessWidget {
-  const _TermsLink({this.style});
-
+  final String label;
+  final String url;
   final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     return GestureDetector(
-      key: const Key('terms-link'),
-      onTap: _openTerms,
+      onTap: () =>
+          launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
       child: Text(
-        l10n.termsAndConditions,
+        label,
         style: (style ?? theme.textTheme.bodySmall)?.copyWith(
           color: theme.colorScheme.primary,
           decoration: TextDecoration.underline,
@@ -44,12 +45,17 @@ class TermsText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Wrap(
       spacing: 4,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         Text(prefix, style: style ?? Theme.of(context).textTheme.bodySmall),
-        _TermsLink(style: style),
+        LegalLink(
+          label: l10n.termsAndConditions,
+          url: AppConstants.termsUrl,
+          style: style,
+        ),
       ],
     );
   }
@@ -79,7 +85,10 @@ class TermsCheckbox extends StatelessWidget {
       title: Wrap(
         spacing: 4,
         crossAxisAlignment: WrapCrossAlignment.center,
-        children: [Text(l10n.acceptTermsPrefix), const _TermsLink()],
+        children: [
+          Text(l10n.acceptTermsPrefix),
+          LegalLink(label: l10n.termsAndConditions, url: AppConstants.termsUrl),
+        ],
       ),
     );
   }

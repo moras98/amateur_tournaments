@@ -273,6 +273,82 @@ class AppLocalizationsEn extends AppLocalizations {
   String get socialTermsPrefix => 'By continuing you accept the ';
 
   @override
+  String get proTitle => 'Bracket Pro';
+
+  @override
+  String get proProfileHint => 'Unlimited tournaments for organizers';
+
+  @override
+  String get proChoosePlan => 'Choose your plan';
+
+  @override
+  String get proBenefit1 => 'Unlimited active tournaments';
+
+  @override
+  String get proBenefit2 => 'Export fixtures to PDF and CSV';
+
+  @override
+  String get proBenefit3 => 'Waitlists and substitutes';
+
+  @override
+  String get proBenefit4 => 'Tournament statistics';
+
+  @override
+  String get proBenefit5 => 'Featured in Explore';
+
+  @override
+  String get proMonthly => 'Monthly';
+
+  @override
+  String get proYearly => 'Yearly';
+
+  @override
+  String get proBestValue => 'Best value';
+
+  @override
+  String get proTrialCta => 'Try for free';
+
+  @override
+  String get proSubscribeCta => 'Subscribe';
+
+  @override
+  String proTrialNotice(Object days) {
+    return 'Free $days-day trial. After that the subscription is charged unless you cancel before it ends.';
+  }
+
+  @override
+  String get proDisclosure =>
+      'Billed to your Google Play account. Renews automatically until you cancel; you can cancel anytime in Google Play.';
+
+  @override
+  String get proRestore => 'Restore purchases';
+
+  @override
+  String get proRestoreMissing => 'No purchases found to restore.';
+
+  @override
+  String get proComingSoon => 'Coming soon';
+
+  @override
+  String get proComingSoonBody => 'Bracket Pro is launching soon. Check back!';
+
+  @override
+  String get proAlready => 'You already have Bracket Pro';
+
+  @override
+  String get proAlreadyBody => 'Your active tournaments have no limit.';
+
+  @override
+  String get proPurchaseError =>
+      'The purchase couldn\'t be completed. Try again.';
+
+  @override
+  String get proLegalPrefix => 'Read the ';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
   String get accountCreatedConfirmEmail =>
       'Account created. Check your email to confirm it, then sign in.';
 

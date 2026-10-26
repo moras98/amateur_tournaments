@@ -1,6 +1,8 @@
 import 'package:bracket/core/location/reverse_geocoder.dart';
 import 'package:bracket/core/map/tile_provider.dart';
 import 'package:bracket/data/auth/mock_auth_repository.dart';
+import 'package:bracket/data/billing/billing_service.dart';
+import 'package:bracket/data/billing/mock_billing_service.dart';
 import 'package:bracket/data/repositories/providers.dart';
 import 'package:bracket/features/explore/explore_providers.dart';
 import 'package:bracket/main.dart';
@@ -91,6 +93,10 @@ class FakeReverseGeocoder implements ReverseGeocoder {
 ///   pending one pins the map in its loading state)
 /// - [reverseCountryCode] controls which country the fake reverse geocoder
 ///   reports (the phone field's dial-code default)
+/// - [billing] drives Bracket Pro: the default mock has no Play products
+///   (paying mode off — the app stays free and ungated); inject
+///   `MockBillingService(products: [...], pro: false)` to exercise the
+///   paywall and the free-tier gate.
 Widget appHarness({
   ExploreView initialView = ExploreView.map,
   bool signedIn = true,
@@ -98,6 +104,7 @@ Widget appHarness({
   Future<LatLng?>? locationOverride,
   String? signedInAs,
   String reverseCountryCode = 'ar',
+  BillingService? billing,
 }) {
   // The app follows the phone's locale: tests pin the simulated device to
   // Uruguayan Spanish so every assertion sees the Spanish copy (override
@@ -113,6 +120,9 @@ Widget appHarness({
     overrides: [
       exploreViewProvider.overrideWith((ref) => initialView),
       tileProviderProvider.overrideWithValue(FakeTileProvider()),
+      // Always overridden: never touch the billing channel in tests, and
+      // keep paying mode off unless a test injects products explicitly.
+      billingServiceProvider.overrideWithValue(billing ?? MockBillingService()),
       reverseGeocodeProvider.overrideWithValue(
         FakeReverseGeocoder(countryCode: reverseCountryCode),
       ),

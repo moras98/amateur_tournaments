@@ -276,6 +276,83 @@ class AppLocalizationsEs extends AppLocalizations {
   String get socialTermsPrefix => 'Al continuar, aceptás los ';
 
   @override
+  String get proTitle => 'Bracket Pro';
+
+  @override
+  String get proProfileHint => 'Torneos sin límites para organizadores';
+
+  @override
+  String get proChoosePlan => 'Elegí tu plan';
+
+  @override
+  String get proBenefit1 => 'Torneos activos ilimitados';
+
+  @override
+  String get proBenefit2 => 'Exportar planillas a PDF y CSV';
+
+  @override
+  String get proBenefit3 => 'Listas de espera y suplentes';
+
+  @override
+  String get proBenefit4 => 'Estadísticas de tu torneo';
+
+  @override
+  String get proBenefit5 => 'Destacado en Explorar';
+
+  @override
+  String get proMonthly => 'Mensual';
+
+  @override
+  String get proYearly => 'Anual';
+
+  @override
+  String get proBestValue => 'Mejor valor';
+
+  @override
+  String get proTrialCta => 'Probar gratis';
+
+  @override
+  String get proSubscribeCta => 'Suscribirme';
+
+  @override
+  String proTrialNotice(Object days) {
+    return 'Prueba gratis por $days días. Después se cobra la suscripción, salvo que la canceles antes.';
+  }
+
+  @override
+  String get proDisclosure =>
+      'Suscripción con cargo a tu cuenta de Google Play. Se renueva automáticamente hasta que la cancelás; podés cancelarla cuando quieras desde Google Play.';
+
+  @override
+  String get proRestore => 'Restaurar compras';
+
+  @override
+  String get proRestoreMissing => 'No encontramos compras para restaurar.';
+
+  @override
+  String get proComingSoon => 'Próximamente';
+
+  @override
+  String get proComingSoonBody =>
+      'Bracket Pro se está por lanzar. ¡Volvé pronto!';
+
+  @override
+  String get proAlready => 'Ya tenés Bracket Pro';
+
+  @override
+  String get proAlreadyBody => 'Tus torneos activos no tienen límite.';
+
+  @override
+  String get proPurchaseError =>
+      'No se pudo completar la compra. Intentá de nuevo.';
+
+  @override
+  String get proLegalPrefix => 'Leé los ';
+
+  @override
+  String get privacyPolicy => 'Política de privacidad';
+
+  @override
   String get accountCreatedConfirmEmail =>
       'Cuenta creada. Revisá tu email para confirmarla y luego iniciá sesión.';
 
@@ -1183,6 +1260,83 @@ class AppLocalizationsEsUy extends AppLocalizationsEs {
 
   @override
   String get socialTermsPrefix => 'Al continuar, aceptás los ';
+
+  @override
+  String get proTitle => 'Bracket Pro';
+
+  @override
+  String get proProfileHint => 'Torneos sin límites para organizadores';
+
+  @override
+  String get proChoosePlan => 'Elegí tu plan';
+
+  @override
+  String get proBenefit1 => 'Torneos activos ilimitados';
+
+  @override
+  String get proBenefit2 => 'Exportar planillas a PDF y CSV';
+
+  @override
+  String get proBenefit3 => 'Listas de espera y suplentes';
+
+  @override
+  String get proBenefit4 => 'Estadísticas de tu torneo';
+
+  @override
+  String get proBenefit5 => 'Destacado en Explorar';
+
+  @override
+  String get proMonthly => 'Mensual';
+
+  @override
+  String get proYearly => 'Anual';
+
+  @override
+  String get proBestValue => 'Mejor valor';
+
+  @override
+  String get proTrialCta => 'Probar gratis';
+
+  @override
+  String get proSubscribeCta => 'Suscribirme';
+
+  @override
+  String proTrialNotice(Object days) {
+    return 'Prueba gratis por $days días. Después se cobra la suscripción, salvo que la canceles antes.';
+  }
+
+  @override
+  String get proDisclosure =>
+      'Suscripción con cargo a tu cuenta de Google Play. Se renueva automáticamente hasta que la cancelás; podés cancelarla cuando quieras desde Google Play.';
+
+  @override
+  String get proRestore => 'Restaurar compras';
+
+  @override
+  String get proRestoreMissing => 'No encontramos compras para restaurar.';
+
+  @override
+  String get proComingSoon => 'Próximamente';
+
+  @override
+  String get proComingSoonBody =>
+      'Bracket Pro se está por lanzar. ¡Volvé pronto!';
+
+  @override
+  String get proAlready => 'Ya tenés Bracket Pro';
+
+  @override
+  String get proAlreadyBody => 'Tus torneos activos no tienen límite.';
+
+  @override
+  String get proPurchaseError =>
+      'No se pudo completar la compra. Intentá de nuevo.';
+
+  @override
+  String get proLegalPrefix => 'Leé los ';
+
+  @override
+  String get privacyPolicy => 'Política de privacidad';
 
   @override
   String get accountCreatedConfirmEmail =>

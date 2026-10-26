@@ -1,0 +1,155 @@
+import 'package:bracket/core/constants.dart';
+import 'package:bracket/data/billing/billing_service.dart';
+import 'package:bracket/data/billing/mock_billing_service.dart';
+import 'package:bracket/features/organizer/event_form_screen.dart';
+import 'package:bracket/features/pro/paywall_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'support/harness.dart';
+
+void main() {
+  /// Taps a bottom-nav destination (icons in screen bodies can collide).
+  Finder navIcon(IconData icon) => find.descendant(
+    of: find.byType(NavigationBar),
+    matching: find.byIcon(icon),
+  );
+
+  /// The paywall's own ListView — the shell keeps every branch's
+  /// scrollable alive under the pushed route, so scope by screen.
+  Finder paywallScrollable() => find
+      .descendant(
+        of: find.byType(PaywallScreen),
+        matching: find.byType(Scrollable),
+      )
+      .first;
+
+  final monthly = ProProduct(
+    id: AppConstants.proMonthlyId,
+    price: 'US\$ 4.99',
+    title: 'Bracket Pro Monthly',
+  );
+  final yearly = ProProduct(
+    id: AppConstants.proYearlyId,
+    price: 'US\$ 39.99',
+    title: 'Bracket Pro Yearly',
+  );
+
+  final ctaLabel = AppConstants.proTrialDays == null
+      ? 'Suscribirme'
+      : 'Probar gratis';
+
+  group('Bracket Pro (widgets)', () {
+    testWidgets('before Play has products the app stays free and ungated', (
+      tester,
+    ) async {
+      await tester.pumpWidget(appHarness(signedInAs: 'u-org-1'));
+      await tester.pumpAndSettle();
+
+      // No paywall entry on the profile while paying mode is off.
+      await tester.tap(navIcon(Icons.person_outline));
+      await tester.pumpAndSettle();
+      expect(find.text('Bracket Pro'), findsNothing);
+
+      // Creation opens the plain form — the closed-test invariant.
+      await tester.tap(navIcon(Icons.emoji_events_outlined));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+      expect(find.byType(EventFormScreen), findsOneWidget);
+      expect(find.byType(PaywallScreen), findsNothing);
+    });
+
+    testWidgets('paying mode: the profile card buys Pro on the paywall', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        appHarness(
+          signedInAs: 'u-org-1',
+          billing: MockBillingService(products: [monthly, yearly], pro: false),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(navIcon(Icons.person_outline));
+      await tester.pumpAndSettle();
+
+      final card = find.widgetWithText(ListTile, 'Bracket Pro');
+      expect(card, findsOneWidget);
+      await tester.tap(card);
+      await tester.pumpAndSettle();
+      expect(find.byType(PaywallScreen), findsOneWidget);
+
+      // Both plans show Play's formatted price, plus the trial CTA.
+      expect(find.text('US\$ 4.99'), findsOneWidget);
+      expect(find.text('US\$ 39.99'), findsOneWidget);
+      expect(find.widgetWithText(FilledButton, ctaLabel), findsOneWidget);
+
+      // The mock grants on buy: the paywall flips to the subscribed state.
+      await tester.tap(find.widgetWithText(FilledButton, ctaLabel));
+      await tester.pumpAndSettle();
+      expect(find.text('Ya tenés Bracket Pro'), findsOneWidget);
+      expect(
+        find.text('Tus torneos activos no tienen límite.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('paying mode: restoring without past purchases notes it', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        appHarness(
+          signedInAs: 'u-org-1',
+          billing: MockBillingService(products: [monthly, yearly], pro: false),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(navIcon(Icons.person_outline));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(ListTile, 'Bracket Pro'));
+      await tester.pumpAndSettle();
+
+      final restore = find.widgetWithText(TextButton, 'Restaurar compras');
+      await tester.scrollUntilVisible(
+        restore,
+        300,
+        scrollable: paywallScrollable(),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(restore);
+      await tester.pumpAndSettle();
+      expect(
+        find.text('No encontramos compras para restaurar.'),
+        findsOneWidget,
+      );
+      // Still not Pro: the buy CTA is back after the snackbar.
+      await tester.pump(const Duration(seconds: 4));
+      await tester.pumpAndSettle();
+      expect(find.widgetWithText(FilledButton, ctaLabel), findsOneWidget);
+    });
+
+    testWidgets('paying mode: the free tier opens the paywall on overflow', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        appHarness(
+          signedInAs: 'u-org-1',
+          billing: MockBillingService(products: [monthly], pro: false),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // u-org-1 already has active events (t-1, t-2): creating one more
+      // exceeds the free tier, so the gate shows the paywall instead.
+      await tester.tap(navIcon(Icons.emoji_events_outlined));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PaywallScreen), findsOneWidget);
+      expect(find.byType(EventFormScreen), findsNothing);
+    });
+  });
+}

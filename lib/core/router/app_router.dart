@@ -9,6 +9,7 @@ import 'package:bracket/features/organizer/event_form_screen.dart';
 import 'package:bracket/features/organizer/event_requests_screen.dart';
 import 'package:bracket/features/organizer/organizer_screen.dart';
 import 'package:bracket/features/profile/profile_screen.dart';
+import 'package:bracket/features/pro/paywall_screen.dart';
 import 'package:bracket/features/tournament/tournament_detail_screen.dart';
 import 'package:bracket/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -179,6 +180,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/complete-profile',
         pageBuilder: (context, state) =>
             _pushPage(state, const ProfileFormScreen()),
+      ),
+      GoRoute(
+        path: '/pro',
+        pageBuilder: (context, state) =>
+            _pushPage(state, const PaywallScreen()),
       ),
     ],
   );

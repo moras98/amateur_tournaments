@@ -18,6 +18,29 @@ abstract class AppConstants {
   static const oauthRedirectUrl =
       'io.supabase.amateurtournaments://login-callback';
 
+  // --- Bracket Pro (LAUNCH.md §7) ------------------------------------
+
+  /// Play Console product ids (one subscription each, base plans on top).
+  ///
+  /// **Creating these in Play Console switches paying mode ON** for every
+  /// user without an entitlement: paywall entry points appear and the
+  /// free-tier gate starts enforcing. Do it only when Pro really launches
+  /// (after the closed test, once the Pro features ship).
+  static const proMonthlyId = 'bracket_pro_monthly';
+  static const proYearlyId = 'bracket_pro_yearly';
+  static const proProductIds = [proMonthlyId, proYearlyId];
+
+  /// Free tier: active tournaments an organizer runs without Pro
+  /// (active = not closed and not over yet; nothing is blocked until
+  /// [proProductIds] exist in Play Console).
+  static const freeActiveTournaments = 1;
+
+  /// Mirrors the free-trial length configured on the Play base plan — the
+  /// billing plugin can't read it, so keep this in sync. `null` = no
+  /// trial: the paywall drops the trial copy entirely.
+  // ignore: unnecessary_nullable_for_final_variable_declarations
+  static const int? proTrialDays = 7;
+
   /// Public URLs of the legal documents (hosted — see LAUNCH.md; update
   /// these if the hosting moves). Opened from the registration forms.
   static const termsUrl =
