@@ -3,9 +3,11 @@ import 'package:bracket/data/auth/mock_auth_repository.dart';
 import 'package:bracket/data/repositories/mock/mock_profile_repository.dart';
 import 'package:bracket/data/repositories/mock/mock_store.dart';
 import 'package:bracket/core/utils/format.dart';
-import 'package:bracket/features/auth/profile_form_screen.dart';
-import 'package:bracket/features/auth/signup_screen.dart';
 import 'package:bracket/core/theme/app_theme.dart';
+import 'package:bracket/features/auth/forgot_password_screen.dart';
+import 'package:bracket/features/auth/profile_form_screen.dart';
+import 'package:bracket/features/auth/reset_password_screen.dart';
+import 'package:bracket/features/auth/signup_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -988,6 +990,154 @@ void main() {
 
       // The empty field must not persist a bare dial code.
       expect(MockStore().profileById(MockStore.socialGoogleId)!.phone, isEmpty);
+    });
+  });
+
+  group('Password reset', () {
+    /// Taps a bottom-nav destination to reach login while signed out.
+    Future<void> openLogin(WidgetTester tester) async {
+      await tester.tap(
+        find.descendant(
+          of: find.byType(NavigationBar),
+          matching: find.byIcon(Icons.emoji_events_outlined),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    test('a recovery session is not the plain one', () {
+      const plain = AuthSession(userId: 'u1', email: 'a@b.co');
+      const recovered = AuthSession(
+        userId: 'u1',
+        email: 'a@b.co',
+        recovery: true,
+      );
+      expect(plain == recovered, isFalse);
+      expect(
+        recovered,
+        const AuthSession(userId: 'u1', email: 'a@b.co', recovery: true),
+      );
+      expect(
+        recovered.hashCode,
+        const AuthSession(
+          userId: 'u1',
+          email: 'a@b.co',
+          recovery: true,
+        ).hashCode,
+      );
+    });
+
+    test('resetPasswordForEmail records the address without checking '
+        'whether the account exists', () async {
+      final auth = MockAuthRepository(signedIn: false);
+
+      // Known and unknown addresses behave the same — the backend never
+      // reveals which is registered, and the mock mirrors that.
+      await auth.resetPasswordForEmail('nico@demo.app');
+      expect(auth.lastResetEmail, 'nico@demo.app');
+      await expectLater(
+        auth.resetPasswordForEmail('nobody@demo.app'),
+        completes,
+      );
+      expect(auth.lastResetEmail, 'nobody@demo.app');
+    });
+
+    test('resetPasswordForEmail rejects malformed addresses', () async {
+      final auth = MockAuthRepository(signedIn: false);
+
+      await expectLater(
+        auth.resetPasswordForEmail('not-an-email'),
+        throwsA(isA<AuthFailure>()),
+      );
+      expect(auth.lastResetEmail, isNull);
+    });
+
+    test(
+      'updatePassword needs a session and a strong enough password',
+      () async {
+        final signedOut = MockAuthRepository(signedIn: false);
+        await expectLater(
+          signedOut.updatePassword('secret123'),
+          throwsA(isA<AuthFailure>()),
+        );
+
+        final auth = MockAuthRepository(recovering: true);
+        await expectLater(
+          auth.updatePassword('short'),
+          throwsA(isA<AuthFailure>()),
+        );
+        // A failed attempt must not release the /reset-password hold.
+        expect(auth.currentSession!.recovery, isTrue);
+      },
+    );
+
+    test('updatePassword releases the recovery hold', () async {
+      final auth = MockAuthRepository(recovering: true);
+      expect(auth.currentSession!.recovery, isTrue);
+
+      await auth.updatePassword('secret123');
+
+      expect(auth.currentSession, isNotNull);
+      expect(auth.currentSession!.recovery, isFalse);
+    });
+
+    testWidgets('login offers the reset link and emails the address', (
+      tester,
+    ) async {
+      final auth = MockAuthRepository(signedIn: false);
+      await tester.pumpWidget(appHarness(auth: auth));
+      await tester.pumpAndSettle();
+      await openLogin(tester);
+
+      await tester.tap(
+        find.widgetWithText(TextButton, '¿Olvidaste tu contraseña?'),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(ForgotPasswordScreen), findsOneWidget);
+      expect(find.byType(AppBar), findsNothing); // auth screens, no bar
+
+      await tester.enterText(find.byType(TextFormField), 'nico@demo.app');
+      await tester.tap(find.widgetWithText(FilledButton, 'Enviar enlace'));
+      await tester.pumpAndSettle();
+
+      // Hedged confirmation (never leaks whether the account exists) and
+      // back on login; the mock's outbox holds the address.
+      expect(
+        find.text(
+          'Si existe una cuenta con ese email, te enviamos un enlace '
+          'para restablecer la contraseña.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.byType(ForgotPasswordScreen), findsNothing);
+      expect(
+        find.widgetWithText(FilledButton, 'Iniciar sesión'),
+        findsOneWidget,
+      );
+      expect(auth.lastResetEmail, 'nico@demo.app');
+    });
+
+    testWidgets('a recovery session is held on the reset screen', (
+      tester,
+    ) async {
+      final auth = MockAuthRepository(recovering: true);
+      await tester.pumpWidget(appHarness(auth: auth));
+      await tester.pumpAndSettle();
+
+      // The router pins the recovery session here — a pushed page with no
+      // bar and no nav capsule (leaving would only bounce back).
+      expect(find.byType(ResetPasswordScreen), findsOneWidget);
+      expect(find.byType(AppBar), findsNothing);
+      expect(find.byType(NavigationBar), findsNothing);
+
+      await tester.enterText(find.byType(TextFormField), 'claveNueva123');
+      await tester.tap(find.widgetWithText(FilledButton, 'Guardar contraseña'));
+      await tester.pumpAndSettle();
+
+      // Password saved: the hold releases and the screen exits to Explore.
+      expect(find.byType(ResetPasswordScreen), findsNothing);
+      expect(find.text('Contraseña actualizada.'), findsOneWidget);
+      expect(find.byType(NavigationBar), findsOneWidget);
     });
   });
 }

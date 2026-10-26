@@ -15,7 +15,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 
 | Item | Status |
 |---|---|
-| App build | ✅ analyze clean, **109/109 tests**, `1.0.0+1` |
+| App build | ✅ analyze clean, **116/116 tests**, `1.0.0+1` |
 | Application ID | ✅ `com.bracket.torneos` (permanent — never change after publish) |
 | Git | ✅ 5 commits, secrets gitignored |
 | Upload keystore | ✅ `~/upload-keystore.jks` + `android/key.properties` |
@@ -26,6 +26,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 | Monetization | ✅ built, **inert** until Play products exist — launch after first users (§7) |
 | Supabase anon key in `.release.env` | ⬜ **not filled yet** |
 | Migrations `0005` / `0006` / `0007` applied | ❓ unconfirmed |
+| Auth email links (confirm + reset) | ⬜ dashboard allow-list + templates |
 | Play Console account | ⬜ |
 | Closed test (14 days) | ⬜ |
 
@@ -42,6 +43,15 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
       in the Supabase dashboard. **`0007` is the sign-up data-loss fix** —
       until it runs, the confirm-email path keeps dropping username / birth
       date / gender / sports (the app already sends them in the metadata).
+- [ ] **Auth email links land in the app** (dashboard, Authentication):
+      URL Configuration → Redirect URLs must list
+      `io.supabase.amateurtournaments://login-callback` (it should already
+      be there for OAuth — confirm), and the *Confirm signup* / *Reset
+      password* templates must link through `{{ .ConfirmationURL }}` (the
+      Supabase defaults do). The app now passes `emailRedirectTo` on
+      sign-up and on password reset; without the allow-list entry GoTrue
+      falls back to the Site URL and the link opens a web page instead of
+      the app.
 - [ ] **Real-backend smoke test on your phone**: install a release build with
       the Supabase defines, then sign up → create tournament → request
       inscription → share to WhatsApp → see it appear. Mock tests prove
@@ -56,7 +66,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 # after filling .release.env:
 ./scripts/build-release.sh
 # → build/app/outputs/bundle/release/app-release.aab
-# (runs gen-l10n + 109 tests, signs with the upload key, prints the signer)
+# (runs gen-l10n + 116 tests, signs with the upload key, prints the signer)
 ```
 
 - [ ] `.release.env` filled (never commit it — it's gitignored)
@@ -110,7 +120,7 @@ testing* track before production access. Internal testing does **not** count.
 - [ ] **Every tester must opt in via the link AND open the app daily** for 14
       unbroken days — track them with a WhatsApp group reminder
 - [ ] Day 15: **apply for production access** (dashboard questionnaire —
-      answer with real numbers: 109 automated tests + on-device manual QA)
+      answer with real numbers: 116 automated tests + on-device manual QA)
 
 ## 5. Production
 

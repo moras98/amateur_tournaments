@@ -465,6 +465,66 @@ abstract class AppLocalizations {
   /// **'Explorar eventos sin cuenta'**
   String get browseAsGuest;
 
+  /// No description provided for @forgotPassword.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'¿Olvidaste tu contraseña?'**
+  String get forgotPassword;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Recuperar contraseña'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordBody.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Ingresá tu email y te mandamos un enlace para elegir una contraseña nueva.'**
+  String get forgotPasswordBody;
+
+  /// No description provided for @sendResetLink.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Enviar enlace'**
+  String get sendResetLink;
+
+  /// No description provided for @resetEmailSent.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Si existe una cuenta con ese email, te enviamos un enlace para restablecer la contraseña.'**
+  String get resetEmailSent;
+
+  /// No description provided for @backToSignIn.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Volver a iniciar sesión'**
+  String get backToSignIn;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Contraseña nueva'**
+  String get newPassword;
+
+  /// No description provided for @resetPasswordBody.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Elegí una contraseña nueva para tu cuenta.'**
+  String get resetPasswordBody;
+
+  /// No description provided for @savePassword.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Guardar contraseña'**
+  String get savePassword;
+
+  /// No description provided for @passwordUpdated.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Contraseña actualizada.'**
+  String get passwordUpdated;
+
   /// No description provided for @authUnknownAccount.
   ///
   /// In es_UY, this message translates to:

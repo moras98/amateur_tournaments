@@ -1,7 +1,9 @@
 import 'package:bracket/core/utils/nav_geometry.dart';
 import 'package:bracket/data/repositories/providers.dart';
+import 'package:bracket/features/auth/forgot_password_screen.dart';
 import 'package:bracket/features/auth/login_screen.dart';
 import 'package:bracket/features/auth/profile_form_screen.dart';
+import 'package:bracket/features/auth/reset_password_screen.dart';
 import 'package:bracket/features/auth/signup_screen.dart';
 import 'package:bracket/features/explore/explore_screen.dart';
 import 'package:bracket/features/inscriptions/my_inscriptions_screen.dart';
@@ -57,6 +59,7 @@ bool _isPublic(String location) =>
     location == '/explore' ||
     location == '/login' ||
     location == '/signup' ||
+    location == '/forgot-password' ||
     location.startsWith('/tournament/');
 
 /// Auth gate. Keeps the router instance stable across auth changes by
@@ -66,7 +69,16 @@ bool _isPublic(String location) =>
 /// pages are not re-matched), so the auth screens navigate with `go`.
 String? _redirect(Ref ref, GoRouterState state) {
   final location = state.matchedLocation;
-  final signedIn = ref.read(authStateProvider) != null;
+  final session = ref.read(authStateProvider);
+  final signedIn = session != null;
+
+  // Password-recovery session (the reset email's link landed): the whole
+  // point of that session is setting a new password, so hold the user on
+  // /reset-password until [AuthController.updatePassword] releases the
+  // flag — wherever they try to go, including back to /login.
+  if (session != null && session.recovery && location != '/reset-password') {
+    return '/reset-password';
+  }
 
   if (!signedIn) {
     if (_isPublic(location)) return null;
@@ -171,6 +183,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/login',
         pageBuilder: (context, state) => _pushPage(state, const LoginScreen()),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        pageBuilder: (context, state) =>
+            _pushPage(state, const ForgotPasswordScreen()),
+      ),
+      GoRoute(
+        path: '/reset-password',
+        pageBuilder: (context, state) =>
+            _pushPage(state, const ResetPasswordScreen()),
       ),
       GoRoute(
         path: '/signup',

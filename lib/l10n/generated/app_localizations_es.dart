@@ -198,6 +198,38 @@ class AppLocalizationsEs extends AppLocalizations {
   String get browseAsGuest => 'Explorar eventos sin cuenta';
 
   @override
+  String get forgotPassword => '¿Olvidaste tu contraseña?';
+
+  @override
+  String get forgotPasswordTitle => 'Recuperar contraseña';
+
+  @override
+  String get forgotPasswordBody =>
+      'Ingresá tu email y te mandamos un enlace para elegir una contraseña nueva.';
+
+  @override
+  String get sendResetLink => 'Enviar enlace';
+
+  @override
+  String get resetEmailSent =>
+      'Si existe una cuenta con ese email, te enviamos un enlace para restablecer la contraseña.';
+
+  @override
+  String get backToSignIn => 'Volver a iniciar sesión';
+
+  @override
+  String get newPassword => 'Contraseña nueva';
+
+  @override
+  String get resetPasswordBody => 'Elegí una contraseña nueva para tu cuenta.';
+
+  @override
+  String get savePassword => 'Guardar contraseña';
+
+  @override
+  String get passwordUpdated => 'Contraseña actualizada.';
+
+  @override
   String get authUnknownAccount =>
       'Cuenta desconocida. Login demo: nico@demo.app / password123';
 
@@ -1182,6 +1214,38 @@ class AppLocalizationsEsUy extends AppLocalizationsEs {
 
   @override
   String get browseAsGuest => 'Explorar eventos sin cuenta';
+
+  @override
+  String get forgotPassword => '¿Olvidaste tu contraseña?';
+
+  @override
+  String get forgotPasswordTitle => 'Recuperar contraseña';
+
+  @override
+  String get forgotPasswordBody =>
+      'Ingresá tu email y te mandamos un enlace para elegir una contraseña nueva.';
+
+  @override
+  String get sendResetLink => 'Enviar enlace';
+
+  @override
+  String get resetEmailSent =>
+      'Si existe una cuenta con ese email, te enviamos un enlace para restablecer la contraseña.';
+
+  @override
+  String get backToSignIn => 'Volver a iniciar sesión';
+
+  @override
+  String get newPassword => 'Contraseña nueva';
+
+  @override
+  String get resetPasswordBody => 'Elegí una contraseña nueva para tu cuenta.';
+
+  @override
+  String get savePassword => 'Guardar contraseña';
+
+  @override
+  String get passwordUpdated => 'Contraseña actualizada.';
 
   @override
   String get authUnknownAccount =>

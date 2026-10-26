@@ -197,6 +197,38 @@ class AppLocalizationsEn extends AppLocalizations {
   String get browseAsGuest => 'Browse events without an account';
 
   @override
+  String get forgotPassword => 'Forgot your password?';
+
+  @override
+  String get forgotPasswordTitle => 'Reset your password';
+
+  @override
+  String get forgotPasswordBody =>
+      'Enter your email and we\'ll send you a link to set a new password.';
+
+  @override
+  String get sendResetLink => 'Send link';
+
+  @override
+  String get resetEmailSent =>
+      'If an account exists for that email, we sent you a link to reset the password.';
+
+  @override
+  String get backToSignIn => 'Back to sign in';
+
+  @override
+  String get newPassword => 'New password';
+
+  @override
+  String get resetPasswordBody => 'Choose a new password for your account.';
+
+  @override
+  String get savePassword => 'Save password';
+
+  @override
+  String get passwordUpdated => 'Password updated.';
+
+  @override
   String get authUnknownAccount =>
       'Unknown account. Demo login: nico@demo.app / password123';
 

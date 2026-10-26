@@ -132,6 +132,23 @@ class AuthController extends Notifier<AuthSession?> {
   Future<bool> isEmailRegistered(String email) =>
       ref.read(authRepositoryProvider).isEmailRegistered(email);
 
+  /// Sends the password-reset email; its link returns into the app with a
+  /// session flagged [AuthSession.recovery], which the router holds on
+  /// /reset-password until [updatePassword].
+  Future<void> resetPasswordForEmail(String email) =>
+      ref.read(authRepositoryProvider).resetPasswordForEmail(email);
+
+  /// Sets the new password and releases the recovery hold: the session is
+  /// re-emitted without the flag, so the router stops pinning the screen
+  /// (the screen itself navigates on to Explore).
+  Future<void> updatePassword(String newPassword) async {
+    final session = state;
+    await ref.read(authRepositoryProvider).updatePassword(newPassword);
+    if (session != null) {
+      state = AuthSession(userId: session.userId, email: session.email);
+    }
+  }
+
   Future<void> signOut() async {
     await ref.read(authRepositoryProvider).signOut();
     state = null;

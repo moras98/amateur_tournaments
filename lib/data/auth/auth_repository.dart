@@ -1,19 +1,33 @@
 /// A minimal signed-in session (replaces Supabase's session in the app layer).
 class AuthSession {
-  const AuthSession({required this.userId, required this.email});
+  const AuthSession({
+    required this.userId,
+    required this.email,
+    this.recovery = false,
+  });
 
   final String userId;
   final String email;
 
+  /// True while the session was opened by a password-recovery email link:
+  /// the router holds the user on /reset-password until the password is
+  /// changed (see `_redirect`), and [AuthController.updatePassword]
+  /// releases the hold by re-emitting the session without this flag.
+  final bool recovery;
+
   @override
   bool operator ==(Object other) =>
-      other is AuthSession && other.userId == userId && other.email == email;
+      other is AuthSession &&
+      other.userId == userId &&
+      other.email == email &&
+      other.recovery == recovery;
 
   @override
-  int get hashCode => Object.hash(userId, email);
+  int get hashCode => Object.hash(userId, email, recovery);
 
   @override
-  String toString() => 'AuthSession($userId, $email)';
+  String toString() =>
+      'AuthSession($userId, $email${recovery ? ', recovery' : ''})';
 }
 
 /// User-facing auth error (invalid credentials, duplicate email, ...).
@@ -73,6 +87,9 @@ abstract class AuthRepository {
   /// copies the metadata into `profiles` at account creation. Without it
   /// the user would retype everything after confirming the email.
   ///
+  /// The confirmation link returns into the app (`emailRedirectTo`, see
+  /// `AppConstants.oauthRedirectUrl`) instead of the project's Site URL.
+  ///
   /// Returns `null` when the backend requires email confirmation first:
   /// the account exists (profile included) but there is no session yet.
   Future<AuthSession?> signUp({
@@ -88,6 +105,19 @@ abstract class AuthRepository {
   /// Best-effort duplicate-email check for the sign-up form's live hint
   /// (250 ms debounce). The real constraint runs at [signUp].
   Future<bool> isEmailRegistered(String email);
+
+  /// Emails a password-reset link that returns into the app (the
+  /// `emailRedirectTo` deep link), where it opens a session flagged
+  /// [AuthSession.recovery].
+  ///
+  /// Resolves even for an unknown address — the backend doesn't reveal
+  /// whether the account exists (anti-enumeration), so the UI always shows
+  /// a hedged "if an account exists…" confirmation.
+  Future<void> resetPasswordForEmail(String email);
+
+  /// Sets the new password on the recovery session (or the signed-in one).
+  /// Releasing the [AuthSession.recovery] hold is the controller's job.
+  Future<void> updatePassword(String newPassword);
 
   Future<void> signOut();
 }

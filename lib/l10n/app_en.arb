@@ -70,6 +70,17 @@
   "noAccountSignup": "Don't have an account? Sign up",
   "browseAsGuest": "Browse events without an account",
 
+  "forgotPassword": "Forgot your password?",
+  "forgotPasswordTitle": "Reset your password",
+  "forgotPasswordBody": "Enter your email and we'll send you a link to set a new password.",
+  "sendResetLink": "Send link",
+  "resetEmailSent": "If an account exists for that email, we sent you a link to reset the password.",
+  "backToSignIn": "Back to sign in",
+  "newPassword": "New password",
+  "resetPasswordBody": "Choose a new password for your account.",
+  "savePassword": "Save password",
+  "passwordUpdated": "Password updated.",
+
   "authUnknownAccount": "Unknown account. Demo login: nico@demo.app / password123",
   "authEmailTaken": "An account already exists with that email.",
   "authSocialMissing": "Demo social account not found.",

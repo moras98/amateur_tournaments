@@ -195,6 +195,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ? null
                             : l10n.passwordTooShort,
                       ),
+                      // Right-aligned and compact: it sits between the
+                      // password field and the sign-in button without
+                      // pushing either out of the first screen.
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          // `go`, like every auth link here (see below).
+                          onPressed: () {
+                            final from = GoRouterState.of(
+                              context,
+                            ).uri.queryParameters['from'];
+                            context.go(
+                              Uri(
+                                path: '/forgot-password',
+                                queryParameters: {
+                                  if (from != null && from.isNotEmpty)
+                                    'from': from,
+                                },
+                              ).toString(),
+                            );
+                          },
+                          child: Text(l10n.forgotPassword),
+                        ),
+                      ),
                       if (_error != null) ...[
                         const SizedBox(height: 12),
                         Text(

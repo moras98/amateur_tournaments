@@ -16,20 +16,22 @@ import 'package:bracket/models/user_model.dart';
 ///
 /// [MockAuthRepository.new] starts signed in as the demo player unless
 /// `signedIn: false` is passed; `userId` picks a different seeded account
-/// (e.g. `u-org-1` for organizer flows).
+/// (e.g. `u-org-1` for organizer flows), and `recovering: true` opens the
+/// session as a password-recovery one (the app holds /reset-password).
 class MockAuthRepository implements AuthRepository {
   MockAuthRepository({
     MockStore? store,
     bool signedIn = true,
     String? userId,
     this.requiresEmailConfirmation = false,
+    bool recovering = false,
   }) : _store = store ?? MockStore() {
     if (signedIn) {
       final id = userId ?? _store.currentUserId;
       final email =
           _store.accountEmails[id] ??
           '${_store.profileById(id)?.username ?? 'user'}@demo.app';
-      _session = _sessionFor(id, email);
+      _session = _sessionFor(id, email, recovery: recovering);
     }
   }
 
@@ -37,6 +39,10 @@ class MockAuthRepository implements AuthRepository {
   /// creates the account and its profile but returns no session — the
   /// same cut the real backend takes.
   final bool requiresEmailConfirmation;
+
+  /// Address of the last [resetPasswordForEmail] call — the mock has no
+  /// outbox, tests read this instead.
+  String? lastResetEmail;
 
   final MockStore _store;
   final StreamController<AuthSession?> _controller =
@@ -141,6 +147,35 @@ class MockAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<void> resetPasswordForEmail(String email) async {
+    // Format-only validation: like the backend, an unknown address must
+    // not be distinguishable from a known one (the UI's confirmation copy
+    // is hedged for the same reason). No account lookup on purpose.
+    if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)) {
+      throw const AuthFailure('Ingresá un email válido.', code: 'invalidEmail');
+    }
+    lastResetEmail = email;
+  }
+
+  @override
+  Future<void> updatePassword(String newPassword) async {
+    final session = _session;
+    if (session == null) {
+      throw const AuthFailure(
+        'La sesión de recuperación ya no existe. Pedí un enlace nuevo.',
+      );
+    }
+    if (newPassword.length < 6) {
+      throw const AuthFailure(
+        'La contraseña debe tener al menos 6 caracteres.',
+        code: 'passwordShort',
+      );
+    }
+    // Same session, no recovery flag: the /reset-password hold releases.
+    _setSession(_sessionFor(session.userId, session.email));
+  }
+
+  @override
   Future<void> signOut() async {
     _setSession(null);
   }
@@ -172,8 +207,11 @@ class MockAuthRepository implements AuthRepository {
       .toLowerCase()
       .replaceAll(RegExp(r'[^a-z0-9_.]'), '');
 
-  AuthSession _sessionFor(String userId, String email) =>
-      AuthSession(userId: userId, email: email);
+  AuthSession _sessionFor(
+    String userId,
+    String email, {
+    bool recovery = false,
+  }) => AuthSession(userId: userId, email: email, recovery: recovery);
 
   AuthSession? _setSession(AuthSession? session) {
     _session = session;

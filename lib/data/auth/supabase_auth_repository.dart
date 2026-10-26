@@ -12,12 +12,23 @@ class SupabaseAuthRepository implements AuthRepository {
 
   final SupabaseClient _client;
 
+  /// Sticky while a password-recovery session is open. The token refresh
+  /// (and `initialSession` on restore) re-emit the same session afterwards;
+  /// the hold on /reset-password must survive those events, so it only
+  /// clears at [updatePassword], a fresh sign-in/sign-up, or sign-out.
+  bool _recovering = false;
+
   @override
   AuthSession? get currentSession => _sessionOf(_client.auth.currentSession);
 
   @override
   Stream<AuthSession?> get stateChanges =>
-      _client.auth.onAuthStateChange.map((state) => _sessionOf(state.session));
+      _client.auth.onAuthStateChange.map((state) {
+        if (state.event == AuthChangeEvent.passwordRecovery) {
+          _recovering = true;
+        }
+        return _sessionOf(state.session);
+      });
 
   @override
   Future<AuthSession> signIn({
@@ -29,14 +40,14 @@ class SupabaseAuthRepository implements AuthRepository {
         email: email,
         password: password,
       );
-      final session = _sessionOf(response.session);
-      if (session == null) {
+      if (response.session == null) {
         throw const AuthFailure(
           'No se pudo iniciar sesión.',
           code: 'signInFailed',
         );
       }
-      return session;
+      _recovering = false;
+      return _sessionOf(response.session)!;
     } on AuthException catch (e) {
       throw AuthFailure(e.message);
     }
@@ -56,6 +67,10 @@ class SupabaseAuthRepository implements AuthRepository {
       final response = await _client.auth.signUp(
         email: email,
         password: password,
+        // Back into the app, not the Site URL: the confirm link opens the
+        // same deep link OAuth uses (allow-listed in the dashboard), so a
+        // first sign-in lands in the app instead of a web page.
+        emailRedirectTo: AppConstants.oauthRedirectUrl,
         data: {
           'full_name': fullName,
           // The whole form travels here: with confirmation pending there
@@ -71,6 +86,7 @@ class SupabaseAuthRepository implements AuthRepository {
       );
       // Null session = email confirmation pending (Supabase default): the
       // caller shows an informational message, not an error.
+      if (response.session != null) _recovering = false;
       return _sessionOf(response.session);
     } on AuthException catch (e) {
       throw AuthFailure(e.message);
@@ -121,6 +137,7 @@ class SupabaseAuthRepository implements AuthRepository {
           .map((state) => state.session)
           .firstWhere((s) => s != null)
           .timeout(_oauthTimeout);
+      _recovering = false;
       return _sessionOf(session)!;
     } on TimeoutException {
       // The browser was closed without completing the flow.
@@ -144,9 +161,43 @@ class SupabaseAuthRepository implements AuthRepository {
   };
 
   @override
+  Future<void> resetPasswordForEmail(String email) async {
+    try {
+      // Same deep link as OAuth: after the browser verifies the link,
+      // supabase_flutter captures it in the app and gotrue emits
+      // `passwordRecovery` (PKCE verifier stored under that event name),
+      // which the session flags as `recovery`.
+      await _client.auth.resetPasswordForEmail(
+        email,
+        redirectTo: AppConstants.oauthRedirectUrl,
+      );
+    } on AuthException catch (e) {
+      throw AuthFailure(e.message);
+    }
+  }
+
+  @override
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      await _client.auth.updateUser(UserAttributes(password: newPassword));
+      // Password set: release the /reset-password hold for the next event.
+      _recovering = false;
+    } on AuthSessionMissingException {
+      // No session (link opened in a cleared app state): surface as an
+      // app failure the reset screen can show, not a crash.
+      throw const AuthFailure(
+        'La sesión de recuperación ya no existe. Pedí un enlace nuevo.',
+      );
+    } on AuthException catch (e) {
+      throw AuthFailure(e.message);
+    }
+  }
+
+  @override
   Future<void> signOut() async {
     try {
       await _client.auth.signOut();
+      _recovering = false;
     } on AuthException catch (e) {
       throw AuthFailure(e.message);
     }
@@ -154,5 +205,9 @@ class SupabaseAuthRepository implements AuthRepository {
 
   AuthSession? _sessionOf(Session? session) => session == null
       ? null
-      : AuthSession(userId: session.user.id, email: session.user.email ?? '');
+      : AuthSession(
+          userId: session.user.id,
+          email: session.user.email ?? '',
+          recovery: _recovering,
+        );
 }
