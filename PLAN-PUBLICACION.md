@@ -862,68 +862,69 @@ Google Registry. **Ese endpoint devuelve 404 hasta para dominios registrados** (
    Ese es el patrón que resuelve "marca linda" + "que me encuentren".
 5. Dominio y tiendas libres, verificado.
 
-### 11.2 Una sola palabra: lo que verifiqué (y lo que ya no existe)
+### 11.2 Lo verificado sobre dominios (método controlado)
 
-Chequeé **~90 dominios**. El resultado es contundente y conviene decirlo antes de seguir:
+Chequeé **~120 dominios**. Métodos: RDAP de Verisign para `.com` (control `google.com` → 200),
+rdap.org para `.app` y `.club` (controles `cash.app` y `google.club` → 200; cadena al azar → 404).
 
-| Extensión | Método | Resultado con nombres de una palabra |
-|---|---|---|
-| `.com` | RDAP de Verisign (control `google.com` → 200) | **todos tomados**: golo, kopa, taka, tiki, volea, chute, kiro, luno, kolo, mika, tavo, sono, pita, canche, ligo, raso, chapa, juga, tanda, saque, trave, grada, tribuna, ludico, gambito, partita, pista, golazo, kancha, ludus, torneo, liga, once, duelo, quite, remate, globito, sorteo, y ~15 más |
-| `.app` | RDAP vía rdap.org (control `cash.app` → 200; cadena al azar → 404) | **todos tomados**: los mismos + golo, tanda, saque, trave, grada, palo, taco, volta, gol, ronda, tribuna, chute, toque, partita, ludico, vaselina (¡sólo vaselina.app está libre!) |
-| `.club` | idem (control `google.club` → 200) | **sólo `grada.club`** |
+**Resultado: ningún nombre de una palabra, pegadizo y pronunciable, tiene `.com` ni `.app` libre.**
+Ni los del rubro, ni los inventados cortos (golvo, kanvo, balvo, piklo, ludra, juglo), ni los
+patrones que suelen quedar libres (`get<algo>.com`, `<algo>hq.com`). Los `.com` de 4-6 letras son un
+activo financiero y están registrados en bloque.
 
-No es mala suerte: los `.com` de 4-6 letras son un activo financiero y están registrados en bloque.
-**Ningún nombre de una palabra que sea a la vez pegadizo y pronunciable tiene `.com` ni `.app` libre.**
+**Donde sí hay lugar es en `.club`** (y en nombres compuestos raros). Libres, verificados:
 
-**La regla que desbloquea todo:** el nombre de la app **no tiene que ser el dominio**. Strava no es
-strava.com por obligación; en la práctica usás el dominio para la política de privacidad, el mail de
-Resend y poco más. Verificado libre para eso: **`golohq.com`** y **`getgrada.com`**.
+```
+nivel.club     juego.club     junte.club     garra.club     grada.club     findehq.com
+```
 
-### 11.3 Finalistas (una palabra, fonética universal)
+Y la regla que ya está en 11.3: **el nombre de la app no tiene que ser el dominio.**
 
-Criterio fonético: sílabas abiertas (consonante + vocal), sólo `a e i o u`, sin tildes, sin dígrafos
-ambiguos (`j`, `z`, `ll`, `ñ`), y `g` dura en todos los idiomas antes de `o`/`a`.
+### 11.3 Candidatos sin nada de fútbol (una palabra, multi-deporte)
 
-| Nombre | Cómo se lee | Qué significa | Marca | Dominio verificado |
+| Nombre | Lectura | Por qué sirve para cualquier deporte | Dominio | Colisiones |
 |---|---|---|---|---|
-| **Golo** | GO-lo, idéntico en es/en/pt/fr/it/de | "gol" en portugués; se asocia a gol/goal en todo el mundo | Débil (casi genérica) y **GOLO es una marca de nutrición en EE.UU.** | `golohq.com` **libre** · `golo.com`/`.app` tomados |
-| **Grada** | GRA-da, idéntico en es/pt/it | las gradas, donde está la gente | Media: más distintiva en inglés | `grada.club` **libre** · `getgrada.com` **libre** |
-| Tanda | TAN-da | tanda de penales (es); serie/turno (pt) | Hay una fintech llamada Tanda en África | sin dominio fácil (`tandahq`, `tandaapp` tomados) |
+| **Nivel** | NI-vel, igual en es/en/fr/it (pt: *nível*) | Las categorías por nivel existen en pádel, tenis, básquet y fútbol. Además resuelve el problema real del amateur: anotarse en la categoría equivocada | `nivel.club` **libre** | una app de nivel de burbuja ("Nivel") en Play; el sufijo del título lo resuelve |
+| **Juego** | JUE-go | La palabra más neutra que existe: sirve para tenis, pádel y ping-pong | `juego.club` **libre** | muy genérica (marca débil) y "juego" roza el azar |
+| **Junte** | JUN-te | "Un junte para jugar" — la juntada deportiva, sin deporte fijo | `junte.club` **libre** | regional (UY/AR), cero fuera del Río de la Plata |
+| **Garra** | GA-rra | Actitud deportiva, no un deporte | `garra.club` **libre** | en LatAm suena a fútbol ("garra charrúa") |
+| Grada | GRA-da | Las gradas de cualquier cancha | `grada.club` **libre** | se asocia a estadio de fútbol |
+| Pulso · Reto · Tribu · Zona · Plan · Finde | — | buenos fonéticamente | `.com`/`.app` tomados; `pulso.club`, `reto.club`, `tribu.club`, `zona.club` también | **Pulso**: 4 apps (fitness, salud, pulso de fuerza). **Reto**: 4 apps de retos fitness. **Tribu**: 2 apps (una de Bpifrance) |
 
-**Recomendación: Golo + `golohq.com`.** Es la que gana en "máximos lenguajes": cuatro letras, dos
-sílabas abiertas, cero letras ambiguas, y el concepto gol/goal se entiende sin traducir en casi
-cualquier país donde se juegue al fútbol. Título de tienda: `Golo — torneos` (15 caracteres, deja
-lugar para "fútbol" o "pádel" según el mercado).
+**Recomendación: Nivel.** Es la única que cumple las cuatro cosas: una palabra, se lee igual en
+cinco idiomas, no huele a fútbol y tiene dominio libre. Y tiene un argumento de producto: en el
+amateur el problema número uno es el nivel — quien se anota en la categoría equivocada no vuelve.
+Ojo: para que el nombre sea verdad hay que **agregar un campo de nivel al torneo** (columna
+`level text`, selector en el formulario y filtro en Explore). Son 3-4 h y convierte el nombre en una
+función que la gente usa.
 
-Si te importa más poder defender la marca que la pegada inmediata: **Grada**, que además tiene
-`grada.club` y `getgrada.com` libres y suena menos genérica en inglés.
+Alternativa si preferís máxima neutralidad aunque sea más genérica: **Juego**. Si querés algo con
+más pulso local y te importa menos lo global: **Junte**.
 
-Ojo con dos cosas de Golo: (1) al ser casi una palabra común, la marca es difícil de registrar y de
-defender — para un proyecto que recién arranca eso se acepta, pero sabiéndolo; (2) antes de comprar
-nada, búsqueda de marca en **INPI (UY)**, **USPTO (EE.UU.)** y **EUIPO (UE)**, clases 9 y 41. Es
-gratis y son 20 minutos.
+### 11.4 Icono: nada de pelota
 
-### 11.4 Iconos (archivos en `store/logo-concepts/`)
+Con un producto multi-deporte, el icono tiene que hablar de **eventos cerca tuyo**, no de fútbol.
+Probé cuatro y los miré a 48 px reales:
 
-| Concepto | Para | A 48 px | Archivo |
+| Concepto | Qué dice | A 48 px | Veredicto |
 |---|---|---|---|
-| **La pelota** (círculo menta + pentágono y 5 costuras) | **Golo** | **el más legible de todos**: se lee pelota incluso a 24 px | `golo-pelota.svg` |
-| Pin con círculo central | cualquier nombre | muy bueno | `a-pin-limpio.svg` + `a-pin-foreground.svg` + `a-pin-monocromo.svg` |
-| Cancha mínima | Grada / nombres de cancha | se lee, más ruido | `b-cancha-minima.svg` |
-| Cancha con pelota saliendo | La Otra Cancha | se lee | `otra-cancha-a-linea.svg` |
+| **Pin con triángulo de play** | "eventos para jugar, acá cerca" | se lee perfecto | **recomendado** — `n2-pin-play.svg` |
+| Calendario + pin | "evento + ubicación", lo más literal | se lee, pero el calendario es más ruidoso | alternativa: `n4-calendario-pin.svg` |
+| Baliza con ondas | suena a WiFi/señal, no a deporte | se lee bien pero es frío | descartado: `n1-baliza.svg` |
+| Dos chevrons enfrentados | se lee como "><" o como cerrar | confuso | descartado: `n3-versus.svg` |
 
-Para Golo el icono y el logo son lo mismo: la pelota. El wordmark va en Plus Jakarta Sans ExtraBold
-(`GOLO`), y el segundo `O` puede llevar el pentágono de la pelota en negativo.
+El pin con play funciona para pádel, tenis, básquet o fútbol porque no dibuja ningún deporte: dice
+"hay algo para jugar en este lugar". Y es el que mejor sobrevive a tamaño chico, que es la única
+métrica que importa en un ícono de app.
 
 Para aplicar: reemplazar `assets/icon.png` e `assets/icon_fg.png` y correr
 `dart run flutter_launcher_icons` + `dart run flutter_native_splash:create`.
 
 ### 11.5 Antes de decidir
 
-1. Comprar `golohq.com` (o el dominio elegido) el mismo día que decidas: no es el nombre, es la
-   casa de la política de privacidad y del remitente de Resend.
-2. Búsqueda de marca en INPI / USPTO / EUIPO, clases 9 y 41.
-3. Decí el nombre en voz alta a tres personas de países distintos y pediles que lo escriban. Si
-   alguien escribe "bolo", "goloh" o "yolo", no sirve.
-4. Recién ahí: renombrar label, display name, ficha y bundle id (todavía es gratis porque no hay
-   ningún upload).
+1. Comprar `nivel.club` (o el dominio elegido) el mismo día que decidas.
+2. Búsqueda de marca en INPI (UY), USPTO (EE.UU.) y EUIPO (UE), clases 9 y 41: gratis, 20 minutos.
+3. Decí el nombre en voz alta a tres personas de países distintos y pediles que lo escriban.
+4. Si elegís Nivel, agregá el campo de nivel al torneo antes de publicar (el nombre tiene que ser
+   verdad desde el día uno).
+5. Recién ahí: renombrar label, display name, ficha y bundle id (todavía es gratis: no hay upload).
