@@ -2,8 +2,12 @@ import 'dart:async';
 
 import 'package:bracket/core/utils/nav_geometry.dart';
 import 'package:bracket/data/repositories/mock/mock_store.dart';
+import 'package:bracket/data/repositories/mock/mock_tournament_repository.dart';
+import 'package:bracket/data/repositories/supabase/supabase_tournament_repository.dart';
+import 'package:bracket/data/repositories/tournament_repository.dart';
 import 'package:bracket/features/explore/explore_providers.dart';
 import 'package:bracket/features/tournament/tournament_detail_screen.dart';
+import 'package:bracket/models/tournament_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -468,5 +472,91 @@ void main() {
         );
       }
     });
+  });
+
+  // Server-side query contract (audit 4.8): the radius box, the page cap
+  // and the date cut live in the Supabase repository/mock, not in widgets.
+  group('Explore query (repository)', () {
+    test('the radius box circumscribes the circle around the user', () {
+      const center = LatLng(-34.9012, -56.1646); // Montevideo
+      final box = SupabaseTournamentRepository.boundingBox(center, 25);
+
+      // Symmetric around the center, which it contains.
+      expect(box.latMin, lessThan(center.latitude));
+      expect(box.latMax, greaterThan(center.latitude));
+      expect(
+        center.latitude - box.latMin,
+        moreOrLessEquals(box.latMax - center.latitude, epsilon: 1e-9),
+      );
+      expect(
+        center.longitude - box.lonMin,
+        moreOrLessEquals(box.lonMax - center.longitude, epsilon: 1e-9),
+      );
+
+      // Each latitude side covers the real worst-case km-per-degree
+      // (110.57 at the equator … 111.69 at the poles): a box even slightly
+      // too small would drop in-range events before the exact client-side
+      // circle filter could keep them.
+      expect(center.latitude - box.latMin, greaterThanOrEqualTo(25 / 110.57));
+
+      // Away from the equator a degree of longitude is shorter than one of
+      // latitude: the box must widen accordingly.
+      expect(
+        box.lonMax - center.longitude,
+        greaterThan(box.latMax - center.latitude),
+      );
+
+      // At 65° the longitude degree is under half the latitude one.
+      final north = SupabaseTournamentRepository.boundingBox(
+        const LatLng(65, -10),
+        25,
+      );
+      expect(
+        north.lonMax - north.lonMin,
+        greaterThan(2 * (north.latMax - north.latMin)),
+      );
+
+      // Wider radius → strictly wider box (chips: 5 / 10 / 25 km).
+      final small = SupabaseTournamentRepository.boundingBox(center, 5);
+      expect(small.latMin, greaterThan(box.latMin));
+      expect(small.latMax, lessThan(box.latMax));
+      expect(small.lonMin, greaterThan(box.lonMin));
+      expect(small.lonMax, lessThan(box.lonMax));
+    });
+
+    test('the Explore page is capped below the PostgREST cut', () {
+      // PostgREST stops at 1000 rows: the cap must stay well under it so
+      // results stay a bounded page, not an arbitrary slice.
+      expect(SupabaseTournamentRepository.exploreLimit, 200);
+      expect(SupabaseTournamentRepository.exploreLimit, lessThan(1000));
+    });
+
+    test(
+      'Explore drops events that already ended; the owner keeps them',
+      () async {
+        final store = MockStore();
+        final repository = MockTournamentRepository(store);
+        store.tournaments.add(
+          TournamentModel(
+            id: 'past-1',
+            ownerId: 'u-org-1',
+            sport: 'football',
+            title: 'Torneo terminado',
+            startTime: DateTime.now().subtract(const Duration(days: 3)),
+            endTime: DateTime.now().subtract(const Duration(days: 2)),
+          ),
+        );
+
+        // The date cut (end_time >= now) mirrors the Supabase query.
+        final explore = await repository.fetchTournaments(
+          const TournamentQuery(),
+        );
+        expect(explore.any((t) => t.id == 'past-1'), isFalse);
+
+        // The organizer's list keeps the full history (no date cut there).
+        final owned = await repository.fetchByOwner('u-org-1');
+        expect(owned.any((t) => t.id == 'past-1'), isTrue);
+      },
+    );
   });
 }

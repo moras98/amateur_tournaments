@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:bracket/data/repositories/tournament_repository.dart';
 import 'package:bracket/models/tournament_model.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Supabase-backed tournaments (`public.tournaments` + the `spots_left`
@@ -17,9 +20,24 @@ class SupabaseTournamentRepository implements TournamentRepository {
   /// and 'spots_left'"). An explicit query is deterministic.
   static const _select = '*';
 
+  /// Cap for one Explore fetch. PostgREST cuts any response at 1000 rows,
+  /// and the distance filter/sort runs client-side: without an explicit
+  /// limit, a growing table hands each user an arbitrary slice ordered by
+  /// date — never the nearby events the screen promises, and with no error
+  /// to say so. 200 rows by start_time (indexed since 0002) keeps the page
+  /// bounded; a PostGIS `order by location <->` RPC remains the upgrade
+  /// path for true distance ordering.
+  static const exploreLimit = 200;
+
   @override
   Future<List<TournamentModel>> fetchTournaments(TournamentQuery query) async {
-    var request = _client.from('tournaments').select(_select);
+    // Only what's still running or upcoming: past events drop out of
+    // Explore. `fetchByOwner` deliberately doesn't filter — the organizer
+    // keeps their history.
+    var request = _client
+        .from('tournaments')
+        .select(_select)
+        .gte('end_time', DateTime.now().toUtc().toIso8601String());
 
     final sports = query.sports;
     if (sports.isNotEmpty) {
@@ -39,15 +57,33 @@ class SupabaseTournamentRepository implements TournamentRepository {
       );
     }
 
-    final rows = await request.order('start_time');
+    // Radius search → server-side bounding box circumscribing the radius
+    // ([boundingBox]): the rows that arrive are the ones that *can* be in
+    // range (indexes in migration 0008), instead of an arbitrary table
+    // slice. Only when a radius is actually set — with "any distance" a
+    // box would hide the city/text searches that legitimately reach far.
+    // The exact circle still filters client-side (mock parity), so the
+    // box only has to contain it, never match it.
+    final near = query.near;
+    final maxKm = query.maxDistanceKm;
+    if (near != null && maxKm != null) {
+      final box = boundingBox(near, maxKm);
+      request = request
+          .gte('latitude', box.latMin)
+          .lte('latitude', box.latMax)
+          .gte('longitude', box.lonMin)
+          .lte('longitude', box.lonMax);
+    }
+
+    final rows = await request.order('start_time').limit(exploreLimit);
     final counts = await _confirmedCounts(
       rows.map((row) => row['id'] as String),
     );
     var results = rows.map((row) => _fromRow(row, counts)).toList();
 
-    // Distance sorting/filtering happens client-side (mock parity); a
-    // PostGIS `order by location <->` RPC is the upgrade path.
-    final near = query.near;
+    // Distance sorting/filtering happens client-side (mock parity) on top
+    // of the server-side box above; a PostGIS `order by location <->` RPC
+    // is the upgrade path.
     if (near != null) {
       results =
           results.where((t) {
@@ -68,6 +104,32 @@ class SupabaseTournamentRepository implements TournamentRepository {
       results = results.where((t) => t.isOpen).toList();
     }
     return results;
+  }
+
+  /// Axis-aligned lat/lon box that fully contains the circle of
+  /// [radiusKm] around [center] — the server-side pre-filter for a radius
+  /// search (see [fetchTournaments]).
+  ///
+  /// Latitude uses a deliberately conservative km-per-degree (the real
+  /// figure wobbles around 111.3): a box even slightly too small would
+  /// drop in-range events before the client-side circle filter could keep
+  /// them. The longitude half-width divides by cos of the *poleward* edge
+  /// latitude, where a degree of longitude is shortest — that's where the
+  /// circle bulges widest in longitude.
+  static ({double latMin, double latMax, double lonMin, double lonMax})
+  boundingBox(LatLng center, double radiusKm) {
+    const kmPerDegree = 110.5;
+    final dLat = radiusKm / kmPerDegree;
+    final edgeCos = cos(
+      (center.latitude.abs() + dLat) * pi / 180,
+    ).clamp(0.05, 1.0);
+    final dLon = radiusKm / (kmPerDegree * edgeCos);
+    return (
+      latMin: center.latitude - dLat,
+      latMax: center.latitude + dLat,
+      lonMin: center.longitude - dLon,
+      lonMax: center.longitude + dLon,
+    );
   }
 
   @override

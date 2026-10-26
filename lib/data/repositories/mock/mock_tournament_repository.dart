@@ -13,6 +13,11 @@ class MockTournamentRepository implements TournamentRepository {
   Future<List<TournamentModel>> fetchTournaments(TournamentQuery query) async {
     var results = List<TournamentModel>.of(_store.tournaments);
 
+    // Server parity (audit 4.8): Explore only shows what hasn't ended —
+    // `fetchByOwner` keeps the organizer's full history.
+    final now = DateTime.now();
+    results = results.where((t) => !t.endTime.isBefore(now)).toList();
+
     final sports = query.sports;
     if (sports.isNotEmpty) {
       results = results.where((t) => sports.contains(t.sport)).toList();

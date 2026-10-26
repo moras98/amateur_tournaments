@@ -85,6 +85,13 @@ Run the migrations in order (Supabase SQL editor, or `supabase db push`):
    `username_taken` security-definer functions powering the sign-up form's
    live "already in use" hints (best effort: without them the app just
    skips the hint — sign-up and profile save still enforce uniqueness).
+7. `supabase/migrations/0007_signup_metadata.sql` — recreates
+   `handle_new_user()` so the sign-up form's metadata (username, birth
+   date, gender, sports) reaches `profiles` at account creation — the
+   **sign-up data-loss fix** for the confirm-email path.
+8. `supabase/migrations/0008_explore_indexes.sql` — indexes behind the
+   Explore query: `end_time` (date cut), `latitude`/`longitude` (radius
+   box), plus 0002's `start_time` for the 200-row ordered page.
 
 All are idempotent (`if not exists` / `drop policy if exists`) — safe to
 re-run. Tournament locations are plain `latitude`/`longitude` columns; **no
@@ -115,7 +122,7 @@ starts empty); returning users go straight to their destination.
 
 ```bash
 flutter analyze
-flutter test        # 116 tests
+flutter test        # 119 tests
 ```
 
 Widget tests drive the app through `test/support/harness.dart`
