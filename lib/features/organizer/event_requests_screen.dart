@@ -18,6 +18,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tande/core/widgets/tande_toast.dart';
+import 'package:tande/core/widgets/fade_scroll_row.dart';
 
 enum _RequestsView { pending, confirmed, rejected, waitlisted }
 
@@ -195,37 +196,33 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
           // centered second run on narrow phones.
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                spacing: 8,
-                children: [
-                  ChoiceChip(
-                    label: Text(l10n.filterPending),
-                    selected: _view == _RequestsView.pending,
-                    onSelected: (_) =>
-                        setState(() => _view = _RequestsView.pending),
-                  ),
-                  ChoiceChip(
-                    label: Text(l10n.filterWaitlist),
-                    selected: _view == _RequestsView.waitlisted,
-                    onSelected: (_) =>
-                        setState(() => _view = _RequestsView.waitlisted),
-                  ),
-                  ChoiceChip(
-                    label: Text(l10n.filterConfirmed),
-                    selected: _view == _RequestsView.confirmed,
-                    onSelected: (_) =>
-                        setState(() => _view = _RequestsView.confirmed),
-                  ),
-                  ChoiceChip(
-                    label: Text(l10n.filterRejected),
-                    selected: _view == _RequestsView.rejected,
-                    onSelected: (_) =>
-                        setState(() => _view = _RequestsView.rejected),
-                  ),
-                ],
-              ),
+            child: FadeScrollRow(
+              children: [
+                ChoiceChip(
+                  label: Text(l10n.filterPending),
+                  selected: _view == _RequestsView.pending,
+                  onSelected: (_) =>
+                      setState(() => _view = _RequestsView.pending),
+                ),
+                ChoiceChip(
+                  label: Text(l10n.filterWaitlist),
+                  selected: _view == _RequestsView.waitlisted,
+                  onSelected: (_) =>
+                      setState(() => _view = _RequestsView.waitlisted),
+                ),
+                ChoiceChip(
+                  label: Text(l10n.filterConfirmed),
+                  selected: _view == _RequestsView.confirmed,
+                  onSelected: (_) =>
+                      setState(() => _view = _RequestsView.confirmed),
+                ),
+                ChoiceChip(
+                  label: Text(l10n.filterRejected),
+                  selected: _view == _RequestsView.rejected,
+                  onSelected: (_) =>
+                      setState(() => _view = _RequestsView.rejected),
+                ),
+              ],
             ),
           ),
           Expanded(

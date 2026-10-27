@@ -226,6 +226,11 @@ Rules:
   stacked label/value rows read like a settings screen. Labels are
   `labelSmall` with a 15 px `onSurfaceVariant` icon — no primary-colored icon
   rows competing with the screen's one primary action.
+- **Filter chips** — never a `Wrap`: on a 390 pt phone the chips would stack
+  into a centered second run. They live in `FadeScrollRow`, a one-line scroll
+  whose cut edge **fades out** (only on the side that has content behind it,
+  and only while it overflows). A chip sliced by the viewport edge reads as a
+  layout bug; the fade reads as "there is another filter".
 - **Off-app counter (requests)** — icon squircle + short label on the left and
   `− n +` grouped as **one tinted pill** on the right; the help line sits
   underneath, aligned past the icon. Two l10n keys on purpose:
@@ -414,5 +419,6 @@ anotaste a nada", never "No hay resultados."
 | Sport sticker / player avatar (squircle) | `lib/core/widgets/sport_sticker.dart` |
 | Toast (transient feedback) | `lib/core/widgets/tande_toast.dart` |
 | Empty state | `lib/core/widgets/tande_empty_state.dart` |
+| Scrolling filter row with edge fade | `lib/core/widgets/fade_scroll_row.dart` |
 | Design review renders (skip by default) | `test/design_preview_test.dart` → `flutter test test/design_preview_test.dart --dart-define=DESIGN_PREVIEW=true --update-goldens` writes `test/goldens/*.png` (gitignored; look at them before shipping a UI change) |
 | This document | `design.md` |

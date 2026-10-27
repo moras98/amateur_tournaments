@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tande/core/widgets/tande_empty_state.dart';
+import 'package:tande/core/widgets/fade_scroll_row.dart';
 
 enum _StatusFilter { all, pending, confirmed }
 
@@ -78,32 +79,27 @@ class _MyInscriptionsScreenState extends ConsumerState<MyInscriptionsScreen> {
                     padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
                     // Single scrolling row: a Wrap would stack the chips on a second
                     // (centered) run on narrow phones — filters stay side by side.
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        spacing: 8,
-                        children: [
-                          ChoiceChip(
-                            label: Text(l10n.filterAll),
-                            selected: _filter == _StatusFilter.all,
-                            onSelected: (_) =>
-                                setState(() => _filter = _StatusFilter.all),
-                          ),
-                          ChoiceChip(
-                            label: Text(l10n.filterPending),
-                            selected: _filter == _StatusFilter.pending,
-                            onSelected: (_) =>
-                                setState(() => _filter = _StatusFilter.pending),
-                          ),
-                          ChoiceChip(
-                            label: Text(l10n.filterConfirmed),
-                            selected: _filter == _StatusFilter.confirmed,
-                            onSelected: (_) => setState(
-                              () => _filter = _StatusFilter.confirmed,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: FadeScrollRow(
+                      children: [
+                        ChoiceChip(
+                          label: Text(l10n.filterAll),
+                          selected: _filter == _StatusFilter.all,
+                          onSelected: (_) =>
+                              setState(() => _filter = _StatusFilter.all),
+                        ),
+                        ChoiceChip(
+                          label: Text(l10n.filterPending),
+                          selected: _filter == _StatusFilter.pending,
+                          onSelected: (_) =>
+                              setState(() => _filter = _StatusFilter.pending),
+                        ),
+                        ChoiceChip(
+                          label: Text(l10n.filterConfirmed),
+                          selected: _filter == _StatusFilter.confirmed,
+                          onSelected: (_) =>
+                              setState(() => _filter = _StatusFilter.confirmed),
+                        ),
+                      ],
                     ),
                   ),
                   Expanded(
