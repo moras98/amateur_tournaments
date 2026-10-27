@@ -1785,6 +1785,12 @@ abstract class AppLocalizations {
   /// **'Confirmados fuera de la app'**
   String get outsideTitle;
 
+  /// No description provided for @outsideShortTitle.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Fuera de la app'**
+  String get outsideShortTitle;
+
   /// No description provided for @outsideHelp.
   ///
   /// In es_UY, this message translates to:

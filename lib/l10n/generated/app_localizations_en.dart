@@ -940,6 +940,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get outsideTitle => 'Confirmed off-app';
 
   @override
+  String get outsideShortTitle => 'Off-app';
+
+  @override
   String get outsideHelp =>
       'Teams you confirmed yourself (cash, in person, WhatsApp).';
 

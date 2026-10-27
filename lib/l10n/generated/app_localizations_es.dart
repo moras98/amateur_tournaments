@@ -951,6 +951,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get outsideTitle => 'Confirmados fuera de la app';
 
   @override
+  String get outsideShortTitle => 'Fuera de la app';
+
+  @override
   String get outsideHelp =>
       'Equipos que confirmaron por tu cuenta (efectivo, en persona, WhatsApp).';
 
@@ -2038,6 +2041,9 @@ class AppLocalizationsEsUy extends AppLocalizationsEs {
 
   @override
   String get outsideTitle => 'Confirmados fuera de la app';
+
+  @override
+  String get outsideShortTitle => 'Fuera de la app';
 
   @override
   String get outsideHelp =>

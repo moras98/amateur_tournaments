@@ -328,6 +328,7 @@
   "confirm": "Confirmar",
   "reject": "Rechazar",
   "outsideTitle": "Confirmados fuera de la app",
+  "outsideShortTitle": "Fuera de la app",
   "outsideHelp": "Equipos que confirmaron por tu cuenta (efectivo, en persona, WhatsApp).",
   "decreaseOne": "Quitar uno",
   "increaseOne": "Agregar uno",

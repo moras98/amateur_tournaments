@@ -758,66 +758,56 @@ class _ManualCountTile extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final manual = tournament.manualConfirmed;
 
-    return Material(
-      color: theme.colorScheme.surfaceContainerHighest,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: () => _editDialog(context),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 8, 4, 8),
-          child: Row(
-            children: [
-              Icon(
-                Icons.group_add_outlined,
-                size: 20,
-                color: theme.colorScheme.onSurfaceVariant,
+    final scheme = theme.colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(11),
+                color: scheme.onSurfaceVariant.withValues(alpha: 0.09),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(l10n.outsideTitle, style: theme.textTheme.labelLarge),
-                    Text(
-                      l10n.outsideHelp,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
+              child: Icon(
+                Icons.person_add_alt_1_rounded,
+                size: 18,
+                color: scheme.onSurfaceVariant,
               ),
-              IconButton(
-                key: const Key('manual-remove'),
-                tooltip: l10n.decreaseOne,
-                visualDensity: VisualDensity.compact,
-                onPressed: manual <= 0 ? null : () => onChanged(manual - 1),
-                icon: const Icon(Icons.remove),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                l10n.outsideShortTitle,
+                style: theme.textTheme.labelLarge,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              InkWell(
-                key: const Key('manual-count'),
-                borderRadius: BorderRadius.circular(8),
-                onTap: () => _editDialog(context),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
-                  ),
-                  child: Text('$manual', style: theme.textTheme.titleMedium),
-                ),
-              ),
-              IconButton(
-                key: const Key('manual-add'),
-                tooltip: l10n.increaseOne,
-                visualDensity: VisualDensity.compact,
-                onPressed: manual >= _max ? null : () => onChanged(manual + 1),
-                icon: const Icon(Icons.add),
-              ),
-            ],
+            ),
+            const SizedBox(width: 8),
+            _CountStepper(
+              value: manual,
+              onDecrement: manual <= 0 ? null : () => onChanged(manual - 1),
+              onIncrement: manual >= _max ? null : () => onChanged(manual + 1),
+              onEdit: () => _editDialog(context),
+            ),
+          ],
+        ),
+        Padding(
+          // Aligned with the title, past the icon.
+          padding: const EdgeInsets.only(left: 44, top: 4),
+          child: Text(
+            l10n.outsideHelp,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: scheme.onSurfaceVariant,
+              height: 1.35,
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 
@@ -842,6 +832,110 @@ class _ManualCountTile extends StatelessWidget {
 
 /// Numeric dialog behind the manual-count tile: clamps to [max] (spare
 /// capacity) and returns null on cancel or a non-numeric entry.
+/// The ±1 control and the tap-to-type number, grouped as one segmented pill.
+///
+/// They used to be two bare [IconButton]s and a loose number floating in the
+/// tile: three affordances for one value, which is what made the block read
+/// as a form dropped into a summary card. In a tinted pill the whole thing is
+/// one object you can point at.
+class _CountStepper extends StatelessWidget {
+  const _CountStepper({
+    required this.value,
+    required this.onDecrement,
+    required this.onIncrement,
+    required this.onEdit,
+  });
+
+  final int value;
+  final VoidCallback? onDecrement;
+  final VoidCallback? onIncrement;
+  final VoidCallback onEdit;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _StepButton(
+            buttonKey: const Key('manual-remove'),
+            tooltip: l10n.decreaseOne,
+            icon: Icons.remove_rounded,
+            onPressed: onDecrement,
+          ),
+          InkWell(
+            key: const Key('manual-count'),
+            borderRadius: BorderRadius.circular(10),
+            onTap: onEdit,
+            child: Container(
+              constraints: const BoxConstraints(minWidth: 26),
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              alignment: Alignment.center,
+              child: Text(
+                '$value',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+          _StepButton(
+            buttonKey: const Key('manual-add'),
+            tooltip: l10n.increaseOne,
+            icon: Icons.add_rounded,
+            onPressed: onIncrement,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StepButton extends StatelessWidget {
+  const _StepButton({
+    required this.buttonKey,
+    required this.tooltip,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  /// Lives on the [IconButton] itself: tests and tooling look it up as an
+  /// `IconButton` to assert enabled/disabled state.
+  final Key buttonKey;
+  final String tooltip;
+  final IconData icon;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return IconButton(
+      key: buttonKey,
+      tooltip: tooltip,
+      onPressed: onPressed,
+      iconSize: 18,
+      visualDensity: VisualDensity.compact,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+      style: IconButton.styleFrom(
+        foregroundColor: scheme.onSurface,
+        disabledForegroundColor: scheme.onSurfaceVariant.withValues(
+          alpha: 0.35,
+        ),
+      ),
+      icon: Icon(icon),
+    );
+  }
+}
+
 class _ManualCountDialog extends StatefulWidget {
   const _ManualCountDialog({
     required this.initial,

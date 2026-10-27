@@ -226,6 +226,12 @@ Rules:
   stacked label/value rows read like a settings screen. Labels are
   `labelSmall` with a 15 px `onSurfaceVariant` icon — no primary-colored icon
   rows competing with the screen's one primary action.
+- **Off-app counter (requests)** — icon squircle + short label on the left and
+  `− n +` grouped as **one tinted pill** on the right; the help line sits
+  underneath, aligned past the icon. Two l10n keys on purpose:
+  `outsideShortTitle` for the row (a long title truncates against the pill)
+  and `outsideTitle` for the dialog that explains the whole thing. Three loose
+  controls for a single number is what made the summary card read as a form.
 - **Detail hero** — 208 tall, radius 20, and always one block: the banner
   photo under a bottom scrim (`0x00000000 → 0x8A000000`, stops .30→1) **or**
   the brand gradient with the pitch watermark (`_PitchLines`: halfway line +
