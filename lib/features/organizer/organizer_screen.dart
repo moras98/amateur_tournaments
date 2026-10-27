@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:tande/core/constants.dart';
-import 'package:tande/core/sports.dart';
+import 'package:tande/core/widgets/sport_sticker.dart';
 import 'package:tande/core/utils/format.dart';
 import 'package:tande/core/utils/nav_geometry.dart';
 import 'package:tande/core/widgets/search_capsule.dart';
@@ -393,17 +393,7 @@ class _EventCard extends ConsumerWidget {
               padding: const EdgeInsets.all(12),
               child: Row(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: sportColor(event.sport).withValues(alpha: 0.15),
-                    ),
-                    child: Icon(
-                      sportIcon(event.sport),
-                      color: sportColor(event.sport),
-                    ),
-                  ),
+                  SportSticker(sport: event.sport),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(

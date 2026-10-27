@@ -1983,6 +1983,12 @@ abstract class AppLocalizations {
   /// **'Poné un nombre para que el organizador te identifique.'**
   String get teamNameRequired;
 
+  /// No description provided for @spotsLeftLabel.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'lugares libres'**
+  String get spotsLeftLabel;
+
   /// No description provided for @noSpotsAvailable.
   ///
   /// In es_UY, this message translates to:

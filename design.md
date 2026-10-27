@@ -101,6 +101,7 @@ Rules:
 | 24 | Dialogs |
 | 28 | Bottom sheets (top corners) |
 | 16 | Inline media (maps, images) |
+| `side × 0.32` | Sport sticker and player avatar (44 → 14) |
 
 ## 6. Elevation & surfaces
 
@@ -163,9 +164,12 @@ Rules:
   row** (never a `Wrap`, which stacks them into a centered second run on
   narrow phones).
 - **Hero headers** — rounded-rect (20–24 radius) block with
-  `AppGradients.brand` and white content: login, signup and profile put
-  the title/identity on top of it. Any new full-bleed header follows the
-  same recipe; content inside is never a scheme role (it's white).
+  `AppGradients.brand` and white content: login, signup, profile and the
+  tournament detail put the title/identity on top of it. Any new full-bleed
+  header follows the same recipe; content inside is never a scheme role (it's
+  white). The detail variant adds the pitch watermark and the scoreboard (see
+  the cards section) and swaps the gradient for the banner photo + scrim when
+  the organizer uploaded one.
 - **Form sections** — each block starts with a section label in bold
   `primary` (`_sectionLabel`).
 - **Password rules** (sign-up) — 8+ characters with an uppercase, a
@@ -196,9 +200,38 @@ Rules:
   edit form runs the same username check excluding its own handle. New
   accounts land in the app already complete; the shared field widgets live
   in `features/auth/widgets/profile_fields.dart`.
-- **Cards** (event card) — title (titleMedium), meta row (icon 16 +
-  labelSmall: sport · date · city), cost bottom-left (`formatCost`), spots
-  badge bottom-right (see status colors). Whole card is the tap target.
+- **Cards** (event card) — **two columns, not a stack of rows**: left =
+  identity (sport sticker + title + two meta lines), right = the two numbers
+  that decide a tap (price, bold, top-aligned with the title; spots badge
+  right under it). A one-column Material list item leaves half the card empty
+  and buries the price next to the badge. Meta lines are `icon 14 +
+  bodySmall`, one line each, and the **city comes before the venue**
+  ("Montevideo • Canchas Cordón") because the venue truncates first and the
+  city is the discovery information. Distance folds into the date line
+  (`fecha  •  2,3 km`). The optional banner is a full-bleed strip on top
+  (`radius: 0`, the Card clips it) and the card simply starts at the content
+  when there is none — never a placeholder strip. Whole card is the tap
+  target.
+- **Sport sticker** — the sport glyph lives in a **squircle**, not
+  `CircleAvatar`: `SportSticker` (`core/widgets/sport_sticker.dart`), side 44,
+  radius `side * 0.32`, sport color at 14% fill + 28% hairline border, glyph
+  at `side * 0.52`. Same widget in the Explore card, the organizer's event
+  row, "Mis inscripciones" and the detail hero (`onBrand: true` → white on a
+  translucent fill, because scheme roles vanish on a photo or the gradient).
+  Map markers stay **circular**: they are pins on a map, not cards.
+- **Player avatar** (request card) — the same squircle recipe (44, radius 14,
+  `secondaryContainer`, bold initial), never `CircleAvatar`.
+- **Detail hero** — 208 tall, radius 20, and always one block: the banner
+  photo under a bottom scrim (`0x00000000 → 0x8A000000`, stops .30→1) **or**
+  the brand gradient with the pitch watermark (`_PitchLines`: halfway line +
+  centre circle, 10% white, stroke 3, off-centre at 62% width). The scrim goes
+  **only over photos** — on the gradient it flattens the one brand asset the
+  screen has. Content sits in the hero: sport sticker (Hero tag
+  `sport-<id>`), title (headlineSmall 700, white, 2 lines) and two
+  translucent white tags on the left, and a **scoreboard** on the right —
+  spots left as a `displaySmall` number over the "lugares libres" caption, or
+  the status word (`Completo` / `Cerrado`) in `titleLarge`. That right-hand
+  number is what stops the block from reading as a decorative rectangle.
 - **Status badges/chips** — use the enum getters
   (`TournamentStatus.label`, `InscriptionStatus.label`); colors:
   open/confirmed `primaryContainer`, full/pending `tertiaryContainer`,
@@ -354,4 +387,6 @@ button while saving.
 | UI strings (es_UY source + English) | `lib/l10n/app_es_UY.arb`, `lib/l10n/app_en.arb` → `flutter gen-l10n` |
 | Sport/status/country vocabulary | `lib/l10n/labels.dart` |
 | App icon/splash (`#1B8A5A`) | `assets/icon*.png`, `pubspec.yaml` |
+| Sport sticker / player avatar (squircle) | `lib/core/widgets/sport_sticker.dart` |
+| Design review renders (skip by default) | `test/design_preview_test.dart` → `flutter test test/design_preview_test.dart --dart-define=DESIGN_PREVIEW=true --update-goldens` writes `test/goldens/*.png` (gitignored; look at them before shipping a UI change) |
 | This document | `design.md` |

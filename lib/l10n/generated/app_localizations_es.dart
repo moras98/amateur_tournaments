@@ -1083,6 +1083,9 @@ class AppLocalizationsEs extends AppLocalizations {
       'Poné un nombre para que el organizador te identifique.';
 
   @override
+  String get spotsLeftLabel => 'lugares libres';
+
+  @override
   String get noSpotsAvailable => 'No hay lugares disponibles';
 
   @override
@@ -2167,6 +2170,9 @@ class AppLocalizationsEsUy extends AppLocalizationsEs {
   @override
   String get teamNameRequired =>
       'Poné un nombre para que el organizador te identifique.';
+
+  @override
+  String get spotsLeftLabel => 'lugares libres';
 
   @override
   String get noSpotsAvailable => 'No hay lugares disponibles';

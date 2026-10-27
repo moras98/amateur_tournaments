@@ -649,12 +649,22 @@ class _RequestCard extends StatelessWidget {
     );
   }
 
-  Widget _avatar(ThemeData theme, String playerName) => CircleAvatar(
-    backgroundColor: theme.colorScheme.secondaryContainer,
+  /// Squircle, not `CircleAvatar`: the request card sits next to the event
+  /// cards, whose sports stickers are rounded squares — a Material circle
+  /// there reads as a leftover from another app.
+  Widget _avatar(ThemeData theme, String playerName) => Container(
+    width: 44,
+    height: 44,
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+      color: theme.colorScheme.secondaryContainer,
+      borderRadius: BorderRadius.circular(14),
+    ),
     child: Text(
       playerName.isEmpty ? '?' : playerName.substring(0, 1).toUpperCase(),
       style: theme.textTheme.titleMedium?.copyWith(
         color: theme.colorScheme.onSecondaryContainer,
+        fontWeight: FontWeight.w700,
       ),
     ),
   );

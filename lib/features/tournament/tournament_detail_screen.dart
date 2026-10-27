@@ -1,5 +1,6 @@
 import 'package:tande/core/map/tile_provider.dart';
-import 'package:tande/core/sports.dart';
+import 'package:tande/core/theme/app_gradients.dart';
+import 'package:tande/core/widgets/sport_sticker.dart';
 import 'package:tande/core/theme/adaptive.dart';
 import 'package:tande/core/utils/contact.dart';
 import 'package:tande/core/utils/format.dart';
@@ -253,61 +254,15 @@ class _TournamentDetailScreenState
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              // Banner (when the organizer uploaded one): flies in from
-              // the Explore card's strip through the shared Hero tag.
-              if (tournament.bannerPath != null) ...[
-                TournamentBanner(
-                  tournament: tournament,
-                  height: 160,
-                  radius: 16,
-                ),
-                const SizedBox(height: 16),
-              ],
-
-              // Header
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Hero(
-                    tag: 'sport-${tournament.id}',
-                    child: Container(
-                      width: 52,
-                      height: 52,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: sportColor(
-                          tournament.sport,
-                        ).withValues(alpha: 0.15),
-                      ),
-                      child: Icon(
-                        sportIcon(tournament.sport),
-                        color: sportColor(tournament.sport),
-                        size: 28,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          tournament.title,
-                          style: theme.textTheme.headlineSmall,
-                        ),
-                        const SizedBox(height: 8),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 4,
-                          children: [
-                            _Tag(label: l10n.sportLabel(tournament.sport)),
-                            _Tag(label: l10n.kindLabel(tournament.kind)),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              // Hero: one branded block instead of "banner + white header".
+              // With a banner it is the photo under a scrim; without one it is
+              // the brand gradient — never an empty green rectangle. The title
+              // lives inside it, which is what makes the screen feel designed
+              // rather than assembled from a stack of rows.
+              _TournamentHero(
+                tournament: tournament,
+                sportLabel: l10n.sportLabel(tournament.sport),
+                kindLabel: l10n.kindLabel(tournament.kind),
               ),
               const SizedBox(height: 16),
 
@@ -720,22 +675,228 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
-class _Tag extends StatelessWidget {
-  const _Tag({required this.label});
+/// One branded block for the top of the detail screen: the banner photo (or
+/// the brand gradient when there is none) under a scrim, with the sport
+/// sticker, the title and the two labels sitting on it in white.
+///
+/// The sticker keeps the `sport-<id>` Hero tag so it flies in from the card.
+class _TournamentHero extends StatelessWidget {
+  const _TournamentHero({
+    required this.tournament,
+    required this.sportLabel,
+    required this.kindLabel,
+  });
+
+  final TournamentModel tournament;
+  final String sportLabel;
+  final String kindLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final banner = tournament.bannerPath;
+    final hasBanner = banner != null && banner.isNotEmpty;
+    const height = 208.0;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: SizedBox(
+        height: height,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            if (hasBanner)
+              TournamentBanner(tournament: tournament, height: height, radius: 0)
+            else ...[
+              const DecoratedBox(
+                decoration: BoxDecoration(gradient: AppGradients.brand),
+              ),
+              // Signature: the pitch drawn on the brand block — a centre
+              // circle and the halfway line at 7% white, cropped by the card.
+              // Without it the gradient reads as a flat dark rectangle.
+              const Positioned.fill(
+                child: IgnorePointer(child: CustomPaint(painter: _PitchLines())),
+              ),
+            ],
+            // Scrim only over a photo: the brand gradient is already dark
+            // enough for white text, and a scrim on top of it flattens the
+            // one brand asset the screen has.
+            if (hasBanner)
+              const DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Color(0x00000000), Color(0x8A000000)],
+                    stops: [0.30, 1.0],
+                  ),
+                ),
+              ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Hero(
+                    tag: 'sport-${tournament.id}',
+                    child: SportSticker(
+                      sport: tournament.sport,
+                      size: 46,
+                      onBrand: true,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Scoreboard: identity on the left, the one number that
+                  // decides a tap on the right. A plain title block left the
+                  // right half of the hero empty, which is what made it read
+                  // as a decorative rectangle.
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              tournament.title,
+                              style: theme.textTheme.headlineSmall?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                height: 1.15,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 6,
+                              children: [
+                                _BrandTag(label: sportLabel),
+                                _BrandTag(label: kindLabel),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      _HeroStat(tournament: tournament),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Small translucent pill for content sitting on the hero. Never a scheme
+/// role: on a photo or the brand gradient those either disappear or clash.
+class _BrandTag extends StatelessWidget {
+  const _BrandTag({required this.label});
 
   final String label;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(8),
+        color: Colors.white.withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.30)),
       ),
-      child: Text(label, style: theme.textTheme.labelSmall),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+
+/// Halfway line + centre circle, huge and cropped, at 7% white. Drawn instead
+/// of an image so it scales with the hero and costs nothing.
+class _PitchLines extends CustomPainter {
+  const _PitchLines();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.10)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3;
+    // Halfway line off-centre to the right, so the block never looks split.
+    final x = size.width * 0.62;
+    canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
+    canvas.drawCircle(
+      Offset(x, size.height * 0.5),
+      size.height * 0.55,
+      paint,
+    );
+    canvas.drawCircle(
+      Offset(x, size.height * 0.5),
+      4,
+      Paint()..color = Colors.white.withValues(alpha: 0.10),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+/// The hero's right-hand number: spots left when open, otherwise the status
+/// word. Reads like a scoreboard, which is the app's subject matter.
+class _HeroStat extends StatelessWidget {
+  const _HeroStat({required this.tournament});
+
+  final TournamentModel tournament;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final t = tournament;
+
+    final isNumber = t.status != TournamentStatus.closed && !t.isFull;
+    final value = t.status == TournamentStatus.closed
+        ? l10n.tournamentStatus(TournamentStatus.closed)
+        : t.isFull
+        ? l10n.tournamentStatus(TournamentStatus.full)
+        : '${t.spotsLeft}';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          value,
+          style:
+              (isNumber
+                      ? theme.textTheme.displaySmall
+                      : theme.textTheme.titleLarge)
+                  ?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    height: 1,
+                  ),
+          maxLines: 1,
+        ),
+        if (isNumber) ...[
+          const SizedBox(height: 2),
+          Text(
+            l10n.spotsLeftLabel,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: Colors.white.withValues(alpha: 0.78),
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

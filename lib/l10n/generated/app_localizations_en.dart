@@ -1072,6 +1072,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Add a name so the organizer can identify you.';
 
   @override
+  String get spotsLeftLabel => 'spots left';
+
+  @override
   String get noSpotsAvailable => 'No spots available';
 
   @override
