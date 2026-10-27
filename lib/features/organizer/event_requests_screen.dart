@@ -19,6 +19,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tande/core/widgets/tande_toast.dart';
 import 'package:tande/core/widgets/fade_scroll_row.dart';
+import 'package:tande/core/widgets/contact_sheet.dart';
+import 'package:tande/models/contact_channel.dart';
 
 enum _RequestsView { pending, confirmed, rejected, waitlisted }
 
@@ -729,20 +731,35 @@ class _RequestCard extends StatelessWidget {
   Future<void> _contactPlayer(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
     final player = inscription.player;
-    if (player == null || !player.canBeContacted) return;
+    if (player == null || !player.hasContactChannels) return;
 
-    final opened = await openWhatsApp(
-      phone: player.phone,
-      message:
-          'Hola ${_playerName(l10n)}, tengo una novedad sobre tu inscripción '
-          'para "$eventTitle".',
+    final message =
+        'Hola ${_playerName(l10n)}, tengo una novedad sobre tu inscripción '
+        'para "$eventTitle".';
+
+    // Same rule as the organizer card: phone-only keeps the WhatsApp
+    // shortcut, and the chooser only appears when the player published
+    // another channel.
+    if (!player.hasExtraContactChannels) {
+      final opened = await openWhatsApp(phone: player.phone, message: message);
+      if (!opened && context.mounted) {
+        showTandeToast(
+          context,
+          l10n.whatsappOpenFailed(player.phone),
+          kind: ToastKind.error,
+        );
+      }
+      return;
+    }
+
+    final opened = await showContactSheet(
+      context: context,
+      title: l10n.contactSheetTitle(_playerName(l10n)),
+      channels: contactChannelsOf(player, linkLabel: l10n.contactLinkDefault),
+      message: message,
     );
-    if (!opened && context.mounted) {
-      showTandeToast(
-        context,
-        l10n.whatsappOpenFailed(player.phone),
-        kind: ToastKind.error,
-      );
+    if (opened == false && context.mounted) {
+      showTandeToast(context, l10n.contactOpenFailed, kind: ToastKind.error);
     }
   }
 }

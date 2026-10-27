@@ -947,6 +947,64 @@ class AppLocalizationsEn extends AppLocalizations {
       'Teams you confirmed yourself (cash, in person, WhatsApp).';
 
   @override
+  String get contactChannelsTitle => 'How people reach you';
+
+  @override
+  String get contactChannelsHelp =>
+      'Beyond your phone. Players see these under Contact.';
+
+  @override
+  String get contactAction => 'Contact';
+
+  @override
+  String contactSheetTitle(Object name) {
+    return 'Contact $name';
+  }
+
+  @override
+  String get contactWhatsApp => 'WhatsApp';
+
+  @override
+  String get contactCall => 'Call';
+
+  @override
+  String get contactInstagram => 'Instagram';
+
+  @override
+  String get contactTelegram => 'Telegram';
+
+  @override
+  String get contactLink => 'Open link';
+
+  @override
+  String get contactLinkDefault => 'Form or link';
+
+  @override
+  String get contactOpenFailed => 'We couldn\'t open that one. Try another.';
+
+  @override
+  String get instagramOptional => 'Instagram (optional)';
+
+  @override
+  String get instagramHint => '@yourclub';
+
+  @override
+  String get telegramOptional => 'Telegram (optional)';
+
+  @override
+  String get telegramHint => '@yourclub';
+
+  @override
+  String get contactUrlOptional => 'Form or link (optional)';
+
+  @override
+  String get contactUrlHelp =>
+      'A Google Form, a spreadsheet or the club\'s site.';
+
+  @override
+  String get contactUrlInvalid => 'Enter a valid link (https://…)';
+
+  @override
   String get decreaseOne => 'Remove one';
 
   @override

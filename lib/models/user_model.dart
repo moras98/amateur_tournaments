@@ -7,6 +7,9 @@ class UserModel {
     required this.gender,
     this.avatarUrl,
     this.phone = '',
+    this.instagram = '',
+    this.telegram = '',
+    this.contactUrl = '',
     this.isOrganizer = false,
     this.sports = const ['football'],
   });
@@ -21,11 +24,30 @@ class UserModel {
   /// International phone number, e.g. `5491122334455` (no `+`).
   /// Used for WhatsApp contact between players and organizers.
   final String phone;
+
+  /// Instagram handle without the `@` or the profile URL.
+  final String instagram;
+
+  /// Telegram username without the `@`.
+  final String telegram;
+
+  /// Any other way to reach this person or sign up: a Google Form, a club
+  /// site, a spreadsheet. Stored with its scheme (`https://…`).
+  final String contactUrl;
   final bool isOrganizer;
   final List<String> sports;
 
   bool get isComplete => username.isNotEmpty && birthDate != null;
+
+  /// Phone is the baseline every player has; the other channels are extras.
   bool get canBeContacted => phone.isNotEmpty;
+
+  /// True when there is any way at all to reach this person, phone or not.
+  bool get hasContactChannels =>
+      phone.isNotEmpty ||
+      instagram.isNotEmpty ||
+      telegram.isNotEmpty ||
+      contactUrl.isNotEmpty;
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -35,6 +57,9 @@ class UserModel {
       gender: json['gender'] as String? ?? '',
       avatarUrl: json['avatar_url'] as String?,
       phone: json['phone'] as String? ?? '',
+      instagram: json['instagram'] as String? ?? '',
+      telegram: json['telegram'] as String? ?? '',
+      contactUrl: json['contact_url'] as String? ?? '',
       isOrganizer: json['is_organizer'] as bool? ?? false,
       // `birth_date` is a Postgres `date`: keep the calendar date — parsing
       // a midnight ISO and converting to local would shift the day.
@@ -53,6 +78,9 @@ class UserModel {
       'gender': gender,
       'avatar_url': avatarUrl,
       'phone': phone,
+      'instagram': instagram,
+      'telegram': telegram,
+      'contact_url': contactUrl,
       'is_organizer': isOrganizer,
       'birth_date': birthDate?.toIso8601String(),
       'sports': sports,
@@ -68,6 +96,9 @@ class UserModel {
     String? gender,
     String? Function()? avatarUrl,
     String? phone,
+    String? instagram,
+    String? telegram,
+    String? contactUrl,
     bool? isOrganizer,
     List<String>? sports,
   }) {
@@ -79,6 +110,9 @@ class UserModel {
       birthDate: birthDate != null ? birthDate() : this.birthDate,
       avatarUrl: avatarUrl != null ? avatarUrl() : this.avatarUrl,
       phone: phone ?? this.phone,
+      instagram: instagram ?? this.instagram,
+      telegram: telegram ?? this.telegram,
+      contactUrl: contactUrl ?? this.contactUrl,
       isOrganizer: isOrganizer ?? this.isOrganizer,
       sports: sports ?? this.sports,
     );

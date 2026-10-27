@@ -226,6 +226,13 @@ Rules:
   stacked label/value rows read like a settings screen. Labels are
   `labelSmall` with a 15 px `onSurfaceVariant` icon — no primary-colored icon
   rows competing with the screen's one primary action.
+- **Contact sheet** — `showContactSheet`: the organizer (or player) picks the
+  channel: WhatsApp, call, Instagram, Telegram, or the link they published (a
+  Google Form, a spreadsheet, the club site). Rows are 14-radius
+  `surfaceContainerHigh` tiles with a mint squircle icon, the channel name and
+  the exact handle/URL underneath, so a typo is visible before the tap. **The
+  sheet only appears when there is a choice**: a phone on its own keeps the
+  one-tap WhatsApp path.
 - **Filter chips** — never a `Wrap`: on a 390 pt phone the chips would stack
   into a centered second run. They live in `FadeScrollRow`, a one-line scroll
   whose cut edge **fades out** (only on the side that has content behind it,
@@ -420,5 +427,7 @@ anotaste a nada", never "No hay resultados."
 | Toast (transient feedback) | `lib/core/widgets/tande_toast.dart` |
 | Empty state | `lib/core/widgets/tande_empty_state.dart` |
 | Scrolling filter row with edge fade | `lib/core/widgets/fade_scroll_row.dart` |
+| Contact sheet (WhatsApp / call / IG / TG / link) | `lib/core/widgets/contact_sheet.dart` |
+| Channel model + normalisation | `lib/models/contact_channel.dart`, `lib/core/utils/contact.dart` |
 | Design review renders (skip by default) | `test/design_preview_test.dart` → `flutter test test/design_preview_test.dart --dart-define=DESIGN_PREVIEW=true --update-goldens` writes `test/goldens/*.png` (gitignored; look at them before shipping a UI change) |
 | This document | `design.md` |

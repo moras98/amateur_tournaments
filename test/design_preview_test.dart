@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:tande/data/repositories/mock/mock_store.dart';
 import 'package:tande/core/theme/app_theme.dart';
 import 'package:tande/core/widgets/tande_empty_state.dart';
 import 'package:tande/core/widgets/tande_toast.dart';
@@ -132,6 +133,34 @@ void main() {
     await tester.pumpAndSettle();
     await shot(tester, '05-solicitudes');
   }, skip: previewSkip);
+
+  testWidgets('hoja de contacto', (tester) async {
+    // An organizer who published every channel, not just a phone.
+    final store = MockStore();
+    final index = store.profiles.indexWhere((p) => p.id == 'u-org-1');
+    store.profiles[index] = store.profiles[index].copyWith(
+      instagram: 'canchas.cordon',
+      telegram: 'canchascordon',
+      contactUrl: 'https://forms.gle/inscripcion-cordon',
+    );
+
+    await phone(tester);
+    await tester.pumpWidget(appHarness(initialView: ExploreView.list));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Copa Centro 7v7').first);
+    await tester.pumpAndSettle();
+
+    // The organizer card lives below the fold.
+    await tester.scrollUntilVisible(
+      find.text('Contactar'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Contactar'));
+    await tester.pumpAndSettle();
+    await shot(tester, '10-contacto');
+  });
 
   testWidgets('toast sobre la app', (tester) async {
     await phone(tester);

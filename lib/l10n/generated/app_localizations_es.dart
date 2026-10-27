@@ -958,6 +958,64 @@ class AppLocalizationsEs extends AppLocalizations {
       'Equipos que confirmaron por tu cuenta (efectivo, en persona, WhatsApp).';
 
   @override
+  String get contactChannelsTitle => 'Cómo te contactan';
+
+  @override
+  String get contactChannelsHelp =>
+      'Además del teléfono. Los jugadores las ven al tocar Contactar.';
+
+  @override
+  String get contactAction => 'Contactar';
+
+  @override
+  String contactSheetTitle(Object name) {
+    return 'Contactar a $name';
+  }
+
+  @override
+  String get contactWhatsApp => 'WhatsApp';
+
+  @override
+  String get contactCall => 'Llamar';
+
+  @override
+  String get contactInstagram => 'Instagram';
+
+  @override
+  String get contactTelegram => 'Telegram';
+
+  @override
+  String get contactLink => 'Ver enlace';
+
+  @override
+  String get contactLinkDefault => 'Formulario o enlace';
+
+  @override
+  String get contactOpenFailed => 'No pudimos abrir esa vía. Probá con otra.';
+
+  @override
+  String get instagramOptional => 'Instagram (opcional)';
+
+  @override
+  String get instagramHint => '@tuclub';
+
+  @override
+  String get telegramOptional => 'Telegram (opcional)';
+
+  @override
+  String get telegramHint => '@tuclub';
+
+  @override
+  String get contactUrlOptional => 'Formulario o enlace (opcional)';
+
+  @override
+  String get contactUrlHelp =>
+      'Un Google Form, una planilla o el sitio del club.';
+
+  @override
+  String get contactUrlInvalid => 'Poné un enlace válido (https://…)';
+
+  @override
   String get decreaseOne => 'Quitar uno';
 
   @override
@@ -2048,6 +2106,64 @@ class AppLocalizationsEsUy extends AppLocalizationsEs {
   @override
   String get outsideHelp =>
       'Equipos que confirmaron por tu cuenta (efectivo, en persona, WhatsApp).';
+
+  @override
+  String get contactChannelsTitle => 'Cómo te contactan';
+
+  @override
+  String get contactChannelsHelp =>
+      'Además del teléfono. Los jugadores las ven al tocar Contactar.';
+
+  @override
+  String get contactAction => 'Contactar';
+
+  @override
+  String contactSheetTitle(Object name) {
+    return 'Contactar a $name';
+  }
+
+  @override
+  String get contactWhatsApp => 'WhatsApp';
+
+  @override
+  String get contactCall => 'Llamar';
+
+  @override
+  String get contactInstagram => 'Instagram';
+
+  @override
+  String get contactTelegram => 'Telegram';
+
+  @override
+  String get contactLink => 'Ver enlace';
+
+  @override
+  String get contactLinkDefault => 'Formulario o enlace';
+
+  @override
+  String get contactOpenFailed => 'No pudimos abrir esa vía. Probá con otra.';
+
+  @override
+  String get instagramOptional => 'Instagram (opcional)';
+
+  @override
+  String get instagramHint => '@tuclub';
+
+  @override
+  String get telegramOptional => 'Telegram (opcional)';
+
+  @override
+  String get telegramHint => '@tuclub';
+
+  @override
+  String get contactUrlOptional => 'Formulario o enlace (opcional)';
+
+  @override
+  String get contactUrlHelp =>
+      'Un Google Form, una planilla o el sitio del club.';
+
+  @override
+  String get contactUrlInvalid => 'Poné un enlace válido (https://…)';
 
   @override
   String get decreaseOne => 'Quitar uno';

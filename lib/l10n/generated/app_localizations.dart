@@ -1797,6 +1797,114 @@ abstract class AppLocalizations {
   /// **'Equipos que confirmaron por tu cuenta (efectivo, en persona, WhatsApp).'**
   String get outsideHelp;
 
+  /// No description provided for @contactChannelsTitle.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Cómo te contactan'**
+  String get contactChannelsTitle;
+
+  /// No description provided for @contactChannelsHelp.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Además del teléfono. Los jugadores las ven al tocar Contactar.'**
+  String get contactChannelsHelp;
+
+  /// No description provided for @contactAction.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Contactar'**
+  String get contactAction;
+
+  /// No description provided for @contactSheetTitle.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Contactar a {name}'**
+  String contactSheetTitle(Object name);
+
+  /// No description provided for @contactWhatsApp.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'WhatsApp'**
+  String get contactWhatsApp;
+
+  /// No description provided for @contactCall.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Llamar'**
+  String get contactCall;
+
+  /// No description provided for @contactInstagram.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Instagram'**
+  String get contactInstagram;
+
+  /// No description provided for @contactTelegram.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Telegram'**
+  String get contactTelegram;
+
+  /// No description provided for @contactLink.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Ver enlace'**
+  String get contactLink;
+
+  /// No description provided for @contactLinkDefault.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Formulario o enlace'**
+  String get contactLinkDefault;
+
+  /// No description provided for @contactOpenFailed.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'No pudimos abrir esa vía. Probá con otra.'**
+  String get contactOpenFailed;
+
+  /// No description provided for @instagramOptional.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Instagram (opcional)'**
+  String get instagramOptional;
+
+  /// No description provided for @instagramHint.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'@tuclub'**
+  String get instagramHint;
+
+  /// No description provided for @telegramOptional.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Telegram (opcional)'**
+  String get telegramOptional;
+
+  /// No description provided for @telegramHint.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'@tuclub'**
+  String get telegramHint;
+
+  /// No description provided for @contactUrlOptional.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Formulario o enlace (opcional)'**
+  String get contactUrlOptional;
+
+  /// No description provided for @contactUrlHelp.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Un Google Form, una planilla o el sitio del club.'**
+  String get contactUrlHelp;
+
+  /// No description provided for @contactUrlInvalid.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Poné un enlace válido (https://…)'**
+  String get contactUrlInvalid;
+
   /// No description provided for @decreaseOne.
   ///
   /// In es_UY, this message translates to:

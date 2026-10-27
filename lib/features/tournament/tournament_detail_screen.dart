@@ -3,6 +3,8 @@ import 'package:tande/core/theme/app_gradients.dart';
 import 'package:tande/core/widgets/sport_sticker.dart';
 import 'package:tande/core/theme/adaptive.dart';
 import 'package:tande/core/utils/contact.dart';
+import 'package:tande/core/widgets/contact_sheet.dart';
+import 'package:tande/models/contact_channel.dart';
 import 'package:tande/core/utils/format.dart';
 import 'package:tande/core/widgets/tournament_banner.dart';
 import 'package:tande/data/auth/auth_repository.dart';
@@ -195,16 +197,40 @@ class _TournamentDetailScreenState
     required UserModel organizer,
   }) async {
     final l10n = AppLocalizations.of(context)!;
-    final opened = await openWhatsApp(
-      phone: organizer.phone,
-      message: '¡Hola! Tengo una consulta sobre "${tournament.title}".',
-    );
-    if (!opened && mounted) {
-      showTandeToast(
-        context,
-        l10n.whatsappOpenFailed(organizer.phone),
-        kind: ToastKind.error,
+    final message = '¡Hola! Tengo una consulta sobre "${tournament.title}".';
+
+    // A phone on its own keeps the old one-tap path: WhatsApp. The chooser
+    // only appears when the organizer actually published another channel,
+    // because "which app?" is a question worth asking only when there is a
+    // different answer.
+    if (!organizer.hasExtraContactChannels) {
+      final opened = await openWhatsApp(
+        phone: organizer.phone,
+        message: message,
       );
+      if (!opened && mounted) {
+        showTandeToast(
+          context,
+          l10n.whatsappOpenFailed(organizer.phone),
+          kind: ToastKind.error,
+        );
+      }
+      return;
+    }
+
+    final opened = await showContactSheet(
+      context: context,
+      title: l10n.contactSheetTitle(
+        organizer.fullName.isNotEmpty ? organizer.fullName : organizer.username,
+      ),
+      channels: contactChannelsOf(
+        organizer,
+        linkLabel: l10n.contactLinkDefault,
+      ),
+      message: message,
+    );
+    if (opened == false && mounted) {
+      showTandeToast(context, l10n.contactOpenFailed, kind: ToastKind.error);
     }
   }
 
@@ -486,14 +512,24 @@ class _TournamentDetailScreenState
                   trailing: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 160),
                     child: FilledButton.tonalIcon(
-                      onPressed: (organizer != null && organizer.canBeContacted)
+                      onPressed:
+                          (organizer != null && organizer.hasContactChannels)
                           ? () => _contactOrganizer(
                               tournament: tournament,
                               organizer: organizer,
                             )
                           : null,
-                      icon: const Icon(Icons.chat_bubble_outline, size: 18),
-                      label: const Text('WhatsApp'),
+                      icon: Icon(
+                        organizer?.hasExtraContactChannels == true
+                            ? Icons.forum_outlined
+                            : Icons.chat_bubble_outline,
+                        size: 18,
+                      ),
+                      label: Text(
+                        organizer?.hasExtraContactChannels == true
+                            ? l10n.contactAction
+                            : l10n.contactWhatsApp,
+                      ),
                     ),
                   ),
                 ),

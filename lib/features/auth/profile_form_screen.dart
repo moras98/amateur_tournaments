@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:tande/core/location/reverse_geocoder.dart';
 import 'package:tande/core/theme/adaptive.dart';
 import 'package:tande/core/utils/age.dart';
+import 'package:tande/core/utils/contact.dart';
 import 'package:tande/core/utils/country_code.dart';
 import 'package:tande/data/repositories/providers.dart';
 import 'package:tande/features/auth/widgets/profile_fields.dart';
@@ -34,6 +35,9 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
   final _usernameController = TextEditingController();
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _instagramController = TextEditingController();
+  final _telegramController = TextEditingController();
+  final _contactUrlController = TextEditingController();
 
   DateTime? _birthDate;
   String _gender = '';
@@ -67,6 +71,9 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
     _usernameController.dispose();
     _nameController.dispose();
     _phoneController.dispose();
+    _instagramController.dispose();
+    _telegramController.dispose();
+    _contactUrlController.dispose();
     super.dispose();
   }
 
@@ -102,6 +109,9 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
         ? List.of(profile!.sports)
         : const ['football'];
     _isOrganizer = profile?.isOrganizer ?? false;
+    _instagramController.text = profile?.instagram ?? '';
+    _telegramController.text = profile?.telegram ?? '';
+    _contactUrlController.text = profile?.contactUrl ?? '';
   }
 
   /// Splits the stored international number into dial code + national part,
@@ -228,6 +238,12 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                 birthDate: () => _birthDate,
                 gender: _gender,
                 phone: _phoneDigits(),
+                // Same normalisation the launcher applies: the stored value
+                // is the bare handle, so the sheet can show "@club" and the
+                // profile survives a user pasting a full URL.
+                instagram: normalizeInstagram(_instagramController.text),
+                telegram: normalizeTelegram(_telegramController.text),
+                contactUrl: normalizeContactUrl(_contactUrlController.text),
                 isOrganizer: _isOrganizer,
                 sports: _sports,
               );
@@ -393,6 +409,69 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
                               ),
                             ),
                           ],
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          l10n.contactChannelsTitle,
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          l10n.contactChannelsHelp,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                        ),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                          controller: _instagramController,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: l10n.instagramOptional,
+                            hintText: l10n.instagramHint,
+                            prefixIcon: const Icon(
+                              Icons.camera_alt_outlined,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                          controller: _telegramController,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: l10n.telegramOptional,
+                            hintText: l10n.telegramHint,
+                            prefixIcon: const Icon(
+                              Icons.send_outlined,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                          controller: _contactUrlController,
+                          keyboardType: TextInputType.url,
+                          decoration: InputDecoration(
+                            labelText: l10n.contactUrlOptional,
+                            hintText: 'https://forms.gle/…',
+                            helperText: l10n.contactUrlHelp,
+                            prefixIcon: const Icon(Icons.link, size: 20),
+                          ),
+                          validator: (value) {
+                            final normalized = normalizeContactUrl(value ?? '');
+                            if (normalized.isEmpty) return null;
+                            final uri = Uri.tryParse(normalized);
+                            final valid =
+                                uri != null &&
+                                (uri.scheme == 'https' ||
+                                    uri.scheme == 'http') &&
+                                uri.host.contains('.');
+                            return valid ? null : l10n.contactUrlInvalid;
+                          },
                         ),
                         ListTile(
                           contentPadding: EdgeInsets.zero,
