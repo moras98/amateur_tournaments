@@ -48,6 +48,15 @@ const _providerDefine = String.fromEnvironment(
 );
 const _thunderforestKey = String.fromEnvironment('THUNDERFOREST_KEY');
 
+/// Escape hatch for any other raster provider: give the template and the
+/// credit line at build time and nothing else needs to change. Keeps the app
+/// from being locked into a provider whose next price tier is abusive.
+const _urlTemplateDefine = String.fromEnvironment('TILE_URL_TEMPLATE');
+const _attributionDefine = String.fromEnvironment(
+  'TILE_ATTRIBUTION',
+  defaultValue: '© OpenStreetMap contributors',
+);
+
 /// Resolves the configured provider. Pure on purpose: tests cover every
 /// branch without touching the app.
 ///
@@ -58,6 +67,8 @@ const _thunderforestKey = String.fromEnvironment('THUNDERFOREST_KEY');
 TileSource resolveTileSource({
   String provider = _providerDefine,
   String key = _thunderforestKey,
+  String urlTemplate = _urlTemplateDefine,
+  String attribution = _attributionDefine,
 }) {
   switch (provider.toLowerCase()) {
     case 'thunderforest':
@@ -79,6 +90,16 @@ TileSource resolveTileSource({
         // OSM data credit travels with it.
         attribution: 'Maps © Thunderforest, Data © OpenStreetMap contributors',
       );
+    case 'custom':
+      if (urlTemplate.isEmpty) {
+        assert(
+          false,
+          'TILE_PROVIDER=custom without TILE_URL_TEMPLATE: falling back to '
+          'OSM.',
+        );
+        return osmTileSource;
+      }
+      return TileSource(urlTemplate: urlTemplate, attribution: attribution);
     case 'osm':
     case '':
       return osmTileSource;

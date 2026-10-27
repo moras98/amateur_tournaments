@@ -50,7 +50,9 @@ fi
   --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" \
   --dart-define=TILE_PROVIDER="$TILE_PROVIDER" \
   --dart-define=THUNDERFOREST_KEY="${THUNDERFOREST_KEY:-}" \
-  --dart-define=GEOCODER_URL="${GEOCODER_URL:-https://nominatim.openstreetmap.org/reverse}"
+  --dart-define=GEOCODER_URL="${GEOCODER_URL:-https://nominatim.openstreetmap.org/reverse}" \
+  --dart-define=TILE_URL_TEMPLATE="${TILE_URL_TEMPLATE:-}" \
+  --dart-define=TILE_ATTRIBUTION="${TILE_ATTRIBUTION:-© OpenStreetMap contributors}"
 
 AAB=build/app/outputs/bundle/release/app-release.aab
 echo

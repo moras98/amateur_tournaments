@@ -217,12 +217,28 @@ publishing decision, not a detail.
 | Source | Cost | Notes |
 | --- | --- | --- |
 | `osm` (default) | free | Donated servers. Policy allows light use only: no SLA, may block without notice, and it asks apps to be able to switch without an update (hence `TILE_PROVIDER`). Fine for testers, not for a launch peak. |
-| `thunderforest` | 150k tiles/month free, then US$125/mo for 1.5M | "Commercial use is permitted and encouraged" on the free tier. Attribution may not be removed. |
+| Thunderforest | 150k tiles/month free, then US$125/mo for 1.5M | "Commercial use is permitted and encouraged" on the free tier. Attribution may not be removed. There is **no cheap middle tier**: 150k → 1.5M is a 10x jump, so treat 150k as a launch runway, not a plan. |
 | Stadia Maps | US$20/mo (Starter) | Its free tier is explicitly non-commercial, so a published app lands on Starter. |
 | OpenFreeMap | free, no key | Vector tiles only: needs MapLibre, not `flutter_map` raster. The escape hatch if tiles ever need to be free at any scale. |
 
-One map session costs roughly 10–20 raster tiles, so 150k ≈ 7.5k–15k map
-views per month.
+**How far 150k goes.** A phone screen holds 10–25 raster tiles and each pan or
+zoom adds new ones, but the disk cache means a device only pays for tiles it has
+never seen. So consumption tracks *new devices and new areas*, not sessions:
+budget ~400–800 tiles per new user in their first month and ~100/month after
+that. 150k/month therefore covers roughly **250 new users per month** — fine to
+launch, not "plenty forever". Check the tile counter in the provider dashboard
+weekly; at ~80k in a month, decide.
+
+When that day comes, do **not** assume the US$125 tier is the only way out:
+
+* `TILE_PROVIDER=custom` + `TILE_URL_TEMPLATE` + `TILE_ATTRIBUTION` points the
+  build at **any** raster provider with no code change (Stadia's commercial
+  entry plan is US$20/month for 1M credits — check their per-tile credit
+  weight before switching).
+* Or go vector with OpenFreeMap (free, no key, no limits) and swap the map
+  renderer for MapLibre: 1–2 days of work, US$0 forever.
+
+Both are cheaper than US$125/month for an app with no revenue yet.
 
 Everything lives in `lib/core/map/tile_source.dart`: URL, attribution and zoom
 ceiling come from a provider, and the three maps plus their credit lines read

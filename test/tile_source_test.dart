@@ -44,6 +44,29 @@ void main() {
     );
   });
 
+  test('cualquier proveedor raster entra por TILE_URL_TEMPLATE', () {
+    // La vía para no quedar atado a un salto de precio: otro proveedor es
+    // template + crédito, sin tocar código ni publicar lógica nueva.
+    final source = resolveTileSource(
+      provider: 'custom',
+      urlTemplate: 'https://tiles.ejemplo.com/base/{z}/{x}/{y}.png?key=K',
+      attribution: '© Ejemplo, © OpenStreetMap',
+    );
+
+    expect(
+      source.urlTemplate,
+      'https://tiles.ejemplo.com/base/{z}/{x}/{y}.png?key=K',
+    );
+    expect(source.attribution, contains('Ejemplo'));
+  });
+
+  test('custom sin template no inventa nada', () {
+    expect(
+      () => resolveTileSource(provider: 'custom', urlTemplate: ''),
+      throwsA(isA<AssertionError>()),
+    );
+  });
+
   test('el proveedor se lee sin importar mayúsculas', () {
     final source = resolveTileSource(provider: 'ThunderForest', key: 'k');
 
