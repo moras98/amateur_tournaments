@@ -1,6 +1,9 @@
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// The tile URL is not here on purpose: see `tile_source.dart` (the OSM policy
+// asks apps not to hard-code it, so it lives in an overridable provider).
+
 /// Map tile source: one **app-scoped** instance shared by every map
 /// (Explore, the event form and the detail mini-map).
 ///
@@ -29,7 +32,3 @@ class AppScopedNetworkTileProvider extends NetworkTileProvider {
     // Intentionally empty: never close the shared HTTP client.
   }
 }
-
-/// OSM tile endpoint. Policy requires a real `userAgentPackageName`
-/// identifying the app.
-const osmTileUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';

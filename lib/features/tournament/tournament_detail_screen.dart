@@ -24,6 +24,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tande/core/widgets/tande_toast.dart';
+import 'package:tande/core/map/tile_source.dart';
 
 /// Full event information, spots-left progress, organizer contact and the
 /// registration action (pending → organizer confirms off-app via WhatsApp).
@@ -395,8 +396,15 @@ class _TournamentDetailScreenState
                           ),
                           children: [
                             TileLayer(
-                              urlTemplate: osmTileUrl,
-                              userAgentPackageName: 'com.tande.app',
+                              urlTemplate: ref
+                                  .watch(tileSourceProvider)
+                                  .urlTemplate,
+                              userAgentPackageName: ref
+                                  .watch(tileSourceProvider)
+                                  .userAgentPackageName,
+                              maxNativeZoom: ref
+                                  .watch(tileSourceProvider)
+                                  .maxZoom,
                               tileProvider: ref.watch(tileProviderProvider),
                             ),
                             MarkerLayer(
@@ -419,7 +427,7 @@ class _TournamentDetailScreenState
                           left: 6,
                           bottom: 4,
                           child: Text(
-                            '© OpenStreetMap',
+                            ref.watch(tileSourceProvider).attribution,
                             style: theme.textTheme.labelSmall?.copyWith(
                               fontSize: 9,
                             ),

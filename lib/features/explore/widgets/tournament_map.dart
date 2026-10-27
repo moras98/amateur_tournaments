@@ -9,6 +9,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:tande/core/map/tile_source.dart';
 
 /// OpenStreetMap view with a pin per tournament and the user's location.
 ///
@@ -163,6 +164,7 @@ class _TournamentMapState extends ConsumerState<TournamentMap> {
     final theme = Theme.of(context);
     final location = widget.userLocation;
     final tileProvider = ref.watch(tileProviderProvider);
+    final tileSource = ref.watch(tileSourceProvider);
     // The camera sits on the device location, or on the pins when there is
     // none — never on a hardcoded city (see the class doc).
     final pins = _pins;
@@ -183,8 +185,9 @@ class _TournamentMapState extends ConsumerState<TournamentMap> {
           ),
           children: [
             TileLayer(
-              urlTemplate: osmTileUrl,
-              userAgentPackageName: 'com.tande.app',
+              urlTemplate: tileSource.urlTemplate,
+              userAgentPackageName: tileSource.userAgentPackageName,
+              maxNativeZoom: tileSource.maxZoom,
               tileProvider: tileProvider,
             ),
             _ClusterMarkersLayer(
@@ -210,7 +213,7 @@ class _TournamentMapState extends ConsumerState<TournamentMap> {
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
-              '© OpenStreetMap contributors',
+              tileSource.attribution,
               style: theme.textTheme.labelSmall?.copyWith(fontSize: 10),
             ),
           ),

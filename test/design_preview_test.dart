@@ -160,7 +160,7 @@ void main() {
     await tester.tap(find.text('Contactar'));
     await tester.pumpAndSettle();
     await shot(tester, '10-contacto');
-  });
+  }, skip: previewSkip);
 
   testWidgets('toast sobre la app', (tester) async {
     await phone(tester);

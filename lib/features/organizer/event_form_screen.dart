@@ -20,6 +20,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:tande/core/widgets/tande_toast.dart';
+import 'package:tande/core/map/tile_source.dart';
 
 /// Fallback map center until the device location arrives (Montevideo).
 const _defaultCenter = LatLng(-34.9012, -56.1646);
@@ -392,8 +393,13 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
                       ),
                       children: [
                         TileLayer(
-                          urlTemplate: osmTileUrl,
-                          userAgentPackageName: 'com.tande.app',
+                          urlTemplate: ref
+                              .watch(tileSourceProvider)
+                              .urlTemplate,
+                          userAgentPackageName: ref
+                              .watch(tileSourceProvider)
+                              .userAgentPackageName,
+                          maxNativeZoom: ref.watch(tileSourceProvider).maxZoom,
                           tileProvider: ref.watch(tileProviderProvider),
                         ),
                         if (_pin != null)
@@ -429,7 +435,7 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
                       left: 6,
                       bottom: 4,
                       child: Text(
-                        '© OpenStreetMap',
+                        ref.watch(tileSourceProvider).attribution,
                         style: theme.textTheme.labelSmall?.copyWith(
                           fontSize: 9,
                         ),
