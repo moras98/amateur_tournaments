@@ -44,6 +44,10 @@ flutter run
 flutter run \
   --dart-define=SUPABASE_URL=https://<project>.supabase.co \
   --dart-define=SUPABASE_ANON_KEY=<anon key>
+
+# Backend + mapas, leyendo .release.env (sin tipear claves; --web abre Chrome):
+./scripts/run-local.sh
+./scripts/run-local.sh --web
 ```
 
 Demo logins in mock mode (any password of 6+ characters):
