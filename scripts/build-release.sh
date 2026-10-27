@@ -23,6 +23,15 @@ if [[ -z "${SUPABASE_URL:-}" || -z "${SUPABASE_ANON_KEY:-}" || "$SUPABASE_ANON_K
   exit 1
 fi
 
+# Los tiles de OSM son de la fundacion: sin SLA y con uso liviano. Para
+# publicar se usa Thunderforest (150k tiles/mes gratis, uso comercial
+# permitido). Sin key el build sale igual, pero apuntando a OSM.
+TILE_PROVIDER="${TILE_PROVIDER:-osm}"
+if [[ "$TILE_PROVIDER" == "thunderforest" && -z "${THUNDERFOREST_KEY:-}" ]]; then
+  echo "error: TILE_PROVIDER=thunderforest pero THUNDERFOREST_KEY vacío en .release.env." >&2
+  exit 1
+fi
+
 if [[ ! -f android/key.properties ]]; then
   echo "error: android/key.properties missing — the store build must be upload-key signed." >&2
   exit 1
@@ -38,7 +47,9 @@ fi
 
 "$FLUTTER" build appbundle --release \
   --dart-define=SUPABASE_URL="$SUPABASE_URL" \
-  --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY"
+  --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" \
+  --dart-define=TILE_PROVIDER="$TILE_PROVIDER" \
+  --dart-define=THUNDERFOREST_KEY="${THUNDERFOREST_KEY:-}"
 
 AAB=build/app/outputs/bundle/release/app-release.aab
 echo

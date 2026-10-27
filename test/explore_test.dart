@@ -13,6 +13,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tande/core/map/tile_source.dart';
+
 import 'support/harness.dart';
 
 void main() {
@@ -357,11 +360,14 @@ void main() {
       final mapContext = tester.element(find.byType(FlutterMap));
       expect(MediaQuery.paddingOf(mapContext).bottom, kNavCapsuleRegionHeight);
 
+      // Read the credit from the configured source instead of hardcoding it:
+      // this test is about the bar clearance, not about which provider the
+      // build points at.
+      final credit = ProviderScope.containerOf(
+        mapContext,
+      ).read(tileSourceProvider).attribution;
       final attribution = tester.widget<Positioned>(
-        find.ancestor(
-          of: find.text('© OpenStreetMap contributors'),
-          matching: find.byType(Positioned),
-        ),
+        find.ancestor(of: find.text(credit), matching: find.byType(Positioned)),
       );
       expect(attribution.bottom, 8 + kNavCapsuleRegionHeight);
 

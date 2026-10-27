@@ -40,8 +40,9 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 - [ ] **Paste the Supabase anon key** into `.release.env` (URL already filled).
 - [ ] **Confirm migrations `0005_split_status_triggers.sql`,
       `0006_signup_checks.sql`, `0007_signup_metadata.sql`,
-      `0008_explore_indexes.sql`, `0009_currency.sql` and
-      `0010_tournament_banners.sql`** are applied in the Supabase
+      `0008_explore_indexes.sql`, `0009_currency.sql`,
+      `0010_tournament_banners.sql` and `0011_contact_channels.sql`** are
+      applied in the Supabase
       dashboard. **`0007` is the sign-up data-loss fix** —
       until it runs, the confirm-email path keeps dropping username /
       birth date / gender / sports (the app already sends them in the
@@ -61,6 +62,13 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
       the Supabase defines, then sign up → create tournament → request
       inscription → share to WhatsApp → see it appear. Mock tests prove
       nothing about the Supabase repositories.
+- [ ] **Pick the map tiles before publishing** (see §Mapas below). Today the
+      app ships pointing at OpenStreetMap's donated servers, which the policy
+      allows for light use only — no SLA, and they can throttle without notice.
+      Get a free Thunderforest key (150k tiles/month, commercial use allowed),
+      put `TILE_PROVIDER=thunderforest` + `THUNDERFOREST_KEY=…` in
+      `.release.env` and the release build does the rest. `build-release.sh`
+      refuses to build with `thunderforest` and no key.
 - [ ] **Create the Google Play developer account** ($25 + identity
       verification). Personal account ⇒ the 14-day closed-test clock applies
       to you. Start today so verification runs in parallel.
@@ -200,6 +208,26 @@ the closed test** — never gate the 12 testers.
       tax info + bank payout details in Console when revenue starts.
 - [ ] **Docs**: update `store/terms-and-conditions.md` §1/§5 and the privacy
       policy — both currently state that no payment happens in the app.
+
+## Mapas
+
+The map is the product on the Explore screen, so its tile source is a
+publishing decision, not a detail.
+
+| Source | Cost | Notes |
+| --- | --- | --- |
+| `osm` (default) | free | Donated servers. Policy allows light use only: no SLA, may block without notice, and it asks apps to be able to switch without an update (hence `TILE_PROVIDER`). Fine for testers, not for a launch peak. |
+| `thunderforest` | 150k tiles/month free, then US$125/mo for 1.5M | "Commercial use is permitted and encouraged" on the free tier. Attribution may not be removed. |
+| Stadia Maps | US$20/mo (Starter) | Its free tier is explicitly non-commercial, so a published app lands on Starter. |
+| OpenFreeMap | free, no key | Vector tiles only: needs MapLibre, not `flutter_map` raster. The escape hatch if tiles ever need to be free at any scale. |
+
+One map session costs roughly 10–20 raster tiles, so 150k ≈ 7.5k–15k map
+views per month.
+
+Everything lives in `lib/core/map/tile_source.dart`: URL, attribution and zoom
+ceiling come from a provider, and the three maps plus their credit lines read
+from it. Switching providers is a `.release.env` change, not a code change —
+which is exactly what the OSM policy asks for.
 
 ## Later
 
