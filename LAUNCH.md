@@ -209,7 +209,7 @@ the closed test** — never gate the 12 testers.
 - [ ] **Docs**: update `store/terms-and-conditions.md` §1/§5 and the privacy
       policy — both currently state that no payment happens in the app.
 
-## Mapas
+## Mapas y geocodificación
 
 The map is the product on the Explore screen, so its tile source is a
 publishing decision, not a detail.
@@ -228,6 +228,23 @@ Everything lives in `lib/core/map/tile_source.dart`: URL, attribution and zoom
 ceiling come from a provider, and the three maps plus their credit lines read
 from it. Switching providers is a `.release.env` change, not a code change —
 which is exactly what the OSM policy asks for.
+
+**Tile cache.** flutter_map 8 already caches tiles on disk; the app now
+configures it explicitly (`lib/core/map/tile_provider.dart`): 300 MB instead of
+the 1 GB default, and a cache key that ignores the query string so rotating an
+API key does not invalidate the whole map and re-bill every tile. Freshness
+follows the provider's HTTP headers, with flutter_map's 7-day fallback — the
+OSM policy minimum. Check it on a device: pan the map, kill the app, turn data
+off, reopen; tiles should still draw.
+
+**Reverse geocoding.** `nominatim.openstreetmap.org` is also donated, and its
+policy caps the *whole application* at 1 request/second and requires being able
+to switch servers without an update. `lib/core/location/reverse_geocoder.dart`
+now throttles to one request per second, caches addresses for 30 days (~11 m
+grid, negatives included) and takes the endpoint from
+`--dart-define=GEOCODER_URL`, so moving to Photon or a self-hosted Nominatim is
+a build flag. If usage grows, the next step is a proxy on the Supabase side
+(the policy explicitly recommends it).
 
 ## Later
 

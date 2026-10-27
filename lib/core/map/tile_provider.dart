@@ -25,10 +25,48 @@ final tileProviderProvider = Provider<TileProvider>(
 /// See [tileProviderProvider] for why disposal must be ignored: flutter_map
 /// disposes providers it does not own, and this one belongs to the whole app.
 class AppScopedNetworkTileProvider extends NetworkTileProvider {
-  AppScopedNetworkTileProvider() : super(silenceExceptions: true);
+  AppScopedNetworkTileProvider()
+    : super(silenceExceptions: true, cachingProvider: appTileCache);
 
   @override
   Future<void> dispose() async {
-    // Intentionally empty: never close the shared HTTP client.
+    // Intentionally empty: never close the shared HTTP client or drop the
+    // shared disk cache.
   }
+}
+
+/// Tile cache on disk, shared by every map for the life of the app.
+///
+/// flutter_map 8 enables its built-in disk cache by default; this makes the
+/// configuration explicit because two defaults are wrong for a published app:
+///
+/// * **1 GB** of the user's storage. Tiles for the Montevideo metro area are a
+///   few MB; 300 MB is generous and stops the cache from being the biggest
+///   thing the app owns.
+/// * **The key**. The default keys a tile on its full URL, and commercial
+///   providers put the API key in the query string — rotating the key would
+///   silently invalidate every cached tile and re-bill the whole map.
+///
+/// Freshness still follows the server's HTTP headers (with flutter_map's
+/// 7-day fallback), which is what the OSM policy asks for: cache per headers,
+/// or at least 7 days when they are missing.
+final MapCachingProvider appTileCache =
+    BuiltInMapCachingProvider.getOrCreateInstance(
+      maxCacheSize: 300 * 1024 * 1024,
+      tileKeyGenerator: tileCacheKey,
+    );
+
+/// Cache key for a tile URL: everything except the query string.
+///
+/// `https://api.thunderforest.com/outdoors/12/1234/5678.png?apikey=A` and
+/// `…?apikey=B` are the same tile; the key is what identifies the request, not
+/// what is being drawn.
+String tileCacheKey(String url) {
+  final uri = Uri.tryParse(url);
+  if (uri == null || uri.query.isEmpty) {
+    return BuiltInMapCachingProvider.uuidTileKeyGenerator(url);
+  }
+  return BuiltInMapCachingProvider.uuidTileKeyGenerator(
+    uri.replace(query: '').toString(),
+  );
 }
