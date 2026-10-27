@@ -5,6 +5,7 @@ import 'package:tande/l10n/labels.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tande/core/widgets/tande_toast.dart';
 
 /// "Forgot password?": emails a reset link that returns into the app
 /// (`emailRedirectTo` deep link), where it opens the recovery session the
@@ -53,9 +54,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
       if (!mounted) return;
       final l10n = AppLocalizations.of(context)!;
       // Root-level messenger: the snackbar outlives the navigation below.
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.resetEmailSent)));
+      showTandeToast(context, l10n.resetEmailSent, kind: ToastKind.success);
       final from = _from;
       context.go(
         Uri(

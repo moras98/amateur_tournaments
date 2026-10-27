@@ -221,6 +221,11 @@ Rules:
   Map markers stay **circular**: they are pins on a map, not cards.
 - **Player avatar** (request card) — the same squircle recipe (44, radius 14,
   `secondaryContainer`, bold initial), never `CircleAvatar`.
+- **Key facts (detail)** — two columns with hairlines
+  (`fecha|formato`, `costo|premios`) and `sede` full width, because five
+  stacked label/value rows read like a settings screen. Labels are
+  `labelSmall` with a 15 px `onSurfaceVariant` icon — no primary-colored icon
+  rows competing with the screen's one primary action.
 - **Detail hero** — 208 tall, radius 20, and always one block: the banner
   photo under a bottom scrim (`0x00000000 → 0x8A000000`, stops .30→1) **or**
   the brand gradient with the pitch watermark (`_PitchLines`: halfway line +
@@ -303,12 +308,25 @@ Every data-driven screen defines four states:
 | State | Treatment |
 | --- | --- |
 | Loading | Centered `CircularProgressIndicator` (buttons show 20pt inline spinners) |
-| Empty | Icon + `headline` title + one body line + primary CTA |
+| Empty | `TandeEmptyState` — squircle medallion + `headline` title + body + one CTA |
 | Error | One-line message + "Reintentar" |
 | Loaded | Content |
 
 Rules: never block navigation on background work; forms disable their
 button while saving.
+
+**Toast** — `showTandeToast(context, message, kind: ...)` is the only
+transient feedback: a floating pill (14 radius, `inverseSurface`), an icon per
+kind (mint check / red error / quiet info) and one line of text. It **replaces**
+the toast on screen instead of queueing, so a second tap never waits for the
+first message to expire. An optional `actionLabel`/`onAction` turns the pill
+into an inline follow-up ("Avisar por WhatsApp") and extends it to 5 s.
+Never use a toast for anything destructive — that is a dialog.
+
+**Empty state** — `TandeEmptyState`: an 84 px squircle medallion (brand tint,
+not a grey outline glyph), title, a body that explains what the screen will
+hold, and the next step as a button. Copy keeps the voice: "Todavía no te
+anotaste a nada", never "No hay resultados." 
 
 ## 10. Motion
 
@@ -388,5 +406,7 @@ button while saving.
 | Sport/status/country vocabulary | `lib/l10n/labels.dart` |
 | App icon/splash (`#1B8A5A`) | `assets/icon*.png`, `pubspec.yaml` |
 | Sport sticker / player avatar (squircle) | `lib/core/widgets/sport_sticker.dart` |
+| Toast (transient feedback) | `lib/core/widgets/tande_toast.dart` |
+| Empty state | `lib/core/widgets/tande_empty_state.dart` |
 | Design review renders (skip by default) | `test/design_preview_test.dart` → `flutter test test/design_preview_test.dart --dart-define=DESIGN_PREVIEW=true --update-goldens` writes `test/goldens/*.png` (gitignored; look at them before shipping a UI change) |
 | This document | `design.md` |

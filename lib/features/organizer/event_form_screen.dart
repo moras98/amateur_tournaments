@@ -19,6 +19,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:tande/core/widgets/tande_toast.dart';
 
 /// Fallback map center until the device location arrives (Montevideo).
 const _defaultCenter = LatLng(-34.9012, -56.1646);
@@ -629,9 +630,7 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
       final location = await _currentLocation();
       if (!mounted) return;
       if (location == null) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.locationDenied)));
+        showTandeToast(context, l10n.locationDenied);
         return;
       }
       if (_pin != pinBefore) {
@@ -651,15 +650,11 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
       final result = await _fillAddressFromPin(location);
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(switch (result) {
-            _AddressResult.failed => l10n.locationNoAddress,
-            _AddressResult.completed => l10n.addressFilled,
-            _AddressResult.unchanged => l10n.locationUpdated,
-          }),
-        ),
-      );
+      showTandeToast(context, switch (result) {
+        _AddressResult.failed => l10n.locationNoAddress,
+        _AddressResult.completed => l10n.addressFilled,
+        _AddressResult.unchanged => l10n.locationUpdated,
+      }, kind: ToastKind.error);
     } finally {
       if (mounted) setState(() => _locating = false);
     }
@@ -686,9 +681,7 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
     final result = await _fillAddressFromPin(pin);
     if (!mounted || _pin != pin) return; // The pin moved on.
     if (result == _AddressResult.failed) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.addressFailed)));
+      showTandeToast(context, l10n.addressFailed, kind: ToastKind.error);
     }
   }
 
@@ -774,9 +767,7 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
     final l10n = AppLocalizations.of(context)!;
     if (!(_formKey.currentState?.validate() ?? false)) return;
     if (!_end.isAfter(_start)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.endDateBeforeStart)));
+      showTandeToast(context, l10n.endDateBeforeStart);
       return;
     }
 
@@ -795,10 +786,9 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
         if (existing == null) throw StateError(l10n.eventNotFound);
         if (_parsedTeams < existing.totalConfirmed) {
           if (!mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.capBelowConfirmed(existing.totalConfirmed)),
-            ),
+          showTandeToast(
+            context,
+            l10n.capBelowConfirmed(existing.totalConfirmed),
           );
           return;
         }
@@ -856,12 +846,10 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
         // does.
         container.invalidate(exploreResultsProvider);
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              bannerFailed ? l10n.bannerSaveFailed : l10n.eventSaved,
-            ),
-          ),
+        showTandeToast(
+          context,
+          bannerFailed ? l10n.bannerSaveFailed : l10n.eventSaved,
+          kind: bannerFailed ? ToastKind.error : ToastKind.success,
         );
       } else {
         final created = await repository.create(
@@ -902,21 +890,21 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
           ..invalidate(myTournamentsProvider)
           ..invalidate(exploreResultsProvider);
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              bannerFailed ? l10n.bannerSaveFailed : l10n.eventPublished,
-            ),
-          ),
+        showTandeToast(
+          context,
+          bannerFailed ? l10n.bannerSaveFailed : l10n.eventPublished,
+          kind: bannerFailed ? ToastKind.error : ToastKind.success,
         );
       }
 
       if (mounted) context.pop();
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(
+        showTandeToast(
           context,
-        ).showSnackBar(SnackBar(content: Text(l10n.eventSaveError(error))));
+          l10n.eventSaveError(error),
+          kind: ToastKind.error,
+        );
       }
     } finally {
       if (mounted) setState(() => _saving = false);

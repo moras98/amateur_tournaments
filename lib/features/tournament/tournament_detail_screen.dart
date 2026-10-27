@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tande/core/widgets/tande_toast.dart';
 
 /// Full event information, spots-left progress, organizer contact and the
 /// registration action (pending → organizer confirms off-app via WhatsApp).
@@ -103,9 +104,11 @@ class _TournamentDetailScreenState
         // No payment to coordinate yet: the spot isn't theirs until one
         // frees up, so opening WhatsApp here would be premature.
         if (mounted) {
-          ScaffoldMessenger.of(
+          showTandeToast(
             context,
-          ).showSnackBar(SnackBar(content: Text(l10n.waitlistSuccess)));
+            l10n.waitlistSuccess,
+            kind: ToastKind.success,
+          );
         }
         return;
       }
@@ -130,14 +133,14 @@ class _TournamentDetailScreenState
       } else {
         message = l10n.registerSuccessFallback;
       }
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
+      showTandeToast(context, message);
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(
+        showTandeToast(
           context,
-        ).showSnackBar(SnackBar(content: Text(l10n.registerError(error))));
+          l10n.registerError(error),
+          kind: ToastKind.error,
+        );
       }
     } finally {
       if (mounted) setState(() => _registering = false);
@@ -172,15 +175,15 @@ class _TournamentDetailScreenState
         ..invalidate(exploreResultsProvider);
 
       if (mounted) {
-        ScaffoldMessenger.of(
+        showTandeToast(
           context,
-        ).showSnackBar(SnackBar(content: Text(l10n.registrationCancelled)));
+          l10n.registrationCancelled,
+          kind: ToastKind.success,
+        );
       }
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.cancelError(error))));
+        showTandeToast(context, l10n.cancelError(error), kind: ToastKind.error);
       }
     } finally {
       if (mounted) setState(() => _cancelling = false);
@@ -197,8 +200,10 @@ class _TournamentDetailScreenState
       message: '¡Hola! Tengo una consulta sobre "${tournament.title}".',
     );
     if (!opened && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.whatsappOpenFailed(organizer.phone))),
+      showTandeToast(
+        context,
+        l10n.whatsappOpenFailed(organizer.phone),
+        kind: ToastKind.error,
       );
     }
   }
@@ -266,54 +271,79 @@ class _TournamentDetailScreenState
               ),
               const SizedBox(height: 16),
 
-              // Key facts
+              // Key facts — two columns. Five stacked label/value rows read
+              // like a settings screen; pairing them (fecha/formato,
+              // costo/premios) halves the height and gives the block a
+              // rhythm. Sede stays full width: it is the one value that wraps.
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      _InfoRow(
-                        icon: Icons.calendar_today_outlined,
-                        label: l10n.dateLabel,
-                        value: formatEventDate(
-                          tournament.startTime,
-                          end: tournament.endTime,
+                      IntrinsicHeight(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                              child: _InfoCell(
+                                icon: Icons.calendar_today_outlined,
+                                label: l10n.dateLabel,
+                                value: formatEventDate(
+                                  tournament.startTime,
+                                  end: tournament.endTime,
+                                ),
+                              ),
+                            ),
+                            const _CellDivider(),
+                            Expanded(
+                              child: _InfoCell(
+                                icon: Icons.groups_outlined,
+                                label: l10n.formatLabel,
+                                value:
+                                    '${l10n.kindLabel(tournament.kind)} • '
+                                    '${l10n.teamsCount(tournament.totalTeams)}',
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      _InfoRow(
+                      const _RowDivider(),
+                      IntrinsicHeight(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                              child: _InfoCell(
+                                icon: Icons.payments_outlined,
+                                label: l10n.costLabel,
+                                value: formatCost(
+                                  tournament.inscriptionCost,
+                                  freeLabel: l10n.free,
+                                  currency: tournament.currency,
+                                ),
+                              ),
+                            ),
+                            const _CellDivider(),
+                            Expanded(
+                              child: _InfoCell(
+                                icon: Icons.emoji_events_outlined,
+                                label: l10n.prizesLabelShort,
+                                value: tournament.prizes.isEmpty
+                                    ? '—'
+                                    : tournament.prizes,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const _RowDivider(),
+                      _InfoCell(
                         icon: Icons.location_on_outlined,
                         label: l10n.venueLabelShort,
                         value: tournament.venueName.isEmpty
                             ? tournament.city
                             : '${tournament.venueName}\n'
                                   '${tournament.address}, ${tournament.city}',
-                      ),
-                      const SizedBox(height: 12),
-                      _InfoRow(
-                        icon: Icons.payments_outlined,
-                        label: l10n.costLabel,
-                        value: formatCost(
-                          tournament.inscriptionCost,
-                          freeLabel: l10n.free,
-                          currency: tournament.currency,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      _InfoRow(
-                        icon: Icons.emoji_events_outlined,
-                        label: l10n.prizesLabelShort,
-                        value: tournament.prizes.isEmpty
-                            ? '—'
-                            : tournament.prizes,
-                      ),
-                      const SizedBox(height: 12),
-                      _InfoRow(
-                        icon: Icons.groups_outlined,
-                        label: l10n.formatLabel,
-                        value:
-                            '${l10n.kindLabel(tournament.kind)} • '
-                            '${l10n.teamsCount(tournament.totalTeams)}',
                       ),
                     ],
                   ),
@@ -636,8 +666,13 @@ class _TournamentDetailScreenState
   }
 }
 
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({
+/// One fact in the grid: icon + label on the first line, value below.
+///
+/// The icon is small and quiet (`onSurfaceVariant`, 16) — in the old stacked
+/// row it was 20 and `primary`, which made five primary-colored icons compete
+/// with the one primary action on the screen.
+class _InfoCell extends StatelessWidget {
+  const _InfoCell({
     required this.icon,
     required this.label,
     required this.value,
@@ -650,36 +685,67 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    return Row(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 20, color: theme.colorScheme.primary),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
+        Row(
+          children: [
+            Icon(icon, size: 15, color: theme.colorScheme.onSurfaceVariant),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
                 label,
                 style: theme.textTheme.labelSmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              Text(value, style: theme.textTheme.bodyMedium),
-            ],
-          ),
+            ),
+          ],
         ),
+        const SizedBox(height: 4),
+        Text(value, style: theme.textTheme.bodyMedium?.copyWith(height: 1.3)),
       ],
     );
   }
 }
 
-/// One branded block for the top of the detail screen: the banner photo (or
-/// the brand gradient when there is none) under a scrim, with the sport
-/// sticker, the title and the two labels sitting on it in white.
-///
-/// The sticker keeps the `sport-<id>` Hero tag so it flies in from the card.
+/// Hairline between the grid's columns, stretching to the taller cell.
+class _CellDivider extends StatelessWidget {
+  const _CellDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 1,
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      color: Theme.of(
+        context,
+      ).colorScheme.outlineVariant.withValues(alpha: 0.6),
+    );
+  }
+}
+
+/// Hairline between the grid's rows.
+class _RowDivider extends StatelessWidget {
+  const _RowDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Divider(
+        height: 1,
+        thickness: 1,
+        color: Theme.of(
+          context,
+        ).colorScheme.outlineVariant.withValues(alpha: 0.6),
+      ),
+    );
+  }
+}
+
 class _TournamentHero extends StatelessWidget {
   const _TournamentHero({
     required this.tournament,
@@ -706,7 +772,11 @@ class _TournamentHero extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             if (hasBanner)
-              TournamentBanner(tournament: tournament, height: height, radius: 0)
+              TournamentBanner(
+                tournament: tournament,
+                height: height,
+                radius: 0,
+              )
             else ...[
               const DecoratedBox(
                 decoration: BoxDecoration(gradient: AppGradients.brand),
@@ -715,7 +785,9 @@ class _TournamentHero extends StatelessWidget {
               // circle and the halfway line at 7% white, cropped by the card.
               // Without it the gradient reads as a flat dark rectangle.
               const Positioned.fill(
-                child: IgnorePointer(child: CustomPaint(painter: _PitchLines())),
+                child: IgnorePointer(
+                  child: CustomPaint(painter: _PitchLines()),
+                ),
               ),
             ],
             // Scrim only over a photo: the brand gradient is already dark
@@ -835,11 +907,7 @@ class _PitchLines extends CustomPainter {
     // Halfway line off-centre to the right, so the block never looks split.
     final x = size.width * 0.62;
     canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
-    canvas.drawCircle(
-      Offset(x, size.height * 0.5),
-      size.height * 0.55,
-      paint,
-    );
+    canvas.drawCircle(Offset(x, size.height * 0.5), size.height * 0.55, paint);
     canvas.drawCircle(
       Offset(x, size.height * 0.5),
       4,

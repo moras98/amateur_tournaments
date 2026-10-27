@@ -28,7 +28,9 @@ class SportSticker extends StatelessWidget {
       decoration: BoxDecoration(
         color: accent.withValues(alpha: onBrand ? 0.18 : 0.14),
         borderRadius: BorderRadius.circular(size * 0.32),
-        border: Border.all(color: accent.withValues(alpha: onBrand ? 0.36 : 0.28)),
+        border: Border.all(
+          color: accent.withValues(alpha: onBrand ? 0.36 : 0.28),
+        ),
       ),
       child: Icon(sportIcon(sport), color: accent, size: size * 0.52),
     );

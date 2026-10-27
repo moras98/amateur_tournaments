@@ -13,6 +13,7 @@ import 'package:tande/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tande/core/widgets/tande_toast.dart';
 
 /// Account creation in three in-screen steps (design.md §7): the
 /// credential, the profile basics and the sports — dot indicator with the
@@ -148,25 +149,19 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     // still surfaces its field errors first.
     if (_step == 0 && !_termsAccepted) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.acceptTermsError)));
+      showTandeToast(context, l10n.acceptTermsError, kind: ToastKind.error);
       return;
     }
     if (_step == 1 && _birthDate == null) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.chooseBirthDate)));
+      showTandeToast(context, l10n.chooseBirthDate);
       return;
     }
     // Minimum-age gate (Terms §3): surface it right after the date is picked,
     // before the user invests in the remaining steps.
     if (_step == 1 && _birthDate != null && !isAdult(_birthDate!)) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.mustBe18)));
+      showTandeToast(context, l10n.mustBe18);
       return;
     }
     setState(() => _step++);
@@ -181,23 +176,17 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     final l10n = AppLocalizations.of(context)!;
     if (_sports.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.chooseSport)));
+      showTandeToast(context, l10n.chooseSport);
       return;
     }
     if (_birthDate == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.chooseBirthDate)));
+      showTandeToast(context, l10n.chooseBirthDate);
       return;
     }
     // The step-1 gate can't be walked past, but re-check anyway so the
     // account is never created with an under-age birth date.
     if (!isAdult(_birthDate!)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.mustBe18)));
+      showTandeToast(context, l10n.mustBe18);
       return;
     }
     setState(() {
@@ -230,9 +219,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         // sign-up metadata, and the DB trigger wrote it into the profile
         // at account creation (migration 0007) — confirming the email and
         // signing in later finds the profile complete, nothing to re-enter.
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.accountCreatedConfirmEmail)),
-        );
+        showTandeToast(context, l10n.accountCreatedConfirmEmail);
         context.go('/login');
         return;
       }

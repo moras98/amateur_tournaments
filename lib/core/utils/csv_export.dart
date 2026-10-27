@@ -107,9 +107,7 @@ Future<bool> shareCsv({
     final bytes = Uint8List.fromList(utf8.encode(csv));
     final result = await SharePlus.instance.share(
       ShareParams(
-        files: [
-          XFile.fromData(bytes, mimeType: 'text/csv', name: fileName),
-        ],
+        files: [XFile.fromData(bytes, mimeType: 'text/csv', name: fileName)],
         fileNameOverrides: [fileName],
         subject: subject,
       ),

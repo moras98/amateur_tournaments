@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:tande/core/theme/app_theme.dart';
+import 'package:tande/core/widgets/tande_empty_state.dart';
+import 'package:tande/core/widgets/tande_toast.dart';
 import 'package:tande/features/explore/explore_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,18 +36,15 @@ void main() {
     Future<void> load(String family, String path) async {
       final file = File(path);
       if (!file.existsSync()) return;
-      await (FontLoader(family)
-            ..addFont(
-              Future.value(ByteData.sublistView(file.readAsBytesSync())),
-            ))
+      await (FontLoader(family)..addFont(
+            Future.value(ByteData.sublistView(file.readAsBytesSync())),
+          ))
           .load();
     }
 
-    await load(
-      'PlusJakartaSans',
-      'assets/fonts/PlusJakartaSans-Variable.ttf',
-    );
-    final flutterRoot = Platform.environment['FLUTTER_ROOT'] ??
+    await load('PlusJakartaSans', 'assets/fonts/PlusJakartaSans-Variable.ttf');
+    final flutterRoot =
+        Platform.environment['FLUTTER_ROOT'] ??
         '/home/agustin/snap/flutter/common/flutter';
     await load(
       'MaterialIcons',
@@ -131,6 +131,78 @@ void main() {
     await tester.tap(find.text('Copa Centro 7v7').first);
     await tester.pumpAndSettle();
     await shot(tester, '05-solicitudes');
+  }, skip: previewSkip);
+
+  testWidgets('toast sobre la app', (tester) async {
+    await phone(tester);
+    await tester.pumpWidget(appHarness());
+    await tester.pumpAndSettle();
+    showTandeToast(
+      tester.element(find.byType(Scaffold).first),
+      'Inscripción confirmada. Te avisamos por WhatsApp.',
+      kind: ToastKind.success,
+      actionLabel: 'Avisar',
+      onAction: () {},
+    );
+    await tester.pumpAndSettle();
+    await shot(tester, '08-toast-en-app');
+  }, skip: previewSkip);
+
+  testWidgets('estado vacio', (tester) async {
+    await phone(tester);
+    await tester.pumpWidget(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        home: Scaffold(
+          body: TandeEmptyState(
+            icon: Icons.confirmation_num_rounded,
+            title: 'Todavía no te anotaste a nada',
+            body:
+                'Cuando te sumes a un torneo lo vas a ver acá, con el estado '
+                'de tu lugar y el contacto del organizador.',
+            action: FilledButton(
+              onPressed: () {},
+              child: const Text('Ver torneos cerca'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await shot(tester, '09-vacio');
+  }, skip: previewSkip);
+
+  testWidgets('toast (componente)', (tester) async {
+    await phone(tester);
+    final context = ValueNotifier<BuildContext?>(null);
+    addTearDown(context.dispose);
+    await tester.pumpWidget(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        home: Builder(
+          builder: (ctx) {
+            context.value = ctx;
+            return Scaffold(
+              body: Center(
+                child: FilledButton(
+                  onPressed: () => showTandeToast(
+                    ctx,
+                    'Torneo publicado. Ya aparece en Explorar.',
+                    kind: ToastKind.success,
+                  ),
+                  child: const Text('mostrar'),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+    await tester.tap(find.text('mostrar'));
+    await tester.pumpAndSettle();
+    await shot(tester, '07-toast');
   }, skip: previewSkip);
 
   testWidgets('perfil', (tester) async {

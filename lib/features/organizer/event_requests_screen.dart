@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tande/core/widgets/tande_toast.dart';
 
 enum _RequestsView { pending, confirmed, rejected, waitlisted }
 
@@ -306,9 +307,7 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
     if (!mounted) return;
 
     if (inscriptions.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.exportCsvEmpty)));
+      showTandeToast(context, l10n.exportCsvEmpty);
       return;
     }
 
@@ -323,9 +322,7 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
       subject: tournament.title,
     );
     if (!mounted || shared) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(l10n.exportCsvFailed)));
+    showTandeToast(context, l10n.exportCsvFailed, kind: ToastKind.error);
   }
 
   /// Close/reopen registrations (manual override; the `sync_tournament_status`
@@ -344,20 +341,20 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
           .update(tournament.copyWith(status: status));
       invalidateOrganizerState(container, tournamentId: tournament.id);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            status == TournamentStatus.closed
-                ? l10n.registrationsClosed
-                : l10n.registrationsReopened,
-          ),
-        ),
+      showTandeToast(
+        context,
+        status == TournamentStatus.closed
+            ? l10n.registrationsClosed
+            : l10n.registrationsReopened,
+        kind: ToastKind.success,
       );
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(
+        showTandeToast(
           context,
-        ).showSnackBar(SnackBar(content: Text(l10n.updateEventError(error))));
+          l10n.updateEventError(error),
+          kind: ToastKind.error,
+        );
       }
     }
   }
@@ -386,14 +383,10 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
           .setManualConfirmed(tournament, amount);
       invalidateOrganizerState(container, tournamentId: tournament.id);
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.outsideUpdated)));
+      showTandeToast(context, l10n.outsideUpdated, kind: ToastKind.success);
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.updateError(error))));
+        showTandeToast(context, l10n.updateError(error), kind: ToastKind.error);
       }
     }
   }
@@ -424,9 +417,7 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
       if (mounted) context.pop();
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.deleteError(error))));
+        showTandeToast(context, l10n.deleteError(error), kind: ToastKind.error);
       }
     }
   }
@@ -452,26 +443,18 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
       // when the player has a contactable number.
       final player = inscription.player;
       final canNotify = player != null && player.canBeContacted;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            status == InscriptionStatus.confirmed
-                ? l10n.registrationConfirmed
-                : l10n.registrationRejected,
-          ),
-          action: canNotify
-              ? SnackBarAction(
-                  label: l10n.notifyWhatsApp,
-                  onPressed: () => _notifyDecision(inscription, status),
-                )
-              : null,
-        ),
+      showTandeToast(
+        context,
+        status == InscriptionStatus.confirmed
+            ? l10n.registrationConfirmed
+            : l10n.registrationRejected,
+        kind: ToastKind.success,
+        actionLabel: canNotify ? l10n.notifyWhatsApp : null,
+        onAction: canNotify ? () => _notifyDecision(inscription, status) : null,
       );
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.updateError(error))));
+        showTandeToast(context, l10n.updateError(error), kind: ToastKind.error);
       }
     } finally {
       if (mounted) setState(() => _deciding = false);
@@ -501,8 +484,10 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
                 'Cualquier consulta escribime.',
     );
     if (!opened && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.whatsappOpenFailed(player.phone))),
+      showTandeToast(
+        context,
+        l10n.whatsappOpenFailed(player.phone),
+        kind: ToastKind.error,
       );
     }
   }
@@ -681,8 +666,10 @@ class _RequestCard extends StatelessWidget {
           'para "$eventTitle".',
     );
     if (!opened && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.whatsappOpenFailed(player.phone))),
+      showTandeToast(
+        context,
+        l10n.whatsappOpenFailed(player.phone),
+        kind: ToastKind.error,
       );
     }
   }

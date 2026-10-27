@@ -11,6 +11,7 @@ import 'package:tande/models/inscription_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tande/core/widgets/tande_empty_state.dart';
 
 enum _StatusFilter { all, pending, confirmed }
 
@@ -370,33 +371,14 @@ class _EmptyOnboarding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.confirmation_num_outlined,
-              size: 56,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-            const SizedBox(height: 16),
-            Text(l10n.noInscriptionsTitle, style: theme.textTheme.titleLarge),
-            const SizedBox(height: 8),
-            Text(
-              l10n.noInscriptionsBody,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            FilledButton(onPressed: onExplore, child: Text(l10n.exploreEvents)),
-          ],
-        ),
+    return TandeEmptyState(
+      icon: Icons.confirmation_num_rounded,
+      title: l10n.noInscriptionsTitle,
+      body: l10n.noInscriptionsBody,
+      action: FilledButton(
+        onPressed: onExplore,
+        child: Text(l10n.exploreEvents),
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:tande/features/pro/pro_providers.dart';
 import 'package:tande/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tande/core/widgets/tande_toast.dart';
 
 /// The Tande Pro paywall (LAUNCH.md §7): benefits, plans, Play purchase.
 ///
@@ -32,18 +33,14 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
         .read(proProvider.notifier)
         .buy(_productOf(pro, _selected));
     if (!mounted || ok) return; // Success flips the state below.
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(_l10n().proPurchaseError)));
+    showTandeToast(context, _l10n().proPurchaseError, kind: ToastKind.error);
   }
 
   Future<void> _restore() async {
     final found = await ref.read(proProvider.notifier).restore();
     if (!mounted) return;
     if (!found) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(_l10n().proRestoreMissing)));
+      showTandeToast(context, _l10n().proRestoreMissing);
     }
     // Found → the state flips to "already Pro".
   }

@@ -7,6 +7,7 @@ import 'package:tande/models/tournament_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:tande/core/widgets/tande_empty_state.dart';
 
 /// Search-result list with pull-to-refresh and an empty state.
 class TournamentList extends ConsumerWidget {
@@ -73,36 +74,14 @@ class _EmptyResults extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.search_off,
-              size: 56,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-            const SizedBox(height: 16),
-            Text(l10n.noTournaments, style: theme.textTheme.titleLarge),
-            const SizedBox(height: 8),
-            Text(
-              l10n.noTournamentsBody,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            TextButton(
-              onPressed: onClearFilters,
-              child: Text(l10n.clearFilters),
-            ),
-          ],
-        ),
+    return TandeEmptyState(
+      icon: Icons.search_off_rounded,
+      title: l10n.noTournaments,
+      body: l10n.noTournamentsBody,
+      action: TextButton(
+        onPressed: onClearFilters,
+        child: Text(l10n.clearFilters),
       ),
     );
   }

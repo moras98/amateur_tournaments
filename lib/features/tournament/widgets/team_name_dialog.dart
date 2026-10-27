@@ -85,10 +85,7 @@ class _TeamNameDialogState extends State<TeamNameDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: Text(l10n.cancel),
         ),
-        FilledButton(
-          onPressed: _submit,
-          child: Text(l10n.confirm),
-        ),
+        FilledButton(onPressed: _submit, child: Text(l10n.confirm)),
       ],
     );
   }

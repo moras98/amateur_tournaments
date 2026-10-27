@@ -81,16 +81,10 @@ class TournamentCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 6),
-                        _MetaLine(
-                          icon: Icons.schedule_rounded,
-                          text: whenLine,
-                        ),
+                        _MetaLine(icon: Icons.schedule_rounded, text: whenLine),
                         if (where.trim().isNotEmpty) ...[
                           const SizedBox(height: 2),
-                          _MetaLine(
-                            icon: Icons.place_outlined,
-                            text: where,
-                          ),
+                          _MetaLine(icon: Icons.place_outlined, text: where),
                         ],
                       ],
                     ),

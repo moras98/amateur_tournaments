@@ -922,19 +922,20 @@ void main() {
     expect(find.text('Inscripciones cerradas'), findsOneWidget);
     expect(find.text('CERRADO'), findsOneWidget);
 
-    // ...and reopen. The new snackbar queues behind the still-visible
-    // "closed" one — wait it out before asserting.
+    // ...and reopen. The toast **replaces** the previous one instead of
+    // queueing behind it (design.md §7: a second tap must not wait for the
+    // first message to expire), so it is on screen right after the tap.
     await tester.tap(find.byIcon(Icons.more_vert));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Reabrir inscripciones'));
-    await tester.pumpAndSettle();
-    await tester.pump(const Duration(seconds: 5));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
 
     expect(find.text('Inscripciones reabiertas'), findsOneWidget);
     expect(find.text('CERRADO'), findsNothing);
 
-    await tester.pump(const Duration(seconds: 5));
+    // Let it expire so no timer leaks into teardown.
+    await tester.pump(const Duration(seconds: 6));
     await tester.pumpAndSettle();
   });
 

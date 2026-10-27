@@ -24,8 +24,7 @@ void main() {
       InscriptionStatus.cancelled => 'Cancelada',
       InscriptionStatus.waitlisted => 'En espera',
     };
-    String date(DateTime value) =>
-        '${value.day}/${value.month}/${value.year}';
+    String date(DateTime value) => '${value.day}/${value.month}/${value.year}';
 
     InscriptionModel inscription({
       String team = 'Los Pibes',
@@ -72,10 +71,7 @@ void main() {
     test('escapa comas, comillas y saltos de línea (RFC 4180)', () {
       final csv = buildInscriptionsCsv(
         inscriptions: [
-          inscription(
-            team: 'Los Pibes, "B"',
-            note: 'linea 1\nlinea 2',
-          ),
+          inscription(team: 'Los Pibes, "B"', note: 'linea 1\nlinea 2'),
         ],
         statusLabel: label,
         dateFormat: date,
@@ -171,10 +167,7 @@ void main() {
         waitlist: true,
       );
       expect(second.id, first.id);
-      expect(
-        store.inscriptions.where((i) => i.playerId == 'u-b').length,
-        1,
-      );
+      expect(store.inscriptions.where((i) => i.playerId == 'u-b').length, 1);
     });
 
     test('rechazar al confirmado promueve al primero de la espera', () async {
@@ -244,9 +237,9 @@ void main() {
       // Cerrar es una decisión explícita del organizador: meterle gente la
       // contradice (paridad con el trigger de la migración 0007).
       store.replaceTournament(
-        store.tournamentById('t-full')!.copyWith(
-          status: TournamentStatus.closed,
-        ),
+        store
+            .tournamentById('t-full')!
+            .copyWith(status: TournamentStatus.closed),
       );
       final waiting = await inscriptions.create(
         tournamentId: 't-full',

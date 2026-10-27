@@ -15,6 +15,7 @@ import 'package:tande/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tande/core/widgets/tande_toast.dart';
 
 /// Creates or edits the signed-in user's profile.
 ///
@@ -182,23 +183,17 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     final l10n = AppLocalizations.of(context)!;
     if (_sports.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.chooseSport)));
+      showTandeToast(context, l10n.chooseSport);
       return;
     }
     if (_birthDate == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.chooseBirthDate)));
+      showTandeToast(context, l10n.chooseBirthDate);
       return;
     }
     // Same minimum-age gate as sign-up (Terms §3): an edit must not turn the
     // stored birth date into an under-18 one.
     if (!isAdult(_birthDate!)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.mustBe18)));
+      showTandeToast(context, l10n.mustBe18);
       return;
     }
 
@@ -211,9 +206,7 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
     try {
       final session = ref.read(authStateProvider);
       if (session == null) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.noSession)));
+        showTandeToast(context, l10n.noSession);
         return;
       }
 
@@ -261,9 +254,7 @@ class _ProfileFormScreenState extends ConsumerState<ProfileFormScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.saveFailed('$e'))));
+        showTandeToast(context, l10n.saveFailed('$e'), kind: ToastKind.error);
       }
     } finally {
       if (mounted) setState(() => _loading = false);
