@@ -5,11 +5,16 @@ import 'package:tande/models/user_model.dart';
 /// Flow: `pending` (player requested, payment coordinated off-app) →
 /// `confirmed` (organizer verified payment) or `rejected`. The player can
 /// also `cancelled` their own inscription.
+///
+/// `waitlisted` is the parking state for a full tournament: when a confirmed
+/// spot frees up (cancel or reject) the oldest waitlisted row is promoted to
+/// `confirmed` automatically (see `promote_from_waitlist` in migration 0007).
 enum InscriptionStatus {
   pending('pending'),
   confirmed('confirmed'),
   rejected('rejected'),
-  cancelled('cancelled');
+  cancelled('cancelled'),
+  waitlisted('waitlisted');
 
   const InscriptionStatus(this.value);
 
@@ -51,6 +56,7 @@ class InscriptionModel {
 
   bool get isConfirmed => status == InscriptionStatus.confirmed;
   bool get isPending => status == InscriptionStatus.pending;
+  bool get isWaitlisted => status == InscriptionStatus.waitlisted;
 
   factory InscriptionModel.fromJson(Map<String, dynamic> json) {
     return InscriptionModel(

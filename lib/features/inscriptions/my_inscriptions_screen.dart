@@ -338,6 +338,11 @@ class _StatusChip extends StatelessWidget {
         theme.colorScheme.onSurfaceVariant,
         Icons.block,
       ),
+      InscriptionStatus.waitlisted => (
+        theme.colorScheme.secondaryContainer,
+        theme.colorScheme.onSecondaryContainer,
+        Icons.people_outline,
+      ),
     };
 
     return Container(

@@ -20,14 +20,23 @@ abstract class InscriptionRepository {
 
   /// Creates a `pending` inscription. The player then coordinates payment
   /// with the organizer off-app.
+  ///
+  /// With [waitlist] the row is created as `waitlisted` instead: used when the
+  /// tournament is full, so the player holds a place in line until a confirmed
+  /// spot frees up.
   Future<InscriptionModel> create({
     required String tournamentId,
     required String playerId,
     String teamName = '',
     String note = '',
+    bool waitlist = false,
   });
 
   /// Organizer marks an inscription as confirmed or rejected.
+  ///
+  /// Freeing a confirmed spot (reject, or [cancel]) promotes the oldest
+  /// `waitlisted` row of that tournament to `confirmed` — automatically, as
+  /// long as the tournament is not closed.
   Future<InscriptionModel> decide({
     required String inscriptionId,
     required InscriptionStatus status,

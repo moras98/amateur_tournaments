@@ -56,14 +56,19 @@ class SupabaseInscriptionRepository implements InscriptionRepository {
     required String playerId,
     String teamName = '',
     String note = '',
+    bool waitlist = false,
   }) async {
+    final target = waitlist
+        ? InscriptionStatus.waitlisted
+        : InscriptionStatus.pending;
     final existing = await fetchForPlayerAndTournament(
       playerId: playerId,
       tournamentId: tournamentId,
     );
     if (existing != null) {
       if (existing.status == InscriptionStatus.pending ||
-          existing.status == InscriptionStatus.confirmed) {
+          existing.status == InscriptionStatus.confirmed ||
+          existing.status == InscriptionStatus.waitlisted) {
         return existing;
       }
       // Rejected or cancelled: the player may request again — the row is
@@ -71,7 +76,7 @@ class SupabaseInscriptionRepository implements InscriptionRepository {
       final row = await _client
           .from('inscriptions')
           .update({
-            'status': InscriptionStatus.pending.value,
+            'status': target.value,
             'team_name': teamName,
             'note': note,
             'created_at': DateTime.now().toUtc().toIso8601String(),
@@ -88,6 +93,7 @@ class SupabaseInscriptionRepository implements InscriptionRepository {
           .insert({
             'tournament_id': tournamentId,
             'player_id': playerId,
+            'status': target.value,
             'team_name': teamName,
             'note': note,
           })

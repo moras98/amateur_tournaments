@@ -41,6 +41,7 @@ class _TournamentDetailScreenState
     required TournamentModel tournament,
     UserModel? organizer,
     UserModel? player,
+    bool waitlist = false,
   }) async {
     if (_registering) return; // Same-frame double tap protection.
     final l10n = AppLocalizations.of(context)!;
@@ -60,6 +61,7 @@ class _TournamentDetailScreenState
             tournamentId: tournament.id,
             playerId: session.userId,
             teamName: player?.fullName ?? '',
+            waitlist: waitlist,
           );
       container
         ..invalidate(myInscriptionProvider(tournament.id))
@@ -68,6 +70,17 @@ class _TournamentDetailScreenState
         ..invalidate(myInscriptionsProvider)
         // The organizer's event card shows a pending-requests badge.
         ..invalidate(tournamentInscriptionsProvider(tournament.id));
+
+      if (waitlist) {
+        // No payment to coordinate yet: the spot isn't theirs until one
+        // frees up, so opening WhatsApp here would be premature.
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(l10n.waitlistSuccess)));
+        }
+        return;
+      }
 
       // Payment is coordinated off-app: open WhatsApp with a pre-filled
       // message to the organizer.
@@ -529,13 +542,37 @@ class _TournamentDetailScreenState
         icon: const Icon(Icons.hourglass_top),
         label: Text(l10n.awaitingConfirmation),
       );
+    } else if (inscription?.isWaitlisted ?? false) {
+      button = OutlinedButton.icon(
+        onPressed: null,
+        icon: const Icon(Icons.people_outline),
+        label: Text(l10n.waitlistedTitle),
+      );
     } else if (tournament.status == TournamentStatus.closed) {
       button = FilledButton(
         onPressed: null,
         child: Text(l10n.registrationsClosedButton),
       );
     } else if (tournament.isFull) {
-      button = FilledButton(onPressed: null, child: Text(l10n.tournamentFull));
+      // Full is no longer a dead end: the player can hold a place in line and
+      // the oldest waitlisted row is promoted automatically when a spot frees.
+      button = FilledButton.tonal(
+        onPressed: _registering
+            ? null
+            : () => _register(
+                tournament: tournament,
+                organizer: organizer,
+                player: player,
+                waitlist: true,
+              ),
+        child: _registering
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : Text(l10n.joinWaitlist),
+      );
     } else {
       button = FilledButton(
         onPressed: _registering
@@ -571,7 +608,8 @@ class _TournamentDetailScreenState
           children: [
             if (session != null &&
                 !(inscription?.isConfirmed ?? false) &&
-                !(inscription?.isPending ?? false)) ...[
+                !(inscription?.isPending ?? false) &&
+                !(inscription?.isWaitlisted ?? false)) ...[
               Text(
                 tournament.isFull ||
                         tournament.status == TournamentStatus.closed
@@ -584,7 +622,8 @@ class _TournamentDetailScreenState
             ],
             button,
             if ((inscription?.isPending ?? false) ||
-                (inscription?.isConfirmed ?? false)) ...[
+                (inscription?.isConfirmed ?? false) ||
+                (inscription?.isWaitlisted ?? false)) ...[
               const SizedBox(height: 4),
               TextButton.icon(
                 onPressed: _cancelling ? null : () => _cancel(inscription!),

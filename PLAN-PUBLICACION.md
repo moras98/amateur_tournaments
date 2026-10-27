@@ -38,7 +38,7 @@ No hay una respuesta correcta; lo que no es correcto es descubrirlo después del
 
 ## 1. Veredicto
 
-El código está sano: `flutter analyze` limpio y **132/132 tests** en verde. Lo que falta
+El código está sano: `flutter analyze` limpio y **154/154 tests** en verde. Lo que falta
 para publicar **no es código de pantallas** ni funciones nuevas: son cuatro cosas operativas y un
 puñado de arreglos chicos.
 
@@ -318,7 +318,7 @@ en el aire y el organizador pierde el pedido. **Fix mínimo (6-8 h):** Supabase 
 ### 4.7 🟢 Deuda menor
 
 - `lib/core/utils/format.dart:3,39` — comentarios dicen "ARS" (resabio del rebase argentino).
-- `README.md` decía "103 tests" cuando eran 107; hoy son 132.
+- `README.md` decía "103 tests" cuando eran 107; hoy son 154.
 - `LAUNCH.md:117` dice que la app "ya comparte el cuadro por WhatsApp": no comparte nada.
 - Nombre: "Tande" está tomado por al menos 5 apps (`Tande App`, `My Tande`,
   `Tande Maker` ×3) en App Store y Play. El título funciona, pero perdés toda la búsqueda
@@ -1003,7 +1003,7 @@ declarado en el manifest, el Info.plist y (eventualmente) el dashboard de Supaba
 obliga a tocar los tres lados a la vez. Se puede renombrar a `io.supabase.tande` en el mismo
 momento en que se configuren los providers de Google y Apple.
 
-**Verificación de esta tanda:** `flutter analyze` limpio · **132/132 tests** · iconos y splash
+**Verificación de esta tanda:** `flutter analyze` limpio · **154/154 tests** · iconos y splash
 regenerados para Android (incluye monocromo) e iOS · `grep -ri bracket` sin coincidencias fuera
 de las menciones históricas de esta documentación.
 
@@ -1052,3 +1052,54 @@ Acciones que se desprenden:
 Reproducible: `POST https://www.tmdn.org/tmview/api/search/results` con
 `{"page":"1","pageSize":"50","criteria":"W","basicSearch":"tande","offices":["UY"]}`
 y cabeceras `Origin`/`Referer` de tmdn.org. Sin ellas la API responde vacío.
+
+---
+
+## 12. Tande Pro: las tres features y el recorte del paywall (26/10/2026)
+
+Implementado en este repo, con tests y verificado contra Postgres real.
+
+### 12.1 Lo que existe ahora
+
+| Feature | Dónde | Cómo se usa | Gate |
+|---|---|---|---|
+| **Duplicar torneo** | `EventFormScreen(duplicateOfId:)`, ruta `/organize/duplicate/:id`, ítem en el menú ⋮ del evento | Abre el alta pre-cargada con el mismo torneo, fechas +7 días y sin banner; el organizador ajusta y publica | Pro |
+| **Exportar inscripciones a CSV** | `lib/core/utils/csv_export.dart`, botón en el AppBar del evento | Genera el CSV (UTF-8 con BOM, CRLF, RFC 4180) y abre la hoja de compartir: WhatsApp, Drive, mail, Excel | Pro |
+| **Lista de espera automática** | `InscriptionStatus.waitlisted`, `create(waitlist: true)`, `supabase/migrations/0007_waitlist.sql` | Con el torneo lleno el jugador se anota en la espera; cuando un cupo confirmado se libera, el más antiguo se promueve solo | **Libre** |
+
+Por qué la lista de espera no es Pro: el entitlement vive en el cliente (`isPro` desde Play), así
+que no se puede gatear por el plan **del organizador** desde el teléfono del jugador. Gatearla en
+el teléfono del jugador sería cobrarle a quien no compra. Queda libre hasta que exista
+`profiles.pro_until` con verificación server-side; ahí es una línea.
+
+### 12.2 El paywall, recortado a la verdad
+
+Antes: 5 bullets, 1 verdadero (torneos ilimitados) y cuatro inventados (PDF/CSV, listas de espera,
+estadísticas, destacado en Explorar). Ahora:
+
+1. Torneos activos ilimitados
+2. Exportar inscripciones a CSV (planilla lista para Excel)
+
+Los bullets 3-5 se borraron del ARB (`proBenefit3/4/5`), no se ocultaron. Regla que queda escrita
+en el código: **un bullet entra al paywall en el mismo commit que la feature**.
+
+### 12.3 Verificación
+
+- `flutter analyze` limpio · **tests: 154/154** (14 nuevos en `test/pro_features_test.dart`:
+  CSV, nombre de archivo, lista de espera en el mock y dos flujos de UI).
+- **Migración 0007 ejecutada contra Postgres 17 real** (contenedor descartable), no sólo escrita:
+  1. cancelar el confirmado promueve al primero de la espera y `confirmed_at` queda seteado; el
+     torneo sigue `full`;
+  2. con el torneo `closed`, no promueve (decisión explícita del organizador);
+  3. promueve al más antiguo y deja al otro en la fila.
+- Las migraciones `0001` a `0007` corren en orden sin errores en un Postgres limpio: era el
+  ítem "❓ unconfirmed" del checklist de LAUNCH.
+
+### 12.4 Lo que todavía falta para que Pro sea un producto
+
+- `profiles.pro_until` + verificación server-side del `purchaseToken` (§4.2): sin eso, el
+  entitlement no viaja entre dispositivos y el fail-open deja pasar a todos si Play falla.
+- Decidir el precio y crear los productos en Console (`tande_pro_monthly` / `tande_pro_yearly`):
+  crearlos **enciende** el gate para todos los usuarios sin entitlement.
+- Revisar el límite libre (`freeActiveTournaments = 1`): con dos ligas en paralelo el organizador
+  choca el primer día; 2-3 es más razonable cuando Pro se encienda.

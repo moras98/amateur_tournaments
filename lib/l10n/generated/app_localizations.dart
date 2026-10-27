@@ -744,26 +744,8 @@ abstract class AppLocalizations {
   /// No description provided for @proBenefit2.
   ///
   /// In es_UY, this message translates to:
-  /// **'Exportar planillas a PDF y CSV'**
+  /// **'Exportar inscripciones a CSV (planilla lista para Excel)'**
   String get proBenefit2;
-
-  /// No description provided for @proBenefit3.
-  ///
-  /// In es_UY, this message translates to:
-  /// **'Listas de espera y suplentes'**
-  String get proBenefit3;
-
-  /// No description provided for @proBenefit4.
-  ///
-  /// In es_UY, this message translates to:
-  /// **'Estadísticas de tu torneo'**
-  String get proBenefit4;
-
-  /// No description provided for @proBenefit5.
-  ///
-  /// In es_UY, this message translates to:
-  /// **'Destacado en Explorar'**
-  String get proBenefit5;
 
   /// No description provided for @proMonthly.
   ///
@@ -1244,6 +1226,72 @@ abstract class AppLocalizations {
   /// In es_UY, this message translates to:
   /// **'Rechazadas'**
   String get filterRejected;
+
+  /// No description provided for @filterWaitlist.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'En espera'**
+  String get filterWaitlist;
+
+  /// No description provided for @emptyRequestsWaitlist.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Nadie en lista de espera todavía.'**
+  String get emptyRequestsWaitlist;
+
+  /// No description provided for @joinWaitlist.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Anotarme en lista de espera'**
+  String get joinWaitlist;
+
+  /// No description provided for @waitlistSuccess.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Quedaste en lista de espera. Si se libera un cupo te confirmamos y el organizador te avisa.'**
+  String get waitlistSuccess;
+
+  /// No description provided for @waitlistedTitle.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'En lista de espera'**
+  String get waitlistedTitle;
+
+  /// No description provided for @waitlistedHint.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'El torneo está lleno. Te avisamos si se libera un cupo.'**
+  String get waitlistedHint;
+
+  /// No description provided for @inscriptionWaitlisted.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'En espera'**
+  String get inscriptionWaitlisted;
+
+  /// No description provided for @exportCsv.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Exportar inscripciones (CSV)'**
+  String get exportCsv;
+
+  /// No description provided for @exportCsvEmpty.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Todavía no hay inscripciones para exportar.'**
+  String get exportCsvEmpty;
+
+  /// No description provided for @exportCsvFailed.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'No se pudo preparar la planilla. Probá de nuevo.'**
+  String get exportCsvFailed;
+
+  /// No description provided for @duplicateEvent.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Duplicar torneo'**
+  String get duplicateEvent;
 
   /// No description provided for @myLoadError.
   ///

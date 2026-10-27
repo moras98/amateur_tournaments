@@ -71,6 +71,7 @@ extension StatusLabels on AppLocalizations {
     InscriptionStatus.confirmed => inscriptionConfirmed,
     InscriptionStatus.rejected => inscriptionRejected,
     InscriptionStatus.cancelled => inscriptionCancelled,
+    InscriptionStatus.waitlisted => inscriptionWaitlisted,
   };
 }
 

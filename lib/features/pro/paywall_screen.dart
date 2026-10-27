@@ -86,13 +86,10 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
             ),
             const SizedBox(height: 24),
             // Benefits.
-            for (final benefit in [
-              l10n.proBenefit1,
-              l10n.proBenefit2,
-              l10n.proBenefit3,
-              l10n.proBenefit4,
-              l10n.proBenefit5,
-            ])
+            // Sólo lo que la app hace hoy. Cada bullet de más es una promesa
+            // que el usuario paga y no recibe (y en las tiendas, metadatos
+            // inexactos: Apple 2.3.1 / 3.1.2).
+            for (final benefit in [l10n.proBenefit1, l10n.proBenefit2])
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: Row(

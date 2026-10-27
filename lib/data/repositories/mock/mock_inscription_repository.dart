@@ -2,6 +2,7 @@ import 'package:tande/data/repositories/inscription_repository.dart';
 import 'package:tande/data/repositories/mock/mock_store.dart';
 import 'package:tande/data/repositories/mock/mock_tournament_repository.dart';
 import 'package:tande/models/inscription_model.dart';
+import 'package:tande/models/tournament_model.dart';
 
 /// In-memory [InscriptionRepository] backed by [MockStore].
 ///
@@ -52,14 +53,19 @@ class MockInscriptionRepository implements InscriptionRepository {
     required String playerId,
     String teamName = '',
     String note = '',
+    bool waitlist = false,
   }) async {
+    final target = waitlist
+        ? InscriptionStatus.waitlisted
+        : InscriptionStatus.pending;
     final existingIndex = _store.inscriptions.indexWhere(
       (i) => i.playerId == playerId && i.tournamentId == tournamentId,
     );
     if (existingIndex >= 0) {
       final existing = _store.inscriptions[existingIndex];
       if (existing.status == InscriptionStatus.pending ||
-          existing.status == InscriptionStatus.confirmed) {
+          existing.status == InscriptionStatus.confirmed ||
+          existing.status == InscriptionStatus.waitlisted) {
         return _withPlayer(existing);
       }
       // Rejected or cancelled: the player may request again — the row is
@@ -68,7 +74,7 @@ class MockInscriptionRepository implements InscriptionRepository {
         id: existing.id,
         tournamentId: tournamentId,
         playerId: playerId,
-        status: InscriptionStatus.pending,
+        status: target,
         teamName: teamName,
         note: note,
         createdAt: DateTime.now(),
@@ -85,7 +91,7 @@ class MockInscriptionRepository implements InscriptionRepository {
       id: _store.nextId('i'),
       tournamentId: tournamentId,
       playerId: playerId,
-      status: InscriptionStatus.pending,
+      status: target,
       teamName: teamName,
       note: note,
       createdAt: DateTime.now(),
@@ -127,6 +133,9 @@ class MockInscriptionRepository implements InscriptionRepository {
         applyConfirmedDelta(_store, inscription.tournamentId, 1);
       } else if (wasConfirmed && !willConfirm) {
         applyConfirmedDelta(_store, inscription.tournamentId, -1);
+        // Mirror of the DB trigger: a freed confirmed spot goes to the
+        // oldest waitlisted row, unless the organizer closed inscriptions.
+        _promoteFromWaitlist(inscription.tournamentId);
       }
       break;
     }
@@ -151,6 +160,42 @@ class MockInscriptionRepository implements InscriptionRepository {
   Future<int> countConfirmed(String tournamentId) async =>
       // Parity with the spots_left view: app rows + off-app manual count.
       _store.tournamentById(tournamentId)?.totalConfirmed ?? 0;
+
+  /// Moves the oldest `waitlisted` inscription of [tournamentId] to
+  /// `confirmed`. No-op when there is nobody waiting or the tournament is
+  /// closed (parity with `promote_from_waitlist` in migration 0007).
+  void _promoteFromWaitlist(String tournamentId) {
+    final tournament = _store.tournamentById(tournamentId);
+    if (tournament == null || tournament.status == TournamentStatus.closed) {
+      return;
+    }
+    final candidates =
+        _store.inscriptions
+            .where(
+              (i) =>
+                  i.tournamentId == tournamentId &&
+                  i.status == InscriptionStatus.waitlisted,
+            )
+            .toList()
+          ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    if (candidates.isEmpty) return;
+
+    final first = candidates.first;
+    final index = _store.inscriptions.indexWhere((i) => i.id == first.id);
+    if (index < 0) return;
+    _store.inscriptions[index] = InscriptionModel(
+      id: first.id,
+      tournamentId: first.tournamentId,
+      playerId: first.playerId,
+      status: InscriptionStatus.confirmed,
+      teamName: first.teamName,
+      note: first.note,
+      createdAt: first.createdAt,
+      confirmedAt: DateTime.now(),
+      player: first.player,
+    );
+    applyConfirmedDelta(_store, tournamentId, 1);
+  }
 
   InscriptionModel _withPlayer(InscriptionModel inscription) =>
       InscriptionModel(

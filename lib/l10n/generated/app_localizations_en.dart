@@ -342,16 +342,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get proBenefit1 => 'Unlimited active tournaments';
 
   @override
-  String get proBenefit2 => 'Export fixtures to PDF and CSV';
-
-  @override
-  String get proBenefit3 => 'Waitlists and substitutes';
-
-  @override
-  String get proBenefit4 => 'Tournament statistics';
-
-  @override
-  String get proBenefit5 => 'Featured in Explore';
+  String get proBenefit2 => 'Export registrations to CSV (spreadsheet-ready)';
 
   @override
   String get proMonthly => 'Monthly';
@@ -616,6 +607,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filterRejected => 'Rejected';
+
+  @override
+  String get filterWaitlist => 'Waitlisted';
+
+  @override
+  String get emptyRequestsWaitlist => 'Nobody on the waitlist yet.';
+
+  @override
+  String get joinWaitlist => 'Join the waitlist';
+
+  @override
+  String get waitlistSuccess =>
+      'You\'re on the waitlist. If a spot frees up we confirm you and the organizer lets you know.';
+
+  @override
+  String get waitlistedTitle => 'On the waitlist';
+
+  @override
+  String get waitlistedHint =>
+      'The tournament is full. We\'ll let you know if a spot frees up.';
+
+  @override
+  String get inscriptionWaitlisted => 'Waitlisted';
+
+  @override
+  String get exportCsv => 'Export registrations (CSV)';
+
+  @override
+  String get exportCsvEmpty => 'No registrations to export yet.';
+
+  @override
+  String get exportCsvFailed => 'Couldn\'t build the spreadsheet. Try again.';
+
+  @override
+  String get duplicateEvent => 'Duplicate tournament';
 
   @override
   String myLoadError(Object error) {

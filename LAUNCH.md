@@ -15,7 +15,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 
 | Item | Status |
 |---|---|
-| App build | ✅ analyze clean, **140/140 tests**, `1.0.0+1` |
+| App build | ✅ analyze clean, **154/154 tests**, `1.0.0+1` |
 | Application ID | ✅ `com.tande.app` (permanent — never change after publish) |
 | Git | ✅ 5 commits, secrets gitignored |
 | Upload keystore | ✅ `~/upload-keystore.jks` + `android/key.properties` |
@@ -170,10 +170,15 @@ the closed test** — never gate the 12 testers.
 - [ ] **Free tier stays generous**: everything a player does is free forever;
       organizers get 1 active tournament
       (`AppConstants.freeActiveTournaments`).
-- [ ] **Pro features** — validate which ones organizers actually want before
-      building them all: unlimited active tournaments (the gate exists) ·
-      PDF/CSV exports (planillas) · waitlists/substitutes · stats · boost in
-      Explore (the boost can become a one-off non-subscription SKU later).
+- [x] **Pro features shipped (26/10)**: unlimited active tournaments (the
+      gate) and **CSV export** (`lib/core/utils/csv_export.dart`, share sheet
+      from the event screen). Plus, free for everyone: **waitlist with
+      automatic promotion** (`supabase/migrations/0007_waitlist.sql`, mock
+      parity + tests). The waitlist is *not* a Pro bullet: the entitlement
+      lives in the client, so it cannot be gated by the organizer's plan.
+- [ ] **Pro features pending** (each one is a paywall bullet only when it
+      exists): PDF exports · substitutes · stats · boost in Explore (the boost
+      can become a one-off non-subscription SKU later).
 - [x] **Code (scaffolding)**: `in_app_purchase` wired in `lib/data/billing/`,
       paywall at `/pro` (profile card + free-tier gate), entitlement from
       Play. **Inert until products exist** — with no products configured the

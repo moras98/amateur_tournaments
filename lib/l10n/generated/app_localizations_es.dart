@@ -346,16 +346,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get proBenefit1 => 'Torneos activos ilimitados';
 
   @override
-  String get proBenefit2 => 'Exportar planillas a PDF y CSV';
-
-  @override
-  String get proBenefit3 => 'Listas de espera y suplentes';
-
-  @override
-  String get proBenefit4 => 'Estadísticas de tu torneo';
-
-  @override
-  String get proBenefit5 => 'Destacado en Explorar';
+  String get proBenefit2 =>
+      'Exportar inscripciones a CSV (planilla lista para Excel)';
 
   @override
   String get proMonthly => 'Mensual';
@@ -624,6 +616,42 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get filterRejected => 'Rechazadas';
+
+  @override
+  String get filterWaitlist => 'En espera';
+
+  @override
+  String get emptyRequestsWaitlist => 'Nadie en lista de espera todavía.';
+
+  @override
+  String get joinWaitlist => 'Anotarme en lista de espera';
+
+  @override
+  String get waitlistSuccess =>
+      'Quedaste en lista de espera. Si se libera un cupo te confirmamos y el organizador te avisa.';
+
+  @override
+  String get waitlistedTitle => 'En lista de espera';
+
+  @override
+  String get waitlistedHint =>
+      'El torneo está lleno. Te avisamos si se libera un cupo.';
+
+  @override
+  String get inscriptionWaitlisted => 'En espera';
+
+  @override
+  String get exportCsv => 'Exportar inscripciones (CSV)';
+
+  @override
+  String get exportCsvEmpty => 'Todavía no hay inscripciones para exportar.';
+
+  @override
+  String get exportCsvFailed =>
+      'No se pudo preparar la planilla. Probá de nuevo.';
+
+  @override
+  String get duplicateEvent => 'Duplicar torneo';
 
   @override
   String myLoadError(Object error) {
@@ -1390,16 +1418,8 @@ class AppLocalizationsEsUy extends AppLocalizationsEs {
   String get proBenefit1 => 'Torneos activos ilimitados';
 
   @override
-  String get proBenefit2 => 'Exportar planillas a PDF y CSV';
-
-  @override
-  String get proBenefit3 => 'Listas de espera y suplentes';
-
-  @override
-  String get proBenefit4 => 'Estadísticas de tu torneo';
-
-  @override
-  String get proBenefit5 => 'Destacado en Explorar';
+  String get proBenefit2 =>
+      'Exportar inscripciones a CSV (planilla lista para Excel)';
 
   @override
   String get proMonthly => 'Mensual';
@@ -1668,6 +1688,42 @@ class AppLocalizationsEsUy extends AppLocalizationsEs {
 
   @override
   String get filterRejected => 'Rechazadas';
+
+  @override
+  String get filterWaitlist => 'En espera';
+
+  @override
+  String get emptyRequestsWaitlist => 'Nadie en lista de espera todavía.';
+
+  @override
+  String get joinWaitlist => 'Anotarme en lista de espera';
+
+  @override
+  String get waitlistSuccess =>
+      'Quedaste en lista de espera. Si se libera un cupo te confirmamos y el organizador te avisa.';
+
+  @override
+  String get waitlistedTitle => 'En lista de espera';
+
+  @override
+  String get waitlistedHint =>
+      'El torneo está lleno. Te avisamos si se libera un cupo.';
+
+  @override
+  String get inscriptionWaitlisted => 'En espera';
+
+  @override
+  String get exportCsv => 'Exportar inscripciones (CSV)';
+
+  @override
+  String get exportCsvEmpty => 'Todavía no hay inscripciones para exportar.';
+
+  @override
+  String get exportCsvFailed =>
+      'No se pudo preparar la planilla. Probá de nuevo.';
+
+  @override
+  String get duplicateEvent => 'Duplicar torneo';
 
   @override
   String myLoadError(Object error) {

@@ -1,10 +1,12 @@
 import 'package:tande/core/theme/adaptive.dart';
 import 'package:tande/core/utils/contact.dart';
+import 'package:tande/core/utils/csv_export.dart';
 import 'package:tande/core/utils/format.dart';
 import 'package:tande/data/repositories/providers.dart';
 import 'package:tande/features/explore/explore_providers.dart';
 import 'package:tande/features/inscriptions/inscriptions_providers.dart';
 import 'package:tande/features/organizer/organizer_providers.dart';
+import 'package:tande/features/pro/pro_providers.dart';
 import 'package:tande/features/tournament/tournament_providers.dart';
 import 'package:tande/l10n/generated/app_localizations.dart';
 import 'package:tande/l10n/labels.dart';
@@ -16,9 +18,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-enum _RequestsView { pending, confirmed, rejected }
+enum _RequestsView { pending, confirmed, rejected, waitlisted }
 
-enum _EventAction { close, reopen, delete }
+enum _EventAction { duplicate, close, reopen, delete }
 
 /// One of the organizer's events: summary + inscription requests to
 /// confirm/reject (players coordinate payment off-app first).
@@ -74,6 +76,11 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
       appBar: AppBar(
         actions: [
           IconButton(
+            tooltip: l10n.exportCsv,
+            icon: const Icon(Icons.ios_share),
+            onPressed: () => _exportCsv(tournament),
+          ),
+          IconButton(
             tooltip: l10n.editEvent,
             icon: const Icon(Icons.edit_outlined),
             onPressed: () =>
@@ -83,6 +90,7 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
             tooltip: l10n.moreActions,
             icon: const Icon(Icons.more_vert),
             onSelected: (action) => switch (action) {
+              _EventAction.duplicate => _duplicate(tournament),
               _EventAction.close => _setStatus(
                 tournament,
                 TournamentStatus.closed,
@@ -91,6 +99,11 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
               _EventAction.delete => _delete(tournament),
             },
             itemBuilder: (context) => [
+              PopupMenuItem(
+                value: _EventAction.duplicate,
+                child: Text(l10n.duplicateEvent),
+              ),
+              const PopupMenuDivider(),
               if (tournament.status != TournamentStatus.closed)
                 PopupMenuItem(
                   value: _EventAction.close,
@@ -193,6 +206,12 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
                         setState(() => _view = _RequestsView.pending),
                   ),
                   ChoiceChip(
+                    label: Text(l10n.filterWaitlist),
+                    selected: _view == _RequestsView.waitlisted,
+                    onSelected: (_) =>
+                        setState(() => _view = _RequestsView.waitlisted),
+                  ),
+                  ChoiceChip(
                     label: Text(l10n.filterConfirmed),
                     selected: _view == _RequestsView.confirmed,
                     onSelected: (_) =>
@@ -224,6 +243,7 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
                         _RequestsView.pending => l10n.emptyRequestsPending,
                         _RequestsView.confirmed => l10n.emptyRequestsConfirmed,
                         _RequestsView.rejected => l10n.emptyRequestsRejected,
+                        _RequestsView.waitlisted => l10n.emptyRequestsWaitlist,
                       },
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
@@ -252,6 +272,60 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
         ],
       ),
     );
+  }
+
+  /// Duplicate: opens the create form pre-filled from this event (dates moved
+  /// a week ahead) so the organizer only adjusts the date. Pro feature.
+  Future<void> _duplicate(TournamentModel tournament) async {
+    final pro = ref.read(proProvider);
+    if (pro.available && !pro.isPro) {
+      context.push('/pro');
+      return;
+    }
+    context.push('/organize/duplicate/${tournament.id}');
+  }
+
+  /// Exports every registration of this event as a CSV through the system
+  /// share sheet (WhatsApp, Drive, mail, Excel). Pro feature.
+  Future<void> _exportCsv(TournamentModel tournament) async {
+    final l10n = AppLocalizations.of(context)!;
+    final pro = ref.read(proProvider);
+    if (pro.available && !pro.isPro) {
+      context.push('/pro');
+      return;
+    }
+
+    List<InscriptionModel> inscriptions;
+    try {
+      inscriptions = await ref.read(
+        tournamentInscriptionsProvider(tournament.id).future,
+      );
+    } catch (_) {
+      inscriptions = const [];
+    }
+    if (!mounted) return;
+
+    if (inscriptions.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.exportCsvEmpty)));
+      return;
+    }
+
+    final csv = buildInscriptionsCsv(
+      inscriptions: inscriptions,
+      statusLabel: l10n.inscriptionStatus,
+      dateFormat: formatDateTime,
+    );
+    final shared = await shareCsv(
+      fileName: csvFileName(title: tournament.title, now: DateTime.now()),
+      csv: csv,
+      subject: tournament.title,
+    );
+    if (!mounted || shared) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.exportCsvFailed)));
   }
 
   /// Close/reopen registrations (manual override; the `sync_tournament_status`
@@ -628,6 +702,11 @@ class _StatusTag extends StatelessWidget {
         theme.colorScheme.errorContainer,
         theme.colorScheme.onErrorContainer,
         Icons.cancel,
+      ),
+      InscriptionStatus.waitlisted => (
+        theme.colorScheme.secondaryContainer,
+        theme.colorScheme.onSecondaryContainer,
+        Icons.people_outline,
       ),
       _ => (
         theme.colorScheme.surfaceContainerHighest,

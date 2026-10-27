@@ -180,6 +180,15 @@ final routerProvider = Provider<GoRouter>((ref) {
           EventFormScreen(tournamentId: state.pathParameters['id']!),
         ),
       ),
+      // Duplicar: abre el formulario de alta pre-cargado desde un torneo
+      // existente (fechas corridas una semana), para no volver a tipear todo.
+      GoRoute(
+        path: '/organize/duplicate/:id',
+        pageBuilder: (context, state) => _pushPage(
+          state,
+          EventFormScreen(duplicateOfId: state.pathParameters['id']!),
+        ),
+      ),
       GoRoute(
         path: '/login',
         pageBuilder: (context, state) => _pushPage(state, const LoginScreen()),

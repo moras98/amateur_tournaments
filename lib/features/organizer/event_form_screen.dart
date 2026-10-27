@@ -25,10 +25,14 @@ const _defaultCenter = LatLng(-34.9012, -56.1646);
 
 /// Create or edit an event (with a tap-to-place venue pin on the map).
 class EventFormScreen extends ConsumerStatefulWidget {
-  const EventFormScreen({super.key, this.tournamentId});
+  const EventFormScreen({super.key, this.tournamentId, this.duplicateOfId});
 
   /// `null` creates a new event; otherwise the event to edit.
   final String? tournamentId;
+
+  /// Event to copy into a brand-new one (create flow, dates shifted a week,
+  /// banner left out). Mutually exclusive with [tournamentId].
+  final String? duplicateOfId;
 
   @override
   ConsumerState<EventFormScreen> createState() => _EventFormScreenState();
@@ -70,6 +74,7 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
   bool _locating = false;
 
   bool get _isEditing => widget.tournamentId != null;
+  bool get _isDuplicate => widget.duplicateOfId != null;
 
   @override
   void initState() {
@@ -138,9 +143,12 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    if (!_isEditing) return _formScaffold();
+    // Editing loads the event itself; duplicating loads the source event and
+    // copies it into a *new* one — same provider, different post-processing.
+    final sourceId = widget.tournamentId ?? widget.duplicateOfId;
+    if (sourceId == null) return _formScaffold();
 
-    final tournamentAsync = ref.watch(tournamentProvider(widget.tournamentId!));
+    final tournamentAsync = ref.watch(tournamentProvider(sourceId));
     return tournamentAsync.when(
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
@@ -154,6 +162,15 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
           // Runs before the form (and its map) first builds, so the map's
           // initial center/zoom already point at the venue pin.
           _applyTournament(tournament);
+          if (_isDuplicate) {
+            // A duplicate is "the same tournament, next week": shift both
+            // dates and drop the banner (reusing the stored object would tie
+            // the two rows to one upload, and deleting one would break the
+            // other). Everything else — venue, cupo, precio, moneda — carries.
+            _start = tournament.startTime.add(const Duration(days: 7));
+            _end = tournament.endTime.add(const Duration(days: 7));
+            _bannerPath = null;
+          }
         }
         return _formScaffold();
       },
