@@ -40,12 +40,27 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
   _RequestsView _view = _RequestsView.pending;
   bool _deciding = false;
 
+  /// Off-app count shown while its write is in flight.
+  ///
+  /// Without this the number only moved after two round trips — the UPDATE,
+  /// then the refetch that the invalidation triggers — and the screen blanked
+  /// to a spinner in between.
+  int? _manualShown;
+
+  /// Latest value asked for but not sent yet.
+  int? _manualQueued;
+  bool _manualWriting = false;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final tournamentAsync = ref.watch(tournamentProvider(widget.tournamentId));
 
     return tournamentAsync.when(
+      // A mutation invalidates this provider: keep the data on screen while it
+      // refetches instead of blanking to a spinner. The first load still spins
+      // because there is no previous value.
+      skipLoadingOnReload: true,
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (error, _) => Scaffold(
@@ -64,9 +79,27 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
     );
   }
 
-  Widget _buildBody(TournamentModel tournament) {
+  Widget _buildBody(TournamentModel stored) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+
+    // Once the write is done the stored value is the truth: if it caught up,
+    // dropping the overlay changes nothing on screen; if it disagrees, the
+    // write did not land and the user must see the real number.
+    if (_manualShown != null &&
+        !_manualWriting &&
+        _manualShown != stored.manualConfirmed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) setState(() => _manualShown = null);
+      });
+    }
+
+    // Everything downstream — the summary total, the progress bar, the status
+    // chip and the counter — reads this one value, so the whole card moves
+    // together instead of the counter jumping ahead of the total.
+    final tournament = _manualShown == null
+        ? stored
+        : _manualOverride(stored, _manualShown!);
     final inscriptionsAsync = ref.watch(
       tournamentInscriptionsProvider(widget.tournamentId),
     );
@@ -184,6 +217,7 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
                     const SizedBox(height: 12),
                     _ManualCountTile(
                       tournament: tournament,
+                      manual: tournament.manualConfirmed,
                       onChanged: (value) =>
                           _setManualConfirmed(tournament, value),
                     ),
@@ -227,6 +261,9 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
           ),
           Expanded(
             child: inscriptionsAsync.when(
+              // Same as the tournament above: a reload after a decision keeps
+              // the list on screen; only the first load spins.
+              skipLoadingOnReload: true,
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, _) =>
                   Center(child: Text(l10n.requestsLoadError(error))),
@@ -366,25 +403,63 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
   /// Persists the off-app confirmed count (teams the organizer confirmed
   /// in person / by WhatsApp, with no inscription row in the app) and
   /// refreshes every cached view of the event.
+  /// The tournament as it should look while the off-app write is in flight:
+  /// same rule the DB trigger applies (the status follows the total).
+  TournamentModel _manualOverride(TournamentModel tournament, int manual) {
+    final total = tournament.confirmedTeams + manual;
+    final status = tournament.status == TournamentStatus.closed
+        ? tournament.status
+        : total >= tournament.totalTeams
+        ? TournamentStatus.full
+        : TournamentStatus.open;
+    return tournament.copyWith(manualConfirmed: manual, status: status);
+  }
+
   Future<void> _setManualConfirmed(
     TournamentModel tournament,
     int amount,
   ) async {
     final l10n = AppLocalizations.of(context)!;
-    // Captured before the await: `ref` throws once disposed, and the caches
+    // Captured before the await: `ref` throws once disposed, and these caches
     // must refresh even if the user navigates away mid-request.
     final container = ProviderScope.containerOf(context, listen: false);
+    final target = amount < 0 ? 0 : amount;
+
+    // The number moves now; the write and the refetch happen behind it.
+    setState(() => _manualShown = target);
+    _manualQueued = target;
+
+    // One write at a time, always sending the latest value: five quick taps
+    // are two UPDATEs (the one already in flight and the final value), not
+    // five racing ones whose replies can land out of order and leave the
+    // count at an intermediate number.
+    if (_manualWriting) return;
+    _manualWriting = true;
     try {
-      await ref
-          .read(tournamentRepositoryProvider)
-          .setManualConfirmed(tournament, amount);
-      invalidateOrganizerState(container, tournamentId: tournament.id);
+      while (_manualQueued != null) {
+        final next = _manualQueued!;
+        _manualQueued = null;
+        await ref
+            .read(tournamentRepositoryProvider)
+            .setManualConfirmed(tournament, next);
+      }
+      // Inscriptions do not change when the off-app count moves, so only the
+      // tournament and the lists that show its counts are refreshed.
+      container
+        ..invalidate(tournamentProvider(tournament.id))
+        ..invalidate(myTournamentsProvider)
+        ..invalidate(exploreResultsProvider);
       if (!mounted) return;
       showTandeToast(context, l10n.outsideUpdated, kind: ToastKind.success);
     } catch (error) {
-      if (mounted) {
-        showTandeToast(context, l10n.updateError(error), kind: ToastKind.error);
-      }
+      if (!mounted) return;
+      // Put the truth back on screen: the overlay goes and the stored value
+      // takes over.
+      setState(() => _manualShown = null);
+      _manualQueued = null;
+      showTandeToast(context, l10n.updateError(error), kind: ToastKind.error);
+    } finally {
+      _manualWriting = false;
     }
   }
 
@@ -737,9 +812,16 @@ class _StatusTag extends StatelessWidget {
 /// in person / by WhatsApp / cash, which never filed an inscription in
 /// the app. Steppers for ±1, tap the number to type an amount.
 class _ManualCountTile extends StatelessWidget {
-  const _ManualCountTile({required this.tournament, required this.onChanged});
+  const _ManualCountTile({
+    required this.tournament,
+    required this.manual,
+    required this.onChanged,
+  });
 
   final TournamentModel tournament;
+
+  /// The value on screen: optimistic while a write is in flight.
+  final int manual;
   final ValueChanged<int> onChanged;
 
   /// Spare capacity beyond the app-confirmed rows: the off-app count can
@@ -753,8 +835,6 @@ class _ManualCountTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final manual = tournament.manualConfirmed;
-
     final scheme = theme.colorScheme;
 
     return Column(

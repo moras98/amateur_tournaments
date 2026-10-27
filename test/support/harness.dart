@@ -6,6 +6,7 @@ import 'package:tande/data/auth/mock_auth_repository.dart';
 import 'package:tande/data/billing/billing_service.dart';
 import 'package:tande/data/billing/mock_billing_service.dart';
 import 'package:tande/data/repositories/providers.dart';
+import 'package:tande/data/repositories/tournament_repository.dart';
 import 'package:tande/features/explore/explore_providers.dart';
 import 'package:tande/main.dart';
 import 'package:flutter/services.dart';
@@ -125,6 +126,7 @@ Widget appHarness({
   BillingService? billing,
   AuthRepository? auth,
   BannerPicker? bannerPicker,
+  TournamentRepository? tournaments,
 }) {
   // The app follows the phone's locale: tests pin the simulated device to
   // Uruguayan Spanish so every assertion sees the Spanish copy (override
@@ -143,6 +145,10 @@ Widget appHarness({
       // Always overridden: never touch the billing channel in tests, and
       // keep paying mode off unless a test injects products explicitly.
       billingServiceProvider.overrideWithValue(billing ?? MockBillingService()),
+      // Injected only when a test needs to slow down or observe the writes
+      // (the default repository is the in-memory mock).
+      if (tournaments != null)
+        tournamentRepositoryProvider.overrideWithValue(tournaments),
       reverseGeocodeProvider.overrideWithValue(
         FakeReverseGeocoder(countryCode: reverseCountryCode),
       ),
