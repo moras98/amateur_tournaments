@@ -247,11 +247,16 @@ which is exactly what the OSM policy asks for.
 
 **Tile cache.** flutter_map 8 already caches tiles on disk; the app now
 configures it explicitly (`lib/core/map/tile_provider.dart`): 300 MB instead of
-the 1 GB default, and a cache key that ignores the query string so rotating an
-API key does not invalidate the whole map and re-bill every tile. Freshness
-follows the provider's HTTP headers, with flutter_map's 7-day fallback — the
-OSM policy minimum. Check it on a device: pan the map, kill the app, turn data
-off, reopen; tiles should still draw.
+the 1 GB default, a cache key that ignores the query string (so rotating an API
+key does not invalidate the whole map and re-bill every tile), and a **30-day**
+freshness window instead of the provider's own header.
+
+That last one is not cosmetic: Thunderforest answers with
+`Cache-Control: max-age=21600` — six hours — so trusting the header means every
+returning user re-downloads their whole area every day, which on a 150k/month
+plan is the difference between hundreds of users and dozens. `TILE_FRESH_DAYS=0`
+goes back to honoring the header. Check the cache on a device: pan the map,
+kill the app, turn data off, reopen; tiles should still draw.
 
 **Reverse geocoding.** `nominatim.openstreetmap.org` is also donated, and its
 policy caps the *whole application* at 1 request/second and requires being able

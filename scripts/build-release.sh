@@ -52,7 +52,8 @@ fi
   --dart-define=THUNDERFOREST_KEY="${THUNDERFOREST_KEY:-}" \
   --dart-define=GEOCODER_URL="${GEOCODER_URL:-https://nominatim.openstreetmap.org/reverse}" \
   --dart-define=TILE_URL_TEMPLATE="${TILE_URL_TEMPLATE:-}" \
-  --dart-define=TILE_ATTRIBUTION="${TILE_ATTRIBUTION:-© OpenStreetMap contributors}"
+  --dart-define=TILE_ATTRIBUTION="${TILE_ATTRIBUTION:-© OpenStreetMap contributors}" \
+  --dart-define=TILE_FRESH_DAYS="${TILE_FRESH_DAYS:-30}"
 
 AAB=build/app/outputs/bundle/release/app-release.aab
 echo

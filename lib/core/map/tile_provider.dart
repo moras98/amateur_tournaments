@@ -47,14 +47,23 @@ class AppScopedNetworkTileProvider extends NetworkTileProvider {
 ///   providers put the API key in the query string — rotating the key would
 ///   silently invalidate every cached tile and re-bill the whole map.
 ///
-/// Freshness still follows the server's HTTP headers (with flutter_map's
-/// 7-day fallback), which is what the OSM policy asks for: cache per headers,
-/// or at least 7 days when they are missing.
+/// **Freshness** is pinned to [_freshDays] instead of trusting the provider's
+/// `Cache-Control`. Thunderforest answers with `max-age=21600` — six hours —
+/// so honoring the header means every returning user re-downloads their whole
+/// area every day, which on a 150k/month plan is the difference between
+/// hundreds of users and dozens. Streets and venues do not change weekly; a
+/// month-old base map is fine for finding a court. Set `TILE_FRESH_DAYS=0` to
+/// go back to the server's headers (the OSM policy's option when the header is
+/// short), or dial it down if cartography freshness ever matters more than
+/// quota.
 final MapCachingProvider appTileCache =
     BuiltInMapCachingProvider.getOrCreateInstance(
       maxCacheSize: 300 * 1024 * 1024,
       tileKeyGenerator: tileCacheKey,
+      overrideFreshAge: _freshDays > 0 ? Duration(days: _freshDays) : null,
     );
+
+const _freshDays = int.fromEnvironment('TILE_FRESH_DAYS', defaultValue: 30);
 
 /// Cache key for a tile URL: everything except the query string.
 ///
