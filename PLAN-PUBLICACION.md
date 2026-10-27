@@ -1101,5 +1101,6 @@ en el código: **un bullet entra al paywall en el mismo commit que la feature**.
   entitlement no viaja entre dispositivos y el fail-open deja pasar a todos si Play falla.
 - Decidir el precio y crear los productos en Console (`tande_pro_monthly` / `tande_pro_yearly`):
   crearlos **enciende** el gate para todos los usuarios sin entitlement.
-- Revisar el límite libre (`freeActiveTournaments = 1`): con dos ligas en paralelo el organizador
-  choca el primer día; 2-3 es más razonable cuando Pro se encienda.
+- El límite libre quedó en **2** (`freeActiveTournaments = 2`): una liga de sábado y una copa de
+  domingo en paralelo es el caso normal, y bloquear el segundo torneo se lee como extorsión.
+  Pro vende "sin límite + CSV", no "el segundo".

@@ -369,6 +369,10 @@
   "registrationsClosedButton": "Inscripciones cerradas",
   "tournamentFull": "Torneo completo",
   "registerButton": "Inscribirme",
+  "teamNameTitle": "¿Con qué equipo te anotás?",
+  "teamNameBody": "Es el nombre que va a ver el organizador en su lista, y el que sale en la planilla.",
+  "teamNameLabel": "Nombre del equipo",
+  "teamNameRequired": "Poné un nombre para que el organizador te identifique.",
   "noSpotsAvailable": "No hay lugares disponibles",
   "paymentHint": "Coordiná el pago con el organizador por WhatsApp; tu lugar se confirma cuando lo apruebe."
 }

@@ -1959,6 +1959,30 @@ abstract class AppLocalizations {
   /// **'Inscribirme'**
   String get registerButton;
 
+  /// No description provided for @teamNameTitle.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'¿Con qué equipo te anotás?'**
+  String get teamNameTitle;
+
+  /// No description provided for @teamNameBody.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Es el nombre que va a ver el organizador en su lista, y el que sale en la planilla.'**
+  String get teamNameBody;
+
+  /// No description provided for @teamNameLabel.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Nombre del equipo'**
+  String get teamNameLabel;
+
+  /// No description provided for @teamNameRequired.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Poné un nombre para que el organizador te identifique.'**
+  String get teamNameRequired;
+
   /// No description provided for @noSpotsAvailable.
   ///
   /// In es_UY, this message translates to:

@@ -10,6 +10,7 @@ import 'package:tande/features/explore/explore_providers.dart';
 import 'package:tande/features/inscriptions/inscriptions_providers.dart';
 import 'package:tande/features/organizer/organizer_providers.dart';
 import 'package:tande/features/tournament/tournament_providers.dart';
+import 'package:tande/features/tournament/widgets/team_name_dialog.dart';
 import 'package:tande/l10n/generated/app_localizations.dart';
 import 'package:tande/l10n/labels.dart';
 import 'package:tande/models/inscription_model.dart';
@@ -37,10 +38,36 @@ class _TournamentDetailScreenState
   bool _registering = false;
   bool _cancelling = false;
 
+  /// Asks for the team name (pre-filled with the player's) and then creates
+  /// the inscription. The name is what the organizer sees in their list and
+  /// what the CSV export carries — a person's name where a team belongs makes
+  /// both of those useless.
+  Future<void> _startRegistration({
+    required TournamentModel tournament,
+    UserModel? organizer,
+    UserModel? player,
+    bool waitlist = false,
+  }) async {
+    if (_registering) return;
+    final teamName = await askTeamName(
+      context,
+      initial: player?.fullName ?? '',
+    );
+    if (teamName == null || !mounted) return;
+    await _register(
+      tournament: tournament,
+      organizer: organizer,
+      player: player,
+      teamName: teamName,
+      waitlist: waitlist,
+    );
+  }
+
   Future<void> _register({
     required TournamentModel tournament,
     UserModel? organizer,
     UserModel? player,
+    required String teamName,
     bool waitlist = false,
   }) async {
     if (_registering) return; // Same-frame double tap protection.
@@ -60,7 +87,7 @@ class _TournamentDetailScreenState
           .create(
             tournamentId: tournament.id,
             playerId: session.userId,
-            teamName: player?.fullName ?? '',
+            teamName: teamName,
             waitlist: waitlist,
           );
       container
@@ -559,7 +586,7 @@ class _TournamentDetailScreenState
       button = FilledButton.tonal(
         onPressed: _registering
             ? null
-            : () => _register(
+            : () => _startRegistration(
                 tournament: tournament,
                 organizer: organizer,
                 player: player,
@@ -577,7 +604,7 @@ class _TournamentDetailScreenState
       button = FilledButton(
         onPressed: _registering
             ? null
-            : () => _register(
+            : () => _startRegistration(
                 tournament: tournament,
                 organizer: organizer,
                 player: player,

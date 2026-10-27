@@ -1069,6 +1069,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String get registerButton => 'Inscribirme';
 
   @override
+  String get teamNameTitle => '¿Con qué equipo te anotás?';
+
+  @override
+  String get teamNameBody =>
+      'Es el nombre que va a ver el organizador en su lista, y el que sale en la planilla.';
+
+  @override
+  String get teamNameLabel => 'Nombre del equipo';
+
+  @override
+  String get teamNameRequired =>
+      'Poné un nombre para que el organizador te identifique.';
+
+  @override
   String get noSpotsAvailable => 'No hay lugares disponibles';
 
   @override
@@ -2139,6 +2153,20 @@ class AppLocalizationsEsUy extends AppLocalizationsEs {
 
   @override
   String get registerButton => 'Inscribirme';
+
+  @override
+  String get teamNameTitle => '¿Con qué equipo te anotás?';
+
+  @override
+  String get teamNameBody =>
+      'Es el nombre que va a ver el organizador en su lista, y el que sale en la planilla.';
+
+  @override
+  String get teamNameLabel => 'Nombre del equipo';
+
+  @override
+  String get teamNameRequired =>
+      'Poné un nombre para que el organizador te identifique.';
 
   @override
   String get noSpotsAvailable => 'No hay lugares disponibles';

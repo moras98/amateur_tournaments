@@ -290,9 +290,24 @@ void main() {
       await tester.tap(find.text('Anotarme en lista de espera'));
       await tester.pumpAndSettle();
 
+      // El nombre del equipo se pide antes de crear la inscripción: es lo que
+      // ve el organizador y lo que sale en el CSV.
+      expect(find.text('¿Con qué equipo te anotás?'), findsOneWidget);
+      await tester.enterText(
+        find.byKey(const Key('team-name-field')),
+        'Los Pibes',
+      );
+      await tester.tap(find.widgetWithText(FilledButton, 'Confirmar'));
+      await tester.pumpAndSettle();
+
       // Queda en la espera: la barra muestra el estado y ofrece cancelar.
       expect(find.text('En lista de espera'), findsOneWidget);
       expect(find.text('Cancelar inscripción'), findsOneWidget);
+
+      final stored = MockStore().inscriptions.firstWhere(
+        (i) => i.teamName == 'Los Pibes',
+      );
+      expect(stored.status, InscriptionStatus.waitlisted);
     });
 
     testWidgets('duplicar abre el formulario con los datos del torneo', (

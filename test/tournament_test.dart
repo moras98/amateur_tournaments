@@ -12,6 +12,17 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'support/harness.dart';
 
+/// Taps the register CTA and confirms the team-name dialog that now sits in
+/// front of it (pre-filled with the player's name; the test types a team).
+Future<void> registerWithTeam(WidgetTester tester, {String? team}) async {
+  await tester.pumpAndSettle();
+  if (team != null) {
+    await tester.enterText(find.byKey(const Key('team-name-field')), team);
+  }
+  await tester.tap(find.widgetWithText(FilledButton, 'Confirmar'));
+  await tester.pumpAndSettle();
+}
+
 void main() {
   setUp(MockStore().reset);
 
@@ -106,7 +117,7 @@ void main() {
       await tester.tap(
         inDetail(find.widgetWithText(FilledButton, 'Inscribirme')),
       );
-      await tester.pumpAndSettle();
+      await registerWithTeam(tester, team: 'Los Pibes');
 
       // Registration is created and WhatsApp opens with a pre-filled message.
       expect(
@@ -177,7 +188,7 @@ void main() {
         await tester.tap(
           inDetail(find.widgetWithText(FilledButton, 'Inscribirme')),
         );
-        await tester.pumpAndSettle();
+        await registerWithTeam(tester, team: 'Los Pibes');
 
         // Let the snackbar dismiss so no timers leak into teardown.
         await tester.pump(const Duration(seconds: 5));

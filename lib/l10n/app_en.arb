@@ -369,6 +369,10 @@
   "registrationsClosedButton": "Sign-ups closed",
   "tournamentFull": "Tournament full",
   "registerButton": "Sign up",
+  "teamNameTitle": "What team are you signing up with?",
+  "teamNameBody": "This is the name the organizer sees in their list, and what goes into the spreadsheet.",
+  "teamNameLabel": "Team name",
+  "teamNameRequired": "Add a name so the organizer can identify you.",
   "noSpotsAvailable": "No spots available",
   "paymentHint": "Arrange payment with the organizer on WhatsApp; your spot is confirmed once they approve."
 }

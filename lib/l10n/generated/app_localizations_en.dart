@@ -1058,6 +1058,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registerButton => 'Sign up';
 
   @override
+  String get teamNameTitle => 'What team are you signing up with?';
+
+  @override
+  String get teamNameBody =>
+      'This is the name the organizer sees in their list, and what goes into the spreadsheet.';
+
+  @override
+  String get teamNameLabel => 'Team name';
+
+  @override
+  String get teamNameRequired =>
+      'Add a name so the organizer can identify you.';
+
+  @override
   String get noSpotsAvailable => 'No spots available';
 
   @override

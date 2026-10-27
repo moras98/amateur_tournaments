@@ -168,8 +168,10 @@ the closed test** — never gate the 12 testers.
       asking for exports / limits lifted) → then turn Pro on. No users yet =
       no product to charge for.
 - [ ] **Free tier stays generous**: everything a player does is free forever;
-      organizers get 1 active tournament
-      (`AppConstants.freeActiveTournaments`).
+      organizers get 2 active tournaments in parallel
+      (`AppConstants.freeActiveTournaments = 2`): a Saturday league plus a
+      Sunday cup is the normal case, and gating the second one reads as
+      extortion.
 - [x] **Pro features shipped (26/10)**: unlimited active tournaments (the
       gate) and **CSV export** (`lib/core/utils/csv_export.dart`, share sheet
       from the event screen). Plus, free for everyone: **waitlist with

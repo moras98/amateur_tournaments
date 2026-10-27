@@ -33,7 +33,12 @@ abstract class AppConstants {
   /// Free tier: active tournaments an organizer runs without Pro
   /// (active = not closed and not over yet; nothing is blocked until
   /// [proProductIds] exist in Play Console).
-  static const freeActiveTournaments = 1;
+  ///
+  /// 2, not 1: an organizer running a Saturday league and a Sunday cup in
+  /// parallel is the normal case, and walling them on the second tournament
+  /// reads as extortion — the organizers are the supply this marketplace
+  /// needs. Pro's value is "unlimited + CSV", not "the second one".
+  static const freeActiveTournaments = 2;
 
   /// Mirrors the free-trial length configured on the Play base plan — the
   /// billing plugin can't read it, so keep this in sync. `null` = no
