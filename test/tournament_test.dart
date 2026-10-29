@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:tande/core/widgets/tournament_banner.dart';
 import 'package:tande/data/repositories/mock/mock_store.dart';
 import 'package:tande/data/repositories/mock/mock_tournament_repository.dart';
@@ -7,6 +5,7 @@ import 'package:tande/features/explore/explore_providers.dart';
 import 'package:tande/features/inscriptions/my_inscriptions_screen.dart';
 import 'package:tande/features/tournament/tournament_detail_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -304,6 +303,85 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(inDetail(find.byType(TournamentBanner)), findsOneWidget);
+    });
+
+    testWidgets('sharing sends the title and the store listing', (
+      tester,
+    ) async {
+      String? sharedText;
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        const MethodChannel('dev.fluttercommunity.plus/share'),
+        (call) async {
+          if (call.method == 'share') {
+            sharedText = (call.arguments as Map)['text'] as String?;
+            return 'success';
+          }
+          return null;
+        },
+      );
+
+      await tester.pumpWidget(appHarness(initialView: ExploreView.list));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Copa Centro 7v7'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip('Compartir evento'));
+      await tester.pumpAndSettle();
+
+      // The text carries the event and points at this platform's store
+      // listing (in tests the target platform is Android → the Play link).
+      expect(sharedText, contains('Copa Centro 7v7'));
+      expect(
+        sharedText,
+        contains('https://play.google.com/store/apps/details?id=com.tande.app'),
+      );
+      // Success: no failure notice.
+      expect(
+        find.text('No pudimos abrir el menú para compartir.'),
+        findsNothing,
+      );
+    });
+
+    testWidgets('when WhatsApp fails the contact sheet offers the other '
+        'channels', (tester) async {
+      // url_launcher refuses: no WhatsApp installed / no handler.
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        const MethodChannel('plugins.flutter.io/url_launcher'),
+        (call) async => false,
+      );
+
+      await tester.pumpWidget(appHarness(initialView: ExploreView.list));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Copa Centro 7v7'));
+      await tester.pumpAndSettle();
+
+      // The organizer card sits below the fold (the banner pushes it down).
+      final detailScrollable = find.descendant(
+        of: find.byType(TournamentDetailScreen),
+        matching: find.byWidgetPredicate(
+          (widget) => widget is Scrollable && widget.axis == Axis.vertical,
+        ),
+      );
+      final contact = find.widgetWithText(FilledButton, 'WhatsApp');
+      await tester.scrollUntilVisible(
+        contact,
+        400,
+        scrollable: detailScrollable,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(contact);
+      await tester.pumpAndSettle();
+
+      // Instead of a dead-end notice the channels sheet opens — "Llamar"
+      // carries the same number.
+      expect(find.text('Contactar a Carlos Ruiz'), findsOneWidget);
+      expect(find.text('Llamar'), findsOneWidget);
+      expect(
+        find.text('No pudimos abrir esa vía. Probá con otra.'),
+        findsNothing,
+      );
     });
   });
 

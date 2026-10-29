@@ -40,8 +40,16 @@
 		</array>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
+		<!-- Export compliance: the app uses only exempt encryption (HTTPS).
+		     Skipping this answer speeds up every TestFlight/App Store
+		     submission. -->
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
 		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>Tande uses your location to sort events by distance and show the ones near you.</string>
+		<string>Tande usa tu ubicación para ordenar los eventos por distancia y mostrarte los que están cerca tuyo. | Tande uses your location to sort events by distance and show the ones near you.</string>
+		<!-- The organizer picks a tournament banner from the photo library. -->
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Tande accede a tu galería para que elijas la imagen del torneo que estás creando. | Tande accesses your photo library so you can pick the image for the tournament you are creating.</string>
 		<key>UIApplicationSceneManifest</key>
 		<dict>
 			<key>UIApplicationSupportsMultipleScenes</key>

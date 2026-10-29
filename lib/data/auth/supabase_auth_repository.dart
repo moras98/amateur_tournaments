@@ -194,6 +194,30 @@ class SupabaseAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<void> deleteAccount() async {
+    try {
+      // `public.delete_account` (migration 0012): security-definer RPC that
+      // deletes the auth.users row — the cascades wipe the profile, the
+      // tournaments the user organizes and every inscription of theirs.
+      await _client.rpc('delete_account');
+    } on AuthException catch (e) {
+      throw AuthFailure(e.message);
+    } on PostgrestException catch (e) {
+      throw AuthFailure(e.message);
+    }
+    // The account is gone but the JWT in memory would keep a ghost session
+    // alive until it expires. Clear it locally only: a server-side logout
+    // can fail precisely because the user no longer exists, and that must
+    // never undo a deletion that already went through.
+    _recovering = false;
+    try {
+      await _client.auth.signOut(scope: SignOutScope.local);
+    } catch (_) {
+      // Best effort — the controller nulls the session state right after.
+    }
+  }
+
+  @override
   Future<void> signOut() async {
     try {
       await _client.auth.signOut();

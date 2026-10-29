@@ -119,5 +119,14 @@ abstract class AuthRepository {
   /// Releasing the [AuthSession.recovery] hold is the controller's job.
   Future<void> updatePassword(String newPassword);
 
+  /// Permanently deletes the signed-in account and all of its data —
+  /// the in-app deletion flow both stores require (App Store guideline
+  /// 5.1.1(v), Play's account-deletion policy). See migration 0012: the
+  /// backend cascades profiles, tournaments and inscriptions.
+  ///
+  /// The caller drops the session state afterwards (the repository only
+  /// clears its own local copy of the session).
+  Future<void> deleteAccount();
+
   Future<void> signOut();
 }

@@ -2114,6 +2114,114 @@ abstract class AppLocalizations {
   /// In es_UY, this message translates to:
   /// **'Coordiná el pago con el organizador por WhatsApp; tu lugar se confirma cuando lo apruebe.'**
   String get paymentHint;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Eliminar cuenta'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountContinue.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Continuar'**
+  String get deleteAccountContinue;
+
+  /// No description provided for @deleteAccountConfirmTitle.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'¿Eliminar tu cuenta?'**
+  String get deleteAccountConfirmTitle;
+
+  /// No description provided for @deleteAccountConfirmMessage.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Se borra tu perfil, tus torneos y tus inscripciones. No se puede deshacer.'**
+  String get deleteAccountConfirmMessage;
+
+  /// No description provided for @deleteAccountFinalTitle.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Última confirmación'**
+  String get deleteAccountFinalTitle;
+
+  /// No description provided for @deleteAccountFinalMessage.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Tu cuenta, tus datos y tus eventos se eliminan para siempre. Si te arrepentís, tendrás que crear una cuenta nueva.'**
+  String get deleteAccountFinalMessage;
+
+  /// No description provided for @deleteAccountSuccess.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Tu cuenta fue eliminada.'**
+  String get deleteAccountSuccess;
+
+  /// No description provided for @deleteAccountFailed.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'No se pudo eliminar la cuenta: {error}'**
+  String deleteAccountFailed(Object error);
+
+  /// No description provided for @createEventNoContactTitle.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Falta una forma de contacto'**
+  String get createEventNoContactTitle;
+
+  /// No description provided for @createEventNoContactMessage.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Para publicar un torneo necesitás una forma de contacto — teléfono, Instagram, Telegram o un link — para que los jugadores te puedan escribir.'**
+  String get createEventNoContactMessage;
+
+  /// No description provided for @createEventNoContactAction.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Agregar contacto'**
+  String get createEventNoContactAction;
+
+  /// No description provided for @createEventNoContactPending.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Seguís sin tener forma de contacto: agregala para poder publicar tu torneo.'**
+  String get createEventNoContactPending;
+
+  /// No description provided for @addContact.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Agregar contacto'**
+  String get addContact;
+
+  /// No description provided for @shareEvent.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Compartir evento'**
+  String get shareEvent;
+
+  /// No description provided for @shareEventText.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Torneo {title} — {date} en {venue}. {teams}.'**
+  String shareEventText(Object date, Object teams, Object title, Object venue);
+
+  /// No description provided for @shareEventTextLink.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'Torneo {title} — {date} en {venue}. {teams}. Anotate en Tande: {link}'**
+  String shareEventTextLink(
+    Object date,
+    Object link,
+    Object teams,
+    Object title,
+    Object venue,
+  );
+
+  /// No description provided for @shareFailed.
+  ///
+  /// In es_UY, this message translates to:
+  /// **'No pudimos abrir el menú para compartir.'**
+  String get shareFailed;
 }
 
 class _AppLocalizationsDelegate

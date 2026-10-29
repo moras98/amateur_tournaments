@@ -1141,4 +1141,71 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get paymentHint =>
       'Arrange payment with the organizer on WhatsApp; your spot is confirmed once they approve.';
+
+  @override
+  String get deleteAccount => 'Delete account';
+
+  @override
+  String get deleteAccountContinue => 'Continue';
+
+  @override
+  String get deleteAccountConfirmTitle => 'Delete your account?';
+
+  @override
+  String get deleteAccountConfirmMessage =>
+      'Your profile, your tournaments and your sign-ups are erased. This can\'t be undone.';
+
+  @override
+  String get deleteAccountFinalTitle => 'Last confirmation';
+
+  @override
+  String get deleteAccountFinalMessage =>
+      'Your account, your data and your events are deleted forever. If you change your mind you\'d have to create a new account.';
+
+  @override
+  String get deleteAccountSuccess => 'Your account has been deleted.';
+
+  @override
+  String deleteAccountFailed(Object error) {
+    return 'Couldn\'t delete the account: $error';
+  }
+
+  @override
+  String get createEventNoContactTitle => 'Missing a contact channel';
+
+  @override
+  String get createEventNoContactMessage =>
+      'To publish a tournament you need a contact channel — phone, Instagram, Telegram or a link — so players can reach you.';
+
+  @override
+  String get createEventNoContactAction => 'Add contact channel';
+
+  @override
+  String get createEventNoContactPending =>
+      'You still don\'t have a contact channel: add one to publish your tournament.';
+
+  @override
+  String get addContact => 'Add contact';
+
+  @override
+  String get shareEvent => 'Share event';
+
+  @override
+  String shareEventText(Object date, Object teams, Object title, Object venue) {
+    return 'Tournament $title — $date at $venue. $teams.';
+  }
+
+  @override
+  String shareEventTextLink(
+    Object date,
+    Object link,
+    Object teams,
+    Object title,
+    Object venue,
+  ) {
+    return 'Tournament $title — $date at $venue. $teams. Sign up on Tande: $link';
+  }
+
+  @override
+  String get shareFailed => 'We couldn\'t open the share menu.';
 }

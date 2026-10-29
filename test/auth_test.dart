@@ -955,6 +955,73 @@ void main() {
         debugDefaultTargetPlatformOverride = null;
       }
     });
+
+    testWidgets('deleting the account needs two confirmations and lands on '
+        'login', (tester) async {
+      await tester.pumpWidget(app());
+      await tester.pumpAndSettle();
+
+      await tester.tap(navIcon(Icons.person_outline));
+      await tester.pumpAndSettle();
+      expect(find.text('Nicolas Perez'), findsOneWidget);
+
+      // The destructive action sits at the very bottom of the list.
+      final deleteButton = find.widgetWithText(
+        OutlinedButton,
+        'Eliminar cuenta',
+      );
+      await tester.scrollUntilVisible(
+        deleteButton,
+        300,
+        scrollable: find.byType(Scrollable),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(deleteButton);
+      await tester.pumpAndSettle();
+
+      // First confirmation: cancelling from the X (no cancel action in the
+      // row, design.md §7) leaves the account untouched.
+      expect(find.text('¿Eliminar tu cuenta?'), findsOneWidget);
+      final close = find.descendant(
+        of: find.byType(Dialog),
+        matching: find.byIcon(Icons.close),
+      );
+      await tester.tap(close);
+      await tester.pumpAndSettle();
+      expect(find.byType(Dialog), findsNothing);
+      expect(deleteButton, findsOneWidget); // still on the profile
+      expect(MockStore().profileById('u-player-1'), isNotNull);
+
+      // Two taps minimum for the irreversible action.
+      await tester.tap(deleteButton);
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.descendant(
+          of: find.byType(Dialog),
+          matching: find.widgetWithText(FilledButton, 'Continuar'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Última confirmación'), findsOneWidget);
+
+      await tester.tap(
+        find.descendant(
+          of: find.byType(Dialog),
+          matching: find.widgetWithText(FilledButton, 'Eliminar cuenta'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // The cascade ran (the mock mirrors migration 0012) and the router
+      // took over: back on login with the success notice still on screen.
+      expect(MockStore().profileById('u-player-1'), isNull);
+      expect(find.byType(TextFormField), findsNWidgets(2));
+      expect(find.text('Tu cuenta fue eliminada.'), findsOneWidget);
+
+      // Let the snackbar dismiss so no timers leak into teardown.
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
+    });
   });
 
   group('Profile phone (widgets)', () {

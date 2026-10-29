@@ -394,5 +394,25 @@
   "teamNameRequired": "Add a name so the organizer can identify you.",
   "spotsLeftLabel": "spots left",
   "noSpotsAvailable": "No spots available",
-  "paymentHint": "Arrange payment with the organizer on WhatsApp; your spot is confirmed once they approve."
+  "paymentHint": "Arrange payment with the organizer on WhatsApp; your spot is confirmed once they approve.",
+
+  "deleteAccount": "Delete account",
+  "deleteAccountContinue": "Continue",
+  "deleteAccountConfirmTitle": "Delete your account?",
+  "deleteAccountConfirmMessage": "Your profile, your tournaments and your sign-ups are erased. This can't be undone.",
+  "deleteAccountFinalTitle": "Last confirmation",
+  "deleteAccountFinalMessage": "Your account, your data and your events are deleted forever. If you change your mind you'd have to create a new account.",
+  "deleteAccountSuccess": "Your account has been deleted.",
+  "deleteAccountFailed": "Couldn't delete the account: {error}",
+
+  "createEventNoContactTitle": "Missing a contact channel",
+  "createEventNoContactMessage": "To publish a tournament you need a contact channel — phone, Instagram, Telegram or a link — so players can reach you.",
+  "createEventNoContactAction": "Add contact channel",
+  "createEventNoContactPending": "You still don't have a contact channel: add one to publish your tournament.",
+  "addContact": "Add contact",
+
+  "shareEvent": "Share event",
+  "shareEventText": "Tournament {title} — {date} at {venue}. {teams}.",
+  "shareEventTextLink": "Tournament {title} — {date} at {venue}. {teams}. Sign up on Tande: {link}",
+  "shareFailed": "We couldn't open the share menu."
 }

@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 /// App-wide constants and configuration.
 ///
 /// Supabase credentials are injected at build time:
@@ -54,6 +56,25 @@ abstract class AppConstants {
   static const privacyUrl =
       'https://github.com/moras98/amateur_tournaments/blob/main/store/'
       'privacy-policy.md';
+
+  // --- Share sheet (§4.10-c: el loop de crecimiento del producto) ---------
+
+  /// Play listing — stable from the first upload: the package name never
+  /// changes after publishing.
+  static const playStoreUrl =
+      'https://play.google.com/store/apps/details?id=com.tande.app';
+
+  /// App Store listing. App Store Connect assigns the numeric `idNNNNNNN`
+  /// when the app record is created (Fase 3) — until then this stays empty
+  /// and iOS shares the event text without a link instead of a broken one.
+  static const appStoreUrl = '';
+
+  /// Where the share sheet points at, per store. iOS gets the App Store
+  /// link only once [appStoreUrl] is filled; Android always has Play.
+  static String get storeListingUrl => switch (defaultTargetPlatform) {
+    TargetPlatform.iOS => appStoreUrl,
+    _ => playStoreUrl,
+  };
 
   /// Supported sports. Values are stored as-is in `tournaments.sport`;
   /// the human labels come from `AppLocalizations.sportLabel`.

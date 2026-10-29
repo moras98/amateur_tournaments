@@ -41,14 +41,20 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 - [ ] **Confirm migrations `0005_split_status_triggers.sql`,
       `0006_signup_checks.sql`, `0007_signup_metadata.sql`,
       `0008_explore_indexes.sql`, `0009_currency.sql`,
-      `0010_tournament_banners.sql` and `0011_contact_channels.sql`** are
+      `0010_tournament_banners.sql`, `0011_contact_channels.sql`,
+      `0012_delete_account.sql` and `0013_no_oversell.sql`** are
       applied in the Supabase
       dashboard. **`0007` is the sign-up data-loss fix** —
       until it runs, the confirm-email path keeps dropping username /
       birth date / gender / sports (the app already sends them in the
       metadata). `0008` indexes the Explore query (date cut, radius box,
       200-row page); `0009` adds the per-tournament `currency` column
-      (default `UYU`, CHECK on the offered codes).
+      (default `UYU`, CHECK on the offered codes). **`0012` is the
+      in-app account-deletion RPC** (both stores require it: App Store
+      5.1.1(v) / Play account-deletion policy) — the Profile screen's
+      "Eliminar cuenta" button calls it and fails politely until the
+      migration runs. `0013` blocks overselling spots when two players
+      confirm at the same instant.
 - [ ] **Auth email links land in the app** (dashboard, Authentication):
       URL Configuration → Redirect URLs must list
       `io.supabase.amateurtournaments://login-callback` (it should already

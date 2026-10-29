@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:tande/core/constants.dart';
+import 'package:tande/core/theme/adaptive.dart';
 import 'package:tande/core/widgets/sport_sticker.dart';
 import 'package:tande/core/utils/format.dart';
 import 'package:tande/core/utils/nav_geometry.dart';
 import 'package:tande/core/widgets/search_capsule.dart';
+import 'package:tande/core/widgets/tande_toast.dart';
 import 'package:tande/core/widgets/tournament_banner.dart';
 import 'package:tande/data/repositories/providers.dart';
 import 'package:tande/features/organizer/organizer_providers.dart';
@@ -12,6 +14,7 @@ import 'package:tande/features/pro/pro_providers.dart';
 import 'package:tande/l10n/generated/app_localizations.dart';
 import 'package:tande/l10n/labels.dart';
 import 'package:tande/models/tournament_model.dart';
+import 'package:tande/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -66,12 +69,44 @@ class _OrganizerScreenState extends ConsumerState<OrganizerScreen> {
     setState(() => _search = value);
   }
 
-  /// Create. In paying mode the free tier stops at
-  /// `AppConstants.freeActiveTournaments` active events — the overflow
-  /// opens the paywall instead of the form. Before Play has products
-  /// configured (paying mode off) this is always the plain create flow,
-  /// exactly as before.
+  /// Create. Opens the event form only after the two gates that must come
+  /// before it: a contact channel (§4.10-a — a tournament nobody can write
+  /// to is a dead product) and, in paying mode, the free-tier allowance.
+  /// Before Play has products configured (paying mode off) the Pro check is
+  /// a no-op, exactly as before.
   Future<void> _createEvent() async {
+    final l10n = AppLocalizations.of(context)!;
+
+    // Gate 1: contact channel. A failed profile load never blocks
+    // creation (same rule as the Pro gate below).
+    final profile = await _currentProfileOrNull();
+    if (!mounted) return;
+    if (profile != null && !profile.hasContactChannels) {
+      final go = await showConfirmDialog(
+        context,
+        title: l10n.createEventNoContactTitle,
+        message: l10n.createEventNoContactMessage,
+        confirmLabel: l10n.createEventNoContactAction,
+        icon: Icons.contact_phone_outlined,
+      );
+      if (go != true || !mounted) return;
+
+      // To the profile form and back (the form pops on save and
+      // invalidates currentProfileProvider, so the re-read is fresh).
+      await context.push('/complete-profile');
+      if (!mounted) return;
+
+      final after = await _currentProfileOrNull();
+      if (!mounted) return;
+      if (after != null && !after.hasContactChannels) {
+        // Still no channel: opening the form would recreate the very dead
+        // end this gate exists for.
+        showTandeToast(context, l10n.createEventNoContactPending);
+        return;
+      }
+    }
+
+    // Gate 2: free tier — active tournaments an organizer runs without Pro.
     final pro = ref.read(proProvider);
     if (pro.available && !pro.isPro) {
       List<TournamentModel> tournaments;
@@ -94,7 +129,18 @@ class _OrganizerScreenState extends ConsumerState<OrganizerScreen> {
         return;
       }
     }
+    if (!mounted) return;
     context.push('/organize/create');
+  }
+
+  /// The signed-in profile, or null on any failure — a load error must
+  /// never become a wall in front of event creation.
+  Future<UserModel?> _currentProfileOrNull() async {
+    try {
+      return await ref.read(currentProfileProvider.future);
+    } catch (_) {
+      return null;
+    }
   }
 
   /// Sort menu — the capsule's trailing control.

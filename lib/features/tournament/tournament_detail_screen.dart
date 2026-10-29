@@ -1,3 +1,4 @@
+import 'package:tande/core/constants.dart';
 import 'package:tande/core/map/tile_provider.dart';
 import 'package:tande/core/theme/app_gradients.dart';
 import 'package:tande/core/widgets/sport_sticker.dart';
@@ -23,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tande/core/widgets/tande_toast.dart';
 import 'package:tande/core/map/tile_source.dart';
 
@@ -209,12 +211,26 @@ class _TournamentDetailScreenState
         phone: organizer.phone,
         message: message,
       );
-      if (!opened && mounted) {
-        showTandeToast(
-          context,
-          l10n.whatsappOpenFailed(organizer.phone),
-          kind: ToastKind.error,
-        );
+      if (opened || !mounted) return;
+      // WhatsApp didn't open (not installed / no handler): fall back to
+      // the channels sheet instead of a dead-end notice — it carries
+      // "Llamar" with the same number, so the only conversion path of the
+      // product never becomes a wall (§4.10-b).
+      final result = await showContactSheet(
+        context: context,
+        title: l10n.contactSheetTitle(
+          organizer.fullName.isNotEmpty
+              ? organizer.fullName
+              : organizer.username,
+        ),
+        channels: contactChannelsOf(
+          organizer,
+          linkLabel: l10n.contactLinkDefault,
+        ),
+        message: message,
+      );
+      if (result == false && mounted) {
+        showTandeToast(context, l10n.contactOpenFailed, kind: ToastKind.error);
       }
       return;
     }
@@ -235,6 +251,28 @@ class _TournamentDetailScreenState
     }
   }
 
+  /// Sends the event to the team's group chat — the growth loop of a
+  /// marketplace that people find through other people (§4.10-c). The text
+  /// links to this platform's store listing ([AppConstants.storeListingUrl]);
+  /// iOS shares the text without a link until the App Store id exists.
+  Future<void> _share(TournamentModel tournament) async {
+    final l10n = AppLocalizations.of(context)!;
+    final link = AppConstants.storeListingUrl;
+    final date = formatEventDate(tournament.startTime);
+    final venue = tournament.venueName.isNotEmpty
+        ? tournament.venueName
+        : (tournament.city.isNotEmpty ? tournament.city : '—');
+    final teams = l10n.teamsCount(tournament.totalTeams);
+    final text = link.isEmpty
+        ? l10n.shareEventText(tournament.title, date, venue, teams)
+        : l10n.shareEventTextLink(tournament.title, date, venue, teams, link);
+
+    final result = await SharePlus.instance.share(ShareParams(text: text));
+    if (result.status == ShareResultStatus.unavailable && mounted) {
+      showTandeToast(context, l10n.shareFailed, kind: ToastKind.error);
+    }
+  }
+
   String _registrationMessage(TournamentModel tournament, UserModel? player) {
     final name = player?.fullName.isNotEmpty == true
         ? player!.fullName
@@ -248,9 +286,22 @@ class _TournamentDetailScreenState
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final tournamentAsync = ref.watch(tournamentProvider(widget.tournamentId));
+    final tournament = tournamentAsync.valueOrNull;
 
     return Scaffold(
-      appBar: AppBar(),
+      // Share sits in the app bar: sending an event to the team's group
+      // chat is the product's growth loop (§4.10-c) — everyone in that
+      // chat already has the problem the app solves.
+      appBar: AppBar(
+        actions: [
+          if (tournament != null)
+            IconButton(
+              onPressed: () => _share(tournament),
+              tooltip: l10n.shareEvent,
+              icon: const Icon(Icons.share_outlined),
+            ),
+        ],
+      ),
       body: tournamentAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) =>
@@ -519,25 +570,11 @@ class _TournamentDetailScreenState
                   // width (Size.fromHeight) — constrain it inside the tile.
                   trailing: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 160),
-                    child: FilledButton.tonalIcon(
-                      onPressed:
-                          (organizer != null && organizer.hasContactChannels)
-                          ? () => _contactOrganizer(
-                              tournament: tournament,
-                              organizer: organizer,
-                            )
-                          : null,
-                      icon: Icon(
-                        organizer?.hasExtraContactChannels == true
-                            ? Icons.forum_outlined
-                            : Icons.chat_bubble_outline,
-                        size: 18,
-                      ),
-                      label: Text(
-                        organizer?.hasExtraContactChannels == true
-                            ? l10n.contactAction
-                            : l10n.contactWhatsApp,
-                      ),
+                    child: _contactAction(
+                      tournament: tournament,
+                      organizer: organizer,
+                      session: session,
+                      l10n: l10n,
                     ),
                   ),
                 ),
@@ -555,6 +592,51 @@ class _TournamentDetailScreenState
           player: player,
         ),
       ],
+    );
+  }
+
+  /// The organizer card's action, three states (§4.10-a):
+  /// - a channel exists → contact (WhatsApp, or the sheet with the extras);
+  /// - this is the owner without any channel → an *enabled* shortcut to
+  ///   add one — a grey button with no explanation reads as a bug, and
+  ///   the owner is the only one who can fix it;
+  /// - a visitor with nothing to open → disabled, same as always.
+  Widget _contactAction({
+    required TournamentModel tournament,
+    required UserModel? organizer,
+    required AuthSession? session,
+    required AppLocalizations l10n,
+  }) {
+    if (organizer != null && organizer.hasContactChannels) {
+      return FilledButton.tonalIcon(
+        onPressed: () =>
+            _contactOrganizer(tournament: tournament, organizer: organizer),
+        icon: Icon(
+          organizer.hasExtraContactChannels
+              ? Icons.forum_outlined
+              : Icons.chat_bubble_outline,
+          size: 18,
+        ),
+        label: Text(
+          organizer.hasExtraContactChannels
+              ? l10n.contactAction
+              : l10n.contactWhatsApp,
+        ),
+      );
+    }
+
+    if (session?.userId == tournament.ownerId) {
+      return FilledButton.tonalIcon(
+        onPressed: () => context.push('/complete-profile'),
+        icon: const Icon(Icons.add_ic_call_outlined, size: 18),
+        label: Text(l10n.addContact),
+      );
+    }
+
+    return FilledButton.tonalIcon(
+      onPressed: null,
+      icon: const Icon(Icons.chat_bubble_outline, size: 18),
+      label: Text(l10n.contactWhatsApp),
     );
   }
 

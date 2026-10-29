@@ -4,6 +4,7 @@ import 'package:tande/features/explore/explore_providers.dart';
 import 'package:tande/features/explore/explore_screen.dart';
 import 'package:tande/features/organizer/event_form_screen.dart';
 import 'package:tande/features/organizer/event_requests_screen.dart';
+import 'package:tande/features/auth/profile_form_screen.dart';
 import 'package:tande/features/organizer/organizer_screen.dart';
 import 'package:tande/features/profile/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -189,6 +190,122 @@ void main() {
     expect(
       topOf('Futbol 5 Nocturno Cordón'),
       lessThan(topOf('Liga Abierta de Padel Parque Rodó')),
+    );
+  });
+
+  testWidgets('creating an event demands a contact channel first', (
+    tester,
+  ) async {
+    // Strip the organizer's channels (and give him a birth date so the
+    // profile form can save): publishing a tournament nobody can write to
+    // is the dead end the gate exists for.
+    final store = MockStore();
+    final index = store.profiles.indexWhere((p) => p.id == 'u-org-1');
+    store.profiles[index] = store.profiles[index].copyWith(
+      phone: '',
+      instagram: '',
+      telegram: '',
+      contactUrl: '',
+      birthDate: () => DateTime(1990, 1, 1),
+    );
+
+    await tester.pumpWidget(
+      appHarness(signedInAs: 'u-org-1', initialView: ExploreView.list),
+    );
+    await tester.pumpAndSettle();
+
+    await openOrganizeTab(tester);
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    // The gate dialog — the event form never opens behind it.
+    expect(find.text('Falta una forma de contacto'), findsOneWidget);
+    expect(find.byType(EventFormScreen), findsNothing);
+
+    // The X closes without navigating anywhere.
+    final close = find.descendant(
+      of: find.byType(Dialog),
+      matching: find.byIcon(Icons.close),
+    );
+    await tester.tap(close);
+    await tester.pumpAndSettle();
+    expect(find.byType(Dialog), findsNothing);
+    expect(find.byType(EventFormScreen), findsNothing);
+    expect(find.byType(OrganizerScreen), findsOneWidget);
+
+    // Confirming goes to the profile form; saving it *without* a channel
+    // comes back with the pending notice — still no event form.
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.descendant(
+        of: find.byType(Dialog),
+        matching: find.widgetWithText(FilledButton, 'Agregar contacto'),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(ProfileFormScreen), findsOneWidget);
+
+    final saveButton = find.widgetWithText(FilledButton, 'Guardar cambios');
+    await tester.scrollUntilVisible(
+      saveButton,
+      300,
+      scrollable: find
+          .descendant(
+            of: find.byType(ProfileFormScreen),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(saveButton);
+    await tester.pumpAndSettle();
+    expect(
+      find.text(
+        'Seguís sin tener forma de contacto: '
+        'agregala para poder publicar tu torneo.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.byType(EventFormScreen), findsNothing);
+    expect(find.byType(OrganizerScreen), findsOneWidget);
+
+    // Let the pending notice expire so it can't swallow the next taps.
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+
+    // This time the phone is added: the gate re-reads the profile and
+    // opens the form straight away.
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.descendant(
+        of: find.byType(Dialog),
+        matching: find.widgetWithText(FilledButton, 'Agregar contacto'),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextFormField).at(2), '9912 3456');
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      saveButton,
+      300,
+      scrollable: find
+          .descendant(
+            of: find.byType(ProfileFormScreen),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(saveButton);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ProfileFormScreen), findsNothing);
+    expect(find.byType(EventFormScreen), findsOneWidget);
+    expect(
+      MockStore().profileById('u-org-1')!.phone,
+      '59899123456',
     );
   });
 

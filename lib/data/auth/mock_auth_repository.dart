@@ -176,6 +176,19 @@ class MockAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<void> deleteAccount() async {
+    final session = _session;
+    if (session == null) {
+      throw const AuthFailure('No hay una sesión activa.');
+    }
+    // Same shape as the real thing: the store cascades everything the
+    // account owns (see MockStore.removeAccount) and the session dies with
+    // it — signing back in with this email starts from scratch.
+    _store.removeAccount(session.userId);
+    _setSession(null);
+  }
+
+  @override
   Future<void> signOut() async {
     _setSession(null);
   }

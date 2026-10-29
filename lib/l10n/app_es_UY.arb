@@ -394,5 +394,25 @@
   "teamNameRequired": "Poné un nombre para que el organizador te identifique.",
   "spotsLeftLabel": "lugares libres",
   "noSpotsAvailable": "No hay lugares disponibles",
-  "paymentHint": "Coordiná el pago con el organizador por WhatsApp; tu lugar se confirma cuando lo apruebe."
+  "paymentHint": "Coordiná el pago con el organizador por WhatsApp; tu lugar se confirma cuando lo apruebe.",
+
+  "deleteAccount": "Eliminar cuenta",
+  "deleteAccountContinue": "Continuar",
+  "deleteAccountConfirmTitle": "¿Eliminar tu cuenta?",
+  "deleteAccountConfirmMessage": "Se borra tu perfil, tus torneos y tus inscripciones. No se puede deshacer.",
+  "deleteAccountFinalTitle": "Última confirmación",
+  "deleteAccountFinalMessage": "Tu cuenta, tus datos y tus eventos se eliminan para siempre. Si te arrepentís, tendrás que crear una cuenta nueva.",
+  "deleteAccountSuccess": "Tu cuenta fue eliminada.",
+  "deleteAccountFailed": "No se pudo eliminar la cuenta: {error}",
+
+  "createEventNoContactTitle": "Falta una forma de contacto",
+  "createEventNoContactMessage": "Para publicar un torneo necesitás una forma de contacto — teléfono, Instagram, Telegram o un link — para que los jugadores te puedan escribir.",
+  "createEventNoContactAction": "Agregar contacto",
+  "createEventNoContactPending": "Seguís sin tener forma de contacto: agregala para poder publicar tu torneo.",
+  "addContact": "Agregar contacto",
+
+  "shareEvent": "Compartir evento",
+  "shareEventText": "Torneo {title} — {date} en {venue}. {teams}.",
+  "shareEventTextLink": "Torneo {title} — {date} en {venue}. {teams}. Anotate en Tande: {link}",
+  "shareFailed": "No pudimos abrir el menú para compartir."
 }

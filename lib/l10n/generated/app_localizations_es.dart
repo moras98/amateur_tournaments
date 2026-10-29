@@ -1152,6 +1152,73 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get paymentHint =>
       'Coordiná el pago con el organizador por WhatsApp; tu lugar se confirma cuando lo apruebe.';
+
+  @override
+  String get deleteAccount => 'Eliminar cuenta';
+
+  @override
+  String get deleteAccountContinue => 'Continuar';
+
+  @override
+  String get deleteAccountConfirmTitle => '¿Eliminar tu cuenta?';
+
+  @override
+  String get deleteAccountConfirmMessage =>
+      'Se borra tu perfil, tus torneos y tus inscripciones. No se puede deshacer.';
+
+  @override
+  String get deleteAccountFinalTitle => 'Última confirmación';
+
+  @override
+  String get deleteAccountFinalMessage =>
+      'Tu cuenta, tus datos y tus eventos se eliminan para siempre. Si te arrepentís, tendrás que crear una cuenta nueva.';
+
+  @override
+  String get deleteAccountSuccess => 'Tu cuenta fue eliminada.';
+
+  @override
+  String deleteAccountFailed(Object error) {
+    return 'No se pudo eliminar la cuenta: $error';
+  }
+
+  @override
+  String get createEventNoContactTitle => 'Falta una forma de contacto';
+
+  @override
+  String get createEventNoContactMessage =>
+      'Para publicar un torneo necesitás una forma de contacto — teléfono, Instagram, Telegram o un link — para que los jugadores te puedan escribir.';
+
+  @override
+  String get createEventNoContactAction => 'Agregar contacto';
+
+  @override
+  String get createEventNoContactPending =>
+      'Seguís sin tener forma de contacto: agregala para poder publicar tu torneo.';
+
+  @override
+  String get addContact => 'Agregar contacto';
+
+  @override
+  String get shareEvent => 'Compartir evento';
+
+  @override
+  String shareEventText(Object date, Object teams, Object title, Object venue) {
+    return 'Torneo $title — $date en $venue. $teams.';
+  }
+
+  @override
+  String shareEventTextLink(
+    Object date,
+    Object link,
+    Object teams,
+    Object title,
+    Object venue,
+  ) {
+    return 'Torneo $title — $date en $venue. $teams. Anotate en Tande: $link';
+  }
+
+  @override
+  String get shareFailed => 'No pudimos abrir el menú para compartir.';
 }
 
 /// The translations for Spanish Castilian, as used in Uruguay (`es_UY`).
@@ -2302,4 +2369,71 @@ class AppLocalizationsEsUy extends AppLocalizationsEs {
   @override
   String get paymentHint =>
       'Coordiná el pago con el organizador por WhatsApp; tu lugar se confirma cuando lo apruebe.';
+
+  @override
+  String get deleteAccount => 'Eliminar cuenta';
+
+  @override
+  String get deleteAccountContinue => 'Continuar';
+
+  @override
+  String get deleteAccountConfirmTitle => '¿Eliminar tu cuenta?';
+
+  @override
+  String get deleteAccountConfirmMessage =>
+      'Se borra tu perfil, tus torneos y tus inscripciones. No se puede deshacer.';
+
+  @override
+  String get deleteAccountFinalTitle => 'Última confirmación';
+
+  @override
+  String get deleteAccountFinalMessage =>
+      'Tu cuenta, tus datos y tus eventos se eliminan para siempre. Si te arrepentís, tendrás que crear una cuenta nueva.';
+
+  @override
+  String get deleteAccountSuccess => 'Tu cuenta fue eliminada.';
+
+  @override
+  String deleteAccountFailed(Object error) {
+    return 'No se pudo eliminar la cuenta: $error';
+  }
+
+  @override
+  String get createEventNoContactTitle => 'Falta una forma de contacto';
+
+  @override
+  String get createEventNoContactMessage =>
+      'Para publicar un torneo necesitás una forma de contacto — teléfono, Instagram, Telegram o un link — para que los jugadores te puedan escribir.';
+
+  @override
+  String get createEventNoContactAction => 'Agregar contacto';
+
+  @override
+  String get createEventNoContactPending =>
+      'Seguís sin tener forma de contacto: agregala para poder publicar tu torneo.';
+
+  @override
+  String get addContact => 'Agregar contacto';
+
+  @override
+  String get shareEvent => 'Compartir evento';
+
+  @override
+  String shareEventText(Object date, Object teams, Object title, Object venue) {
+    return 'Torneo $title — $date en $venue. $teams.';
+  }
+
+  @override
+  String shareEventTextLink(
+    Object date,
+    Object link,
+    Object teams,
+    Object title,
+    Object venue,
+  ) {
+    return 'Torneo $title — $date en $venue. $teams. Anotate en Tande: $link';
+  }
+
+  @override
+  String get shareFailed => 'No pudimos abrir el menú para compartir.';
 }

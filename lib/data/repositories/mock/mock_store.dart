@@ -115,6 +115,28 @@ class MockStore {
     if (index >= 0) tournaments[index] = updated;
     bump();
   }
+
+  /// Mirrors the FK cascades of a real account deletion (migration 0012):
+  /// the profile goes, so do its owned tournaments (owner_id cascade) with
+  /// every inscription hanging off them (player_id / tournament_id
+  /// cascade), the player's own inscriptions elsewhere, the stored banners
+  /// and the registered sign-in email.
+  void removeAccount(String profileId) {
+    final ownedIds = <String>{};
+    tournaments.removeWhere((t) {
+      if (t.ownerId != profileId) return false;
+      ownedIds.add(t.id);
+      if (t.bannerPath != null) banners.remove(t.bannerPath);
+      return true;
+    });
+    inscriptions.removeWhere(
+      (i) => i.playerId == profileId || ownedIds.contains(i.tournamentId),
+    );
+    profiles.removeWhere((p) => p.id == profileId);
+    accountEmails.remove(profileId);
+    if (currentUserId == profileId) currentUserId = '';
+    bump();
+  }
 }
 
 List<UserModel> _seedProfiles() => [

@@ -2,7 +2,9 @@ import 'package:tande/core/sports.dart';
 import 'package:tande/core/theme/adaptive.dart';
 import 'package:tande/core/theme/app_gradients.dart';
 import 'package:tande/core/utils/format.dart';
+import 'package:tande/core/widgets/tande_toast.dart';
 import 'package:tande/data/repositories/providers.dart';
+import 'package:tande/features/organizer/organizer_providers.dart';
 import 'package:tande/features/pro/pro_providers.dart';
 import 'package:tande/l10n/generated/app_localizations.dart';
 import 'package:tande/l10n/labels.dart';
@@ -10,9 +12,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-/// Signed-in user's profile: data, organizer badge, edit and sign out.
-class ProfileScreen extends ConsumerWidget {
+/// Signed-in user's profile: data, organizer badge, edit, sign out and
+/// account deletion.
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  /// True from the first confirmation until the deletion resolves: the
+  /// dialogs are modal, but the gap between them (and the banner cleanup)
+  /// is not — a second tap must not stack a second flow.
+  bool _deleting = false;
 
   Future<void> _signOut(BuildContext context, WidgetRef ref) async {
     // Reversible, but still an exit: error-tinted confirm (design.md §7)
@@ -31,8 +44,79 @@ class ProfileScreen extends ConsumerWidget {
     // The router redirect takes over from here.
   }
 
+  /// In-app account deletion — the flow both stores require (App Store
+  /// guideline 5.1.1(v) and Play's account-deletion policy): two explicit
+  /// confirmations, the uploaded banners cleaned first, then the backend
+  /// cascade (migration 0012). A failure surfaces as a toast and leaves the
+  /// account untouched.
+  Future<void> _deleteAccount() async {
+    if (_deleting) return;
+    final l10n = AppLocalizations.of(context)!;
+
+    // First confirmation: what is about to happen, in plain words.
+    final first = await showConfirmDialog(
+      context,
+      title: l10n.deleteAccountConfirmTitle,
+      message: l10n.deleteAccountConfirmMessage,
+      confirmLabel: l10n.deleteAccountContinue,
+      destructive: true,
+      icon: Icons.delete_forever_outlined,
+    );
+    if (first != true || !mounted) return;
+
+    // Second: the irreversible action itself. Deleting an account can
+    // never be one tap away from the warning screen.
+    final second = await showConfirmDialog(
+      context,
+      title: l10n.deleteAccountFinalTitle,
+      message: l10n.deleteAccountFinalMessage,
+      confirmLabel: l10n.deleteAccount,
+      destructive: true,
+      icon: Icons.warning_amber_rounded,
+    );
+    if (second != true || !mounted) return;
+
+    setState(() => _deleting = true);
+    // Captured before the first await: `ref` throws once this state is
+    // disposed, and the redirect after deletion can unmount us mid-flow.
+    final storage = ref.read(bannerStorageProvider);
+    final myTournaments = ref.read(myTournamentsProvider.future);
+    final auth = ref.read(authStateProvider.notifier);
+
+    // Banners live in a public bucket with no FK to the account — they
+    // don't cascade, so they go first. Best effort: an orphaned image must
+    // never block the deletion the user just confirmed twice.
+    try {
+      for (final t in await myTournaments) {
+        final path = t.bannerPath;
+        if (path != null) await storage.remove(path);
+      }
+    } catch (_) {
+      // Best effort (see above).
+    }
+
+    try {
+      await auth.deleteAccount();
+      if (!mounted) return;
+      showTandeToast(
+        context,
+        l10n.deleteAccountSuccess,
+        kind: ToastKind.success,
+      );
+    } catch (error) {
+      if (!mounted) return;
+      showTandeToast(
+        context,
+        l10n.deleteAccountFailed('$error'),
+        kind: ToastKind.error,
+      );
+    } finally {
+      if (mounted) setState(() => _deleting = false);
+    }
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final profileAsync = ref.watch(currentProfileProvider);
     final pro = ref.watch(proProvider);
@@ -232,6 +316,18 @@ class ProfileScreen extends ConsumerWidget {
                   onPressed: () => _signOut(context, ref),
                   icon: const Icon(Icons.logout),
                   label: Text(l10n.signOut),
+                ),
+                const SizedBox(height: 12),
+                // Destructive action kept apart from sign-out and tinted
+                // with error (design.md §7) so nobody taps it thinking
+                // it's "leave".
+                OutlinedButton.icon(
+                  onPressed: _deleting ? null : _deleteAccount,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: theme.colorScheme.error,
+                  ),
+                  icon: const Icon(Icons.delete_outline),
+                  label: Text(l10n.deleteAccount),
                 ),
               ],
             );

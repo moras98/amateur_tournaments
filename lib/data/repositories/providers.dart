@@ -172,6 +172,16 @@ class AuthController extends Notifier<AuthSession?> {
     await ref.read(authRepositoryProvider).signOut();
     state = null;
   }
+
+  /// Permanently deletes the signed-in account (Profile → "Eliminar
+  /// cuenta"; App Store 5.1.1(v) / Play account-deletion policy). The
+  /// repository runs the cascade (migration 0012) and clears its local
+  /// session; dropping the state here is what takes the router to /login
+  /// and invalidates every session-derived provider.
+  Future<void> deleteAccount() async {
+    await ref.read(authRepositoryProvider).deleteAccount();
+    state = null;
+  }
 }
 
 final authStateProvider = NotifierProvider<AuthController, AuthSession?>(

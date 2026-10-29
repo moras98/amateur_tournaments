@@ -432,22 +432,26 @@ Cada fase tiene criterio de aceptación. No arranques la siguiente sin cerrar la
   Gmail y a Outlook (no sólo a tu bandeja).
 
 ### Fase 1 — Cerrar los bloqueantes de código (semana 2, 12-16 h)
-- [ ] §4.1 registro: metadata + trigger + `emailRedirectTo` (las dos mitades del flujo de alta).
-- [ ] §4.4 recuperar contraseña: `resetPasswordForEmail`, `/forgot-password`, `/reset-password`.
-- [ ] Borrado de cuenta in-app: `deleteAccount` en `AuthRepository`, `on delete cascade` ya
-      existe en las tablas, pantalla en Perfil con doble confirmación. **Requisito Apple.**
-- [ ] §4.3 sobreventa (trigger con `raise`).
-- [ ] §4.10 el corazón del producto: exigir teléfono antes de publicar, `contactOrganizer` con
-      fallback (WhatsApp nativo → wa.me → Llamar/SMS/Email) y **compartir el evento** con
-      `share_plus` + link a la tienda.
-- [ ] §4.8 filtro por fecha + caja geográfica + `.limit()` + índices (esto es lo que hace que
+- [x] §4.1 registro: metadata + trigger + `emailRedirectTo` (las dos mitades del flujo de alta).
+- [x] §4.4 recuperar contraseña: `resetPasswordForEmail`, `/forgot-password`, `/reset-password`.
+- [x] Borrado de cuenta in-app: `deleteAccount` en `AuthRepository`, migración `0012` con
+      cascade + RPC `delete_account`, pantalla en Perfil con doble confirmación.
+      **Requisito Apple.**
+- [x] §4.3 sobreventa (migración `0013`: guards con `raise` en confirmar, sumar manual y
+      bajar cupo).
+- [x] §4.10 el corazón del producto: exigir canal de contacto antes de publicar, contacto con
+      fallback (WhatsApp → hoja de canales con Llamar/Instagram/Telegram/link) y **compartir
+      el evento** con `share_plus` + link a la tienda.
+- [x] §4.8 filtro por fecha + caja geográfica + `.limit()` + índices (esto es lo que hace que
       "cerca tuyo" sea verdad fuera de Montevideo).
-- [ ] §4.9 moneda del torneo (columna + selector + `formatCost`).
+- [x] §4.9 moneda del torneo (columna + selector + `formatCost`).
 - [ ] Privacidad y términos reales, con email y URL, publicados y linkeados, con la sección de
-      GDPR/LGPD si abrís Europa/Brasil.
-- [ ] Ficha honesta y localizada es/en (ver §6.5 y §6.6 para el texto corregido).
-- **Criterio:** `flutter analyze` limpio, tests ≥ 120, alta con confirmación + recuperación de
-  clave + borrado de cuenta probados en device contra el backend real.
+      GDPR/LGPD si abrís Europa/Brasil. **(Falta `EMAIL_DE_CONTACTO` — solo lo puede poner
+      el dueño.)**
+- [x] Ficha honesta y localizada es/en (ver §6.5 y §6.6 para el texto corregido).
+- **Criterio:** `flutter analyze` limpio ✓, tests ≥ 120 ✓ (195), alta con confirmación +
+  recuperación de clave + borrado de cuenta probados en device contra el backend real
+  **(pendiente: requiere la anon key).**
 
 ### Fase 2 — Build y test cerrado Android (semana 2-3, 4 h + 14 días de reloj)
 - [ ] `./scripts/build-release.sh` con `.release.env` real → AAB firmado.
