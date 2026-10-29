@@ -303,10 +303,7 @@ void main() {
 
     expect(find.byType(ProfileFormScreen), findsNothing);
     expect(find.byType(EventFormScreen), findsOneWidget);
-    expect(
-      MockStore().profileById('u-org-1')!.phone,
-      '59899123456',
-    );
+    expect(MockStore().profileById('u-org-1')!.phone, '59899123456');
   });
 
   testWidgets('creating an event publishes it to the app', (tester) async {
