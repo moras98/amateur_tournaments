@@ -124,7 +124,7 @@ trabajo y desbloquea todo lo demás.
 | # | Ítem | Estado | Bloqueante |
 |---|---|---|---|
 | A1 | Ficha que coincide con el producto | ❌ 5 de 8 bullets son falsos | **Sí** (metadatos engañosos) |
-| A2 | Política de privacidad con URL pública + email real | ❌ `EMAIL_DE_CONTACTO` | **Sí** |
+| A2 | Política de privacidad con URL pública + email real | ⚠️ email ok, falta URL pública | **Sí** |
 | A3 | Borrado de cuenta declarado (in-app o link web) | ❌ hay sólo "escribinos" | **Sí** |
 | A4 | Data safety coherente (nombre, email, foto, nacimiento, género, teléfono, ubicación, UGC) | ⬜ sin declarar | **Sí** |
 | A5 | Cuenta Play Console ($25) + verificación de identidad | ⬜ | **Sí** |
@@ -162,7 +162,8 @@ correr el simulador localmente — el QA se hace en device por TestFlight.
 
 ### 3.3 Legal (las dos tiendas)
 
-- [ ] Reemplazar `EMAIL_DE_CONTACTO` en `store/privacy-policy.md` y `store/terms-and-conditions.md`.
+- [x] Reemplazar `EMAIL_DE_CONTACTO` en `store/privacy-policy.md` y `store/terms-and-conditions.md`
+      (email: a.morascastro@gmail.com).
 - [ ] Publicar ambos en una URL propia (GitHub Pages sirve) y apuntar `AppConstants.privacyUrl` / `termsUrl`.
 - [ ] Reescribir la política: hoy dice que la app "abre WhatsApp con el mensaje ya cargado
       [del cuadro]" y que "te avisa dentro de la app sobre cambios" — ninguna de las dos existe.
@@ -426,7 +427,8 @@ Cada fase tiene criterio de aceptación. No arranques la siguiente sin cerrar la
       tenés, y sin dominio verificado Resend no entrega).
 - [ ] **Resend**: cuenta, dominio verificado (SPF/DKIM/DMARC), SMTP en Supabase (§3.5), rate
       limit a 100-200/h, plantillas de confirmación y recuperación con la marca.
-- [ ] Pegar la anon key en `.release.env` (hoy está vacía; sin ella no hay build real).
+- [x] Pegar la anon key en `.release.env` (hecho; smoke test real: `GET /rest/v1/tournaments`
+      → HTTP 200 y RPC `delete_account` responde 42501 = migración 0012 viva en producción).
 - [ ] Decidir territorios: global desde el día 1 (§3.4) — es gratis y no agrega trabajo.
 - **Criterio:** cuentas creadas, dominio verificado en Resend y un correo de prueba llegando a
   Gmail y a Outlook (no sólo a tu bandeja).
@@ -446,15 +448,16 @@ Cada fase tiene criterio de aceptación. No arranques la siguiente sin cerrar la
       "cerca tuyo" sea verdad fuera de Montevideo).
 - [x] §4.9 moneda del torneo (columna + selector + `formatCost`).
 - [ ] Privacidad y términos reales, con email y URL, publicados y linkeados, con la sección de
-      GDPR/LGPD si abrís Europa/Brasil. **(Falta `EMAIL_DE_CONTACTO` — solo lo puede poner
-      el dueño.)**
+      GDPR/LGPD si abrís Europa/Brasil. **(Email listo: a.morascastro@gmail.com. Falta
+      publicarlos en una URL propia.)**
 - [x] Ficha honesta y localizada es/en (ver §6.5 y §6.6 para el texto corregido).
 - **Criterio:** `flutter analyze` limpio ✓, tests ≥ 120 ✓ (195), alta con confirmación +
   recuperación de clave + borrado de cuenta probados en device contra el backend real
-  **(pendiente: requiere la anon key).**
+  **(pendiente: smoke test en device; el backend real ya responde y el AAB real está firmado).**
 
 ### Fase 2 — Build y test cerrado Android (semana 2-3, 4 h + 14 días de reloj)
-- [ ] `./scripts/build-release.sh` con `.release.env` real → AAB firmado.
+- [ ] `./scripts/build-release.sh` con `.release.env` real → AAB firmado. **(AAB real de
+      62.1MB generado y firmado con el upload key; falta el smoke test en device.)**
 - [ ] Smoke test en tu teléfono con ese AAB exacto: alta → crear torneo → inscribirse →
       confirmar → ver el cambio en las dos cuentas.
 - [ ] Subir a **test cerrado**, invitar 15 personas (no 12; si alguien se cae, el reloj

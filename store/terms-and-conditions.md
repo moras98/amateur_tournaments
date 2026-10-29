@@ -1,13 +1,12 @@
 # Términos y condiciones — Tande
 
 > **Borrador.** Publicar en una URL pública (junto con la política de
-> privacidad) y enlazar desde el registro y desde Play Console. Reemplazar
-> `EMAIL_DE_CONTACTO`.
+> privacidad) y enlazar desde el registro y desde Play Console.
 
 **Última actualización:** 25 de octubre de 2026
 
 Estos Términos y condiciones ("Términos") regulan el uso de la aplicación
-Tande ("la app"), operada por EMAIL_DE_CONTACTO. Al crear una cuenta
+Tande ("la app"), operada por a.morascastro@gmail.com. Al crear una cuenta
 marcando la casilla de aceptación, o al continuar con Google o Apple, aceptás
 estos Términos y la [Política de privacidad](privacy-policy.md). Si no estás
 de acuerdo, no uses la app.
@@ -85,7 +84,7 @@ aceptación.
 ## 10. Ley aplicable y contacto
 
 Estos Términos se rigen por las leyes de la República Oriental del Uruguay.
-Cualquier consulta: **EMAIL_DE_CONTACTO**.
+Cualquier consulta: **a.morascastro@gmail.com**.
 
 ---
 

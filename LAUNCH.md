@@ -21,11 +21,10 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 | Upload keystore | ✅ `~/upload-keystore.jks` + `android/key.properties` |
 | Store AAB script | ✅ `scripts/build-release.sh` |
 | Store copy | ✅ `store/play-store.md` |
-| Privacy policy | 📝 draft `store/privacy-policy.md` — needs contact email + public URL |
-| Terms & conditions | 📝 draft `store/terms-and-conditions.md` — needs contact email + public URL (linked from the sign-up checkbox) |
+| Legal docs | 📝 drafts — contact email filled (`a.morascastro@gmail.com`), still needs public URL |
 | Monetization | ✅ built, **inert** until Play products exist — launch after first users (§7) |
-| Supabase anon key in `.release.env` | ⬜ **not filled yet** |
-| Migrations `0005` … `0010` applied | ❓ unconfirmed |
+| Supabase anon key in `.release.env` | ✅ filled — real-backend release AAB built (62.1 MB) |
+| Migrations `0005` … `0013` applied | ✅ `delete_account` RPC live in prod (verified: 42501 anon) |
 | Auth email links (confirm + reset) | ⬜ dashboard allow-list + templates |
 | Play Console account | ⬜ |
 | Closed test (14 days) | ⬜ |
@@ -37,7 +36,8 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 - [ ] **Back up the keystore + password**: `~/upload-keystore.jks` and the
       `storePassword` in `android/key.properties` → password manager.
       (Losing both = Google upload-key reset process.)
-- [ ] **Paste the Supabase anon key** into `.release.env` (URL already filled).
+- [x] **Paste the Supabase anon key** into `.release.env` (done; smoke test against
+      production: `GET /rest/v1/tournaments` → HTTP 200).
 - [ ] **Confirm migrations `0005_split_status_triggers.sql`,
       `0006_signup_checks.sql`, `0007_signup_metadata.sql`,
       `0008_explore_indexes.sql`, `0009_currency.sql`,
@@ -100,9 +100,8 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 
 - [ ] **App identity**: name `Tande`, application ID `com.tande.app`
       (autofills from the AAB), version `1.0.0+1`.
-- [ ] **Legal docs**: fill `EMAIL_DE_CONTACTO` in `store/privacy-policy.md`
-      **and** `store/terms-and-conditions.md`, publish both (GitHub Pages on
-      this repo is fine), paste the privacy URL into Play Console, then point
+- [ ] **Legal docs**: contact email is filled (`a.morascastro@gmail.com`) —
+      publish both docs (GitHub Pages on this repo is fine), paste the privacy URL into Play Console, then point
       `AppConstants.privacyUrl` / `AppConstants.termsUrl`
       (`lib/core/constants.dart`) at the final URLs — the sign-up checkbox
       and the login fine print open them in the browser.

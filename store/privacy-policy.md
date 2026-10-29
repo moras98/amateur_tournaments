@@ -2,7 +2,7 @@
 
 > **Borrador.** Antes de enviar la app a Google Play hay que publicarla en una
 > URL pública (GitHub Pages o similar) y registrarla en el formulario de
-> *Datos de seguridad* de Play Console. Reemplazar `EMAIL_DE_CONTACTO`.
+> *Datos de seguridad* de Play Console.
 
 **Última actualización:** 25 de octubre de 2026
 
@@ -64,7 +64,7 @@ inscripción, pueden conservarse para la integridad del torneo).
 
 De acuerdo con la Ley 18.330 de Protección de Datos Personales (Uruguay),
 tenés derecho a acceder a tus datos, rectificarlos, oponerte a su tratamiento
-y solicitar su eliminación. Escribinos a **EMAIL_DE_CONTACTO** y respondemos
+y solicitar su eliminación. Escribinos a **a.morascastro@gmail.com** y respondemos
 dentro de los 10 días hábiles.
 
 ## 6. Menores
@@ -81,7 +81,7 @@ la fecha actualizada. Los cambios relevantes se avisan dentro de la app.
 
 ## 8. Contacto
 
-EMAIL_DE_CONTACTO — consultas sobre privacidad y ejercicios de derechos.
+a.morascastro@gmail.com — consultas sobre privacidad y ejercicios de derechos.
 
 ---
 
