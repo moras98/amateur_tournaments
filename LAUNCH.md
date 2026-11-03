@@ -118,8 +118,8 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
       ships Supabase, so create a real reviewer account).
 - [ ] **Target audience**: 13+ (matches the privacy policy).
 - [ ] **Graphics**:
-      - Feature graphic 1024×500 (green `#1B8A5A` / mint `#34E0A1` on
-        `#0F3B2A`, pin con play + "Tu torneo empieza acá")
+      - Feature graphic 1024×500 (fondo blanco, cresta verde `#1B8A5A` /
+        `#2FB56A` + wordmark, "Tu torneo empieza acá")
       - ≥ 2 phone screenshots (emulator or the YAL L21): mapa en Explore,
         lista filtrada, detalle del torneo, inscripción — UI en **es**
 - [ ] **Copy** from `store/play-store.md`: título (26), descripción corta (77),

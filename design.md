@@ -15,7 +15,7 @@ rounded shapes · bold headings · 8pt spacing · Uruguayan Spanish.
 | --- | --- |
 | Name | Tande |
 | Tagline | "Tu torneo empieza acá" (es) / "Your tournament starts here" (en) |
-| App icon | Mint location pin with a play triangle cut out `#34E0A1` on a deep-green `#0F3B2A` field — neutral to any sport; adaptive icon (foreground at 66% safe zone, solid `#0F3B2A` background) plus an Android 13+ monochrome glyph; splash matches the same field color. Regenerate with `dart run flutter_launcher_icons` + `dart run flutter_native_splash:create` |
+| App icon | Green crest — shield with laurels and an arrow, `#1B8A5A`→`#2FB56A` gradient — on a **white** field: adaptive icon (foreground at 60 % so the crest stays inside the 66 dp safe circle, solid `#FFFFFF` background) plus an Android 13+ monochrome glyph; splash is white with the full mark + wordmark lockup. Everything derives from `~/Downloads/tande-logo.jpeg` via `python3 scripts/generate_brand_assets.py`, then `dart run flutter_launcher_icons` + `dart run flutter_native_splash:create` |
 | Color | Green `#1B8A5A` (sport pitch, "go", trust) |
 | Personality | Local, direct, energetic, friendly — pickup sports, not enterprise |
 | Iconography | Rounded Material Symbols, sport glyphs per modality |

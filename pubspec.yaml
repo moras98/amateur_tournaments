@@ -77,8 +77,10 @@ dev_dependencies:
   flutter_lints: ^6.0.0
 
   # Launcher icons + native splash screen.
-  # Regenerate with: dart run flutter_launcher_icons
-  #                  dart run flutter_native_splash:create
+  # Assets come from the master logo via: python3 scripts/generate_brand_assets.py
+  # Then regenerate the platform files with:
+  #   dart run flutter_launcher_icons
+  #   dart run flutter_native_splash:create
   flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.8
 
@@ -89,18 +91,18 @@ flutter_launcher_icons:
   remove_alpha_ios: true
   # Flat keys (0.14.x): a nested `adaptive_icon:` map is silently ignored.
   # Both keys are required or no adaptive icon is generated at all.
-  adaptive_icon_background: '#0F3B2A'
+  adaptive_icon_background: '#FFFFFF'
   adaptive_icon_foreground: 'assets/icon_fg.png'
   adaptive_icon_monochrome: 'assets/icon_mono.png'
 
 flutter_native_splash:
-  color: '#0F3B2A'
-  image: 'assets/icon_fg.png'
+  color: '#FFFFFF'
+  image: 'assets/logo_full.png'
   android: true
   ios: true
   android_12:
-    color: '#0F3B2A'
-    image: 'assets/icon_fg.png'
+    color: '#FFFFFF'
+    image: 'assets/splash_android12.png'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -118,8 +120,8 @@ flutter:
 
   assets:
     - assets/icon.png
-    # Mint pin-with-play on transparent — bare logo mark for in-app hero headers.
-    - assets/icon_fg.png
+    # Marca en blanco sobre transparente — headers verdes del auth.
+    - assets/icon_white.png
 
   # Plus Jakarta Sans, variable weight (SIL OFL 1.1 — see assets/fonts/OFL.txt)
   fonts:

@@ -135,11 +135,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     child: Column(
                       children: [
-                        // Bare mint mark on transparent: the square launcher
-                        // icon inside a translucent circle read as a foreign
-                        // block — the hero gradient already is the mark's field.
+                        // Bare mark on transparent in white: the hero gradient
+                        // already is the mark's field, and the green mark would
+                        // sink into it.
                         Image.asset(
-                          'assets/icon_fg.png',
+                          'assets/icon_white.png',
                           width: 72,
                           height: 72,
                         ),

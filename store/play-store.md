@@ -92,8 +92,8 @@ Your tournament starts here.
 
 | Pieza | Especificación | Estado |
 |---|---|---|
-| Icono de tienda | 512×512 PNG (Play) / 1024×1024 sin alpha (App Store) | ✅ generado desde `assets/icon.png` |
-| Feature graphic (Play) | 1024×500, fondo `#0F3B2A`, marca menta `#34E0A1`, texto "Tande — Tu torneo empieza acá" | ⬜ |
+| Icono de tienda | 512×512 PNG (Play) / 1024×1024 sin alpha (App Store) | ✅ `store/play-icon-512.png` (Play) y `assets/icon.png` (App Store), generados con `scripts/generate_brand_assets.py` |
+| Feature graphic (Play) | 1024×500, fondo blanco, cresta verde `#1B8A5A`→`#2FB56A` + wordmark, texto "Tande — Tu torneo empieza acá" | ⬜ |
 | Capturas teléfono | ≥ 2 (recomendado 4): mapa en Explore · lista filtrada · detalle del torneo · inscripción | ⬜ |
 | Capturas iPad (App Store) | sólo si se declara soporte iPad | ⬜ |
 

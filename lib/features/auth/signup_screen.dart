@@ -372,9 +372,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           decoration: const BoxDecoration(gradient: AppGradients.brand),
           child: Column(
             children: [
-              // Same bare mark as the login hero — keeps both auth
+              // Same bare white mark as the login hero — keeps both auth
               // screens speaking the same visual language.
-              Image.asset('assets/icon_fg.png', width: 72, height: 72),
+              Image.asset('assets/icon_white.png', width: 72, height: 72),
               const SizedBox(height: 16),
               Text(
                 l10n.signupHeroTitle,
