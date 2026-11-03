@@ -6,6 +6,7 @@ import 'package:tande/core/widgets/sport_sticker.dart';
 import 'package:tande/core/utils/format.dart';
 import 'package:tande/core/utils/nav_geometry.dart';
 import 'package:tande/core/widgets/search_capsule.dart';
+import 'package:tande/core/widgets/tande_empty_state.dart';
 import 'package:tande/core/widgets/tande_toast.dart';
 import 'package:tande/core/widgets/tournament_banner.dart';
 import 'package:tande/data/repositories/providers.dart';
@@ -239,36 +240,16 @@ class _OrganizerGate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.emoji_events_outlined,
-              size: 56,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-            const SizedBox(height: 16),
-            Text(l10n.organizerGateTitle, style: theme.textTheme.titleLarge),
-            const SizedBox(height: 8),
-            Text(
-              l10n.organizerGateBody,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            FilledButton(
-              onPressed: () => context.go('/profile'),
-              child: Text(l10n.goToProfile),
-            ),
-          ],
-        ),
+    // Same block as the other tabs' empty states: tinted squircle mark,
+    // brand copy and one next step (the profile, where the toggle lives).
+    return TandeEmptyState(
+      icon: Icons.emoji_events_outlined,
+      title: l10n.organizerGateTitle,
+      body: l10n.organizerGateBody,
+      action: FilledButton(
+        onPressed: () => context.go('/profile'),
+        child: Text(l10n.goToProfile),
       ),
     );
   }
@@ -305,30 +286,12 @@ class _MyEvents extends ConsumerWidget {
       ),
       data: (events) {
         if (events.isEmpty) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.emoji_events_outlined,
-                    size: 56,
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(l10n.noEventsTitle, style: theme.textTheme.titleLarge),
-                  const SizedBox(height: 8),
-                  Text(
-                    l10n.noEventsBody,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
+          // The FAB is already the screen's primary action, so the empty
+          // state doesn't repeat a button (TandeEmptyState's rule).
+          return TandeEmptyState(
+            icon: Icons.emoji_events_outlined,
+            title: l10n.noEventsTitle,
+            body: l10n.noEventsBody,
           );
         }
 
@@ -384,7 +347,9 @@ class _MyEvents extends ConsumerWidget {
           },
           child: ListView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+            // Same top rhythm as Inscripciones (16/4); the bottom keeps the
+            // extra room so the FAB never sits on the last card.
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
             children: [
               for (final event in upcoming) ...[
                 _EventCard(event: event),
@@ -435,6 +400,8 @@ class _EventCard extends ConsumerWidget {
           children: [
             // The organizer sees their own banners the way players do.
             if (event.bannerPath != null) TournamentBanner(tournament: event),
+            // Same skeleton as the inscription card: sticker | identity
+            // column (title → date → info line) | status chip on the right.
             Padding(
               padding: const EdgeInsets.all(12),
               child: Row(
@@ -449,67 +416,42 @@ class _EventCard extends ConsumerWidget {
                           event.title,
                           style: theme.textTheme.titleMedium,
                           maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: 4),
                         Text(
                           formatEventDate(event.startTime, end: event.endTime),
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
-                        const SizedBox(height: 6),
+                        const SizedBox(height: 4),
+                        // Info line: spots in the primary tint (the same
+                        // weight the inscriptions give "lugares") plus the
+                        // pending-requests pill when there is something to
+                        // review.
                         Wrap(
                           spacing: 8,
                           runSpacing: 4,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
-                            _StatusBadge(status: event.status),
                             Text(
                               l10n.spotsOf(
                                 event.totalConfirmed,
                                 event.totalTeams,
                               ),
-                              style: theme.textTheme.labelSmall,
-                            ),
-                            if (pending > 0)
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: theme.colorScheme.tertiaryContainer,
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.hourglass_top,
-                                      size: 12,
-                                      color:
-                                          theme.colorScheme.onTertiaryContainer,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      l10n.requestsCount(pending),
-                                      style: theme.textTheme.labelSmall
-                                          ?.copyWith(
-                                            color: theme
-                                                .colorScheme
-                                                .onTertiaryContainer,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                    ),
-                                  ],
-                                ),
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.primary,
                               ),
+                            ),
+                            if (pending > 0) _RequestsBadge(count: pending),
                           ],
                         ),
                       ],
                     ),
                   ),
-                  Icon(Icons.chevron_right, color: theme.colorScheme.outline),
+                  const SizedBox(width: 8),
+                  _StatusChip(status: event.status),
                 ],
               ),
             ),
@@ -520,8 +462,51 @@ class _EventCard extends ConsumerWidget {
   }
 }
 
-class _StatusBadge extends StatelessWidget {
-  const _StatusBadge({required this.status});
+/// Pending-requests pill — the status chip's geometry (radius 8, icon 14,
+/// labelSmall 600) in the pending tint, so both pills read as one family.
+class _RequestsBadge extends StatelessWidget {
+  const _RequestsBadge({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: BoxDecoration(
+        color: scheme.tertiaryContainer,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.hourglass_top,
+            size: 14,
+            color: scheme.onTertiaryContainer,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            l10n.requestsCount(count),
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: scheme.onTertiaryContainer,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Tournament status in the chip style the inscriptions use: pill radius,
+/// icon + label, tinted per state.
+class _StatusChip extends StatelessWidget {
+  const _StatusChip({required this.status});
 
   final TournamentStatus status;
 
@@ -530,33 +515,47 @@ class _StatusBadge extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
-    final (Color background, Color foreground) = switch (status) {
+    final (
+      Color background,
+      Color foreground,
+      IconData icon,
+    ) = switch (status) {
       TournamentStatus.open => (
         theme.colorScheme.primaryContainer,
         theme.colorScheme.onPrimaryContainer,
+        Icons.lock_open,
       ),
       TournamentStatus.full => (
         theme.colorScheme.tertiaryContainer,
         theme.colorScheme.onTertiaryContainer,
+        Icons.group_off,
       ),
       TournamentStatus.closed => (
         theme.colorScheme.surfaceContainerHighest,
         theme.colorScheme.onSurfaceVariant,
+        Icons.lock,
       ),
     };
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
         color: background,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(8),
       ),
-      child: Text(
-        l10n.tournamentStatus(status),
-        style: theme.textTheme.labelSmall?.copyWith(
-          color: foreground,
-          fontWeight: FontWeight.w600,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: foreground),
+          const SizedBox(width: 4),
+          Text(
+            l10n.tournamentStatus(status),
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: foreground,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }
