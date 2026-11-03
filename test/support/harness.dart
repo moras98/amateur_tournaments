@@ -1,4 +1,5 @@
 import 'package:tande/core/location/reverse_geocoder.dart';
+import 'package:tande/core/map/basemap.dart';
 import 'package:tande/core/map/tile_provider.dart';
 import 'package:tande/core/utils/banner_picker.dart';
 import 'package:tande/data/auth/auth_repository.dart';
@@ -142,6 +143,10 @@ Widget appHarness({
     overrides: [
       exploreViewProvider.overrideWith((ref) => initialView),
       tileProviderProvider.overrideWithValue(FakeTileProvider()),
+      // Raster basemap in tests: the vector layer would need network for
+      // glyphs and tiles, and the fake provider already covers the raster
+      // path. Production defaults to vector (see `basemap.dart`).
+      basemapProvider.overrideWithValue(Basemap.raster),
       // Always overridden: never touch the billing channel in tests, and
       // keep paying mode off unless a test injects products explicitly.
       billingServiceProvider.overrideWithValue(billing ?? MockBillingService()),

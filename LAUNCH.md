@@ -68,13 +68,9 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
       the Supabase defines, then sign up → create tournament → request
       inscription → share to WhatsApp → see it appear. Mock tests prove
       nothing about the Supabase repositories.
-- [ ] **Pick the map tiles before publishing** (see §Mapas below). Today the
-      app ships pointing at OpenStreetMap's donated servers, which the policy
-      allows for light use only — no SLA, and they can throttle without notice.
-      Get a free Thunderforest key (150k tiles/month, commercial use allowed),
-      put `TILE_PROVIDER=thunderforest` + `THUNDERFOREST_KEY=…` in
-      `.release.env` and the release build does the rest. `build-release.sh`
-      refuses to build with `thunderforest` and no key.
+- [x] **Mapa vectorial** (ver §Mapas): OpenFreeMap, sin clave ni costo, con
+      estilos propios claro/oscuro y sin íconos de POI. El raster quedó como
+      fallback (`--dart-define=BASEMAP=raster`).
 - [ ] **Create the Google Play developer account** ($25 + identity
       verification). Personal account ⇒ the 14-day closed-test clock applies
       to you. Start today so verification runs in parallel.
@@ -216,41 +212,50 @@ the closed test** — never gate the 12 testers.
 
 ## Mapas y geocodificación
 
-The map is the product on the Explore screen, so its tile source is a
+The map is the product on the Explore screen, so how it is drawn is a
 publishing decision, not a detail.
+
+**Base vectorial (default).** `flutter_map_vector_tiles` renders OpenFreeMap's
+MVT tiles from a MapLibre style bundled in the app
+(`assets/map/style_light.json` and `style_dark.json`, picked by the theme
+brightness). Why vector:
+
+* **No POI icons.** A raster tile carries the provider's icons *painted into
+  the image*; a vector style simply does not have those layers. This is the
+  reason for the switch, not a nicety.
+* **Own palette.** Both files are OpenFreeMap **Positron** re-tinted for Tande
+  by `scripts/build_map_style.py` (mint parks, teal water, green-grey labels)
+  — the cartography, road hierarchy and zoom rules stay upstream's.
+* **Crisp at any zoom**: labels and lines are drawn per frame instead of
+  scaling a bitmap, and the tiles are cached on disk (50 MB, 14 days).
+
+OpenFreeMap's public instance is free: no key, no account, no request limit,
+donation-funded, **no SLA**. The credit line — `OpenFreeMap © OpenMapTiles
+Data from OpenStreetMap` — comes from the TileJSON, is rendered on the map and
+is **not optional**. If it ever grows past a donation-funded service, both the
+styles and the tiles are open source and self-hostable (Protomaps / tileserver).
+
+Rebuild the styles only if the palette changes or OpenFreeMap re-publishes its
+cartography: `python3 scripts/build_map_style.py`, then the usual
+`dart run flutter_launcher_icons`-style rebuild of the app. Reverting to raster
+tiles is one flag — `--dart-define=BASEMAP=raster` — and lands on the code
+path below, which is also what the widget tests run against.
+
+**Raster fallback.** `lib/core/map/tile_source.dart` still resolves a raster
+provider from build-time defines:
 
 | Source | Cost | Notes |
 | --- | --- | --- |
-| `osm` (default) | free | Donated servers. Policy allows light use only: no SLA, may block without notice, and it asks apps to be able to switch without an update (hence `TILE_PROVIDER`). Fine for testers, not for a launch peak. |
-| Thunderforest | 150k tiles/month free, then US$125/mo for 1.5M | "Commercial use is permitted and encouraged" on the free tier. Attribution may not be removed. There is **no cheap middle tier**: 150k → 1.5M is a 10x jump, so treat 150k as a launch runway, not a plan. |
+| `osm` | free | Donated servers. Policy allows light use only: no SLA, may block without notice, and it asks apps to be able to switch without an update (hence `TILE_PROVIDER`). Fine for testers, not for a launch peak. |
+| Thunderforest | 150k tiles/month free, then US$125/mo for 1.5M | "Commercial use is permitted and encouraged" on the free tier. Attribution may not be removed. There is **no cheap middle tier**: 150k → 1.5M is a 10x jump. |
 | Stadia Maps | US$20/mo (Starter) | Its free tier is explicitly non-commercial, so a published app lands on Starter. |
-| OpenFreeMap | free, no key | Vector tiles only: needs MapLibre, not `flutter_map` raster. The escape hatch if tiles ever need to be free at any scale. |
 
-**How far 150k goes.** A phone screen holds 10–25 raster tiles and each pan or
-zoom adds new ones, but the disk cache means a device only pays for tiles it has
-never seen. So consumption tracks *new devices and new areas*, not sessions:
-budget ~400–800 tiles per new user in their first month and ~100/month after
-that. 150k/month therefore covers roughly **250 new users per month** — fine to
-launch, not "plenty forever". Check the tile counter in the provider dashboard
-weekly; at ~80k in a month, decide.
+`TILE_PROVIDER=custom` + `TILE_URL_TEMPLATE` + `TILE_ATTRIBUTION` points the
+build at **any** raster provider with no code change. URL, attribution and zoom
+ceiling come from a provider, so switching is a `.release.env` change — which is
+exactly what the OSM policy asks for.
 
-When that day comes, do **not** assume the US$125 tier is the only way out:
-
-* `TILE_PROVIDER=custom` + `TILE_URL_TEMPLATE` + `TILE_ATTRIBUTION` points the
-  build at **any** raster provider with no code change (Stadia's commercial
-  entry plan is US$20/month for 1M credits — check their per-tile credit
-  weight before switching).
-* Or go vector with OpenFreeMap (free, no key, no limits) and swap the map
-  renderer for MapLibre: 1–2 days of work, US$0 forever.
-
-Both are cheaper than US$125/month for an app with no revenue yet.
-
-Everything lives in `lib/core/map/tile_source.dart`: URL, attribution and zoom
-ceiling come from a provider, and the three maps plus their credit lines read
-from it. Switching providers is a `.release.env` change, not a code change —
-which is exactly what the OSM policy asks for.
-
-**Tile cache.** flutter_map 8 already caches tiles on disk; the app now
+**Tile cache (raster path).** flutter_map 8 already caches tiles on disk; the app
 configures it explicitly (`lib/core/map/tile_provider.dart`): 300 MB instead of
 the 1 GB default, a cache key that ignores the query string (so rotating an API
 key does not invalidate the whole map and re-bill every tile), and a **30-day**
@@ -279,8 +284,10 @@ a build flag. If usage grows, the next step is a proxy on the Supabase side
 - [ ] Crash reporting (Sentry/Firebase) if vitals show crashes
 - [ ] **B2B / white label** (clubes, municipios, federaciones): sold and
       delivered outside Play — no billing issue; needs a real offer first
-- [ ] OSM tile usage: fine at small scale; if the app grows, move to a paid
-      tile provider (public tile servers forbid heavy commercial use)
+- [ ] **Mapa a escala**: OpenFreeMap es gratis y sin límite, pero lo mantiene
+      una persona con donaciones. Si Tande crece, self-hostear los estilos y los
+      tiles (Protomaps/tileserver) o pasar a MapTiler. El raster OSM no es una
+      opción a volumen: sus servidores son donados.
 
 ---
 

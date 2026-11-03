@@ -64,6 +64,7 @@ dependencies:
   in_app_purchase: ^3.3.1
   image_picker: ^1.2.4
   share_plus: ^13.3.1
+  flutter_map_vector_tiles: ^2.11.0
 
 dev_dependencies:
   flutter_test:
@@ -122,6 +123,9 @@ flutter:
     - assets/icon.png
     # Marca en blanco sobre transparente — headers verdes del auth.
     - assets/icon_white.png
+    # Estilos vectoriales (MapLibre) del mapa, generados por
+    # scripts/build_map_style.py desde OpenFreeMap Positron.
+    - assets/map/
 
   # Plus Jakarta Sans, variable weight (SIL OFL 1.1 — see assets/fonts/OFL.txt)
   fonts:

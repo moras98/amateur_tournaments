@@ -1,5 +1,6 @@
 import 'package:tande/core/constants.dart';
-import 'package:tande/core/map/tile_provider.dart';
+import 'package:tande/core/map/basemap.dart';
+import 'package:tande/core/map/basemap_layer.dart';
 import 'package:tande/core/theme/app_gradients.dart';
 import 'package:tande/core/widgets/sport_sticker.dart';
 import 'package:tande/core/theme/adaptive.dart';
@@ -26,7 +27,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tande/core/widgets/tande_toast.dart';
-import 'package:tande/core/map/tile_source.dart';
 
 /// Full event information, spots-left progress, organizer contact and the
 /// registration action (pending → organizer confirms off-app via WhatsApp).
@@ -446,18 +446,7 @@ class _TournamentDetailScreenState
                             ),
                           ),
                           children: [
-                            TileLayer(
-                              urlTemplate: ref
-                                  .watch(tileSourceProvider)
-                                  .urlTemplate,
-                              userAgentPackageName: ref
-                                  .watch(tileSourceProvider)
-                                  .userAgentPackageName,
-                              maxNativeZoom: ref
-                                  .watch(tileSourceProvider)
-                                  .maxZoom,
-                              tileProvider: ref.watch(tileProviderProvider),
-                            ),
+                            const BasemapLayer(),
                             MarkerLayer(
                               markers: [
                                 Marker(
@@ -478,7 +467,11 @@ class _TournamentDetailScreenState
                           left: 6,
                           bottom: 4,
                           child: Text(
-                            ref.watch(tileSourceProvider).attribution,
+                            ref.watch(
+                              mapAttributionProvider(
+                                styleAssetFor(Theme.of(context).brightness),
+                              ),
+                            ),
                             style: theme.textTheme.labelSmall?.copyWith(
                               fontSize: 9,
                             ),

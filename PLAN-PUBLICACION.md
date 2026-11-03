@@ -642,7 +642,7 @@ Your tournament starts here.
 | **Resend** | **240 (20/mes)** | 240 | Free = 3.000/mes y **100/día**: el día de lanzamiento no alcanza. Pro = 50.000/mes |
 | Crash + analytics (Sentry, Firebase) | 0 | 0 | free tiers suficientes |
 | Builds iOS (Codemagic) | 0 | 0-120 | 500 min/mes gratis; a US$ 0,095/min si te pasás |
-| Tiles de mapa (OSM público) | 0 | 0-600 | gratis mientras sea chico; si crece, MapTiler/Stadia |
+| Tiles de mapa (OpenFreeMap vectorial) | 0 | 0 | gratis, sin clave ni límite (donaciones); si crece, self-host o MapTiler |
 | **Total caja** | **679** | **654-1.374** | |
 | Marketing (opcional) | 0-1.200 | 0-1.200 | sólo después de validar |
 | Contador (tratamiento de exportación de servicios) | 0-300 | 0-300 | única vez si es consulta puntual |
@@ -663,7 +663,8 @@ todo el tiempo disponible**. Si además querés construir el cuadro (2-3 semanas
 
 ### 7.3 Costos que aparecen recién cuando crece
 - Supabase: >500 MB de base o >5 GB de egress → Pro/Team (25-599/mes).
-- Tiles OSM: la política prohíbe uso comercial intensivo → proveedor pago (~25-50/mes).
+- Tiles de mapa: hoy gratis (OpenFreeMap). Si el servicio se cae o cambia, self-hostear los
+  estilos (Protomaps/tileserver) o pasar a MapTiler/Stadia (~25-50/mes).
 - Alguien revisando reviews y soporte: hoy sos vos; es lo primero que se paga cuando hay ingresos.
 - Impuestos: Apple/Google actúan como merchant of record y te pagan neto de su comisión. Lo que
   te pagan es exportación de servicios — **consultá a un contador** el tratamiento de IVA y

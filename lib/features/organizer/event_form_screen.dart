@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:tande/core/constants.dart';
 import 'package:tande/core/location/reverse_geocoder.dart';
-import 'package:tande/core/map/tile_provider.dart';
+import 'package:tande/core/map/basemap_layer.dart';
 import 'package:tande/core/theme/adaptive.dart';
 import 'package:tande/core/utils/country_code.dart';
 import 'package:tande/core/utils/format.dart';
@@ -392,16 +392,7 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
                         onTap: (tapPosition, latLng) => _onMapTapped(latLng),
                       ),
                       children: [
-                        TileLayer(
-                          urlTemplate: ref
-                              .watch(tileSourceProvider)
-                              .urlTemplate,
-                          userAgentPackageName: ref
-                              .watch(tileSourceProvider)
-                              .userAgentPackageName,
-                          maxNativeZoom: ref.watch(tileSourceProvider).maxZoom,
-                          tileProvider: ref.watch(tileProviderProvider),
-                        ),
+                        const BasemapLayer(),
                         if (_pin != null)
                           MarkerLayer(
                             markers: [

@@ -1,4 +1,5 @@
-import 'package:tande/core/map/tile_provider.dart';
+import 'package:tande/core/map/basemap.dart';
+import 'package:tande/core/map/basemap_layer.dart';
 import 'package:tande/core/sports.dart';
 import 'package:tande/core/utils/nav_geometry.dart';
 import 'package:tande/features/explore/widgets/tournament_card.dart';
@@ -9,7 +10,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:tande/core/map/tile_source.dart';
 
 /// OpenStreetMap view with a pin per tournament and the user's location.
 ///
@@ -163,8 +163,9 @@ class _TournamentMapState extends ConsumerState<TournamentMap> {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final location = widget.userLocation;
-    final tileProvider = ref.watch(tileProviderProvider);
-    final tileSource = ref.watch(tileSourceProvider);
+    final credit = ref.watch(
+      mapAttributionProvider(styleAssetFor(Theme.of(context).brightness)),
+    );
     // The camera sits on the device location, or on the pins when there is
     // none — never on a hardcoded city (see the class doc).
     final pins = _pins;
@@ -184,12 +185,7 @@ class _TournamentMapState extends ConsumerState<TournamentMap> {
             initialZoom: location != null ? 12.5 : 12,
           ),
           children: [
-            TileLayer(
-              urlTemplate: tileSource.urlTemplate,
-              userAgentPackageName: tileSource.userAgentPackageName,
-              maxNativeZoom: tileSource.maxZoom,
-              tileProvider: tileProvider,
-            ),
+            const BasemapLayer(),
             _ClusterMarkersLayer(
               tournaments: widget.tournaments,
               onTapSingle: _showMarkerSheet,
@@ -213,7 +209,7 @@ class _TournamentMapState extends ConsumerState<TournamentMap> {
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
-              tileSource.attribution,
+              credit,
               style: theme.textTheme.labelSmall?.copyWith(fontSize: 10),
             ),
           ),

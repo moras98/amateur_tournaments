@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:tande/core/map/basemap.dart';
 import 'package:tande/core/utils/nav_geometry.dart';
 import 'package:tande/data/repositories/mock/mock_store.dart';
 import 'package:tande/data/repositories/mock/mock_tournament_repository.dart';
@@ -14,7 +15,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tande/core/map/tile_source.dart';
 
 import 'support/harness.dart';
 
@@ -360,12 +360,14 @@ void main() {
       final mapContext = tester.element(find.byType(FlutterMap));
       expect(MediaQuery.paddingOf(mapContext).bottom, kNavCapsuleRegionHeight);
 
-      // Read the credit from the configured source instead of hardcoding it:
-      // this test is about the bar clearance, not about which provider the
-      // build points at.
-      final credit = ProviderScope.containerOf(
-        mapContext,
-      ).read(tileSourceProvider).attribution;
+      // Read the credit from the configured basemap instead of hardcoding it:
+      // this test is about the bar clearance, not about which layer draws the
+      // streets or which provider the build points at.
+      final credit = ProviderScope.containerOf(mapContext).read(
+        mapAttributionProvider(
+          styleAssetFor(Theme.of(mapContext).brightness),
+        ),
+      );
       final attribution = tester.widget<Positioned>(
         find.ancestor(of: find.text(credit), matching: find.byType(Positioned)),
       );
