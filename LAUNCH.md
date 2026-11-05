@@ -21,7 +21,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 | Upload keystore | ✅ `~/upload-keystore.jks` + `android/key.properties` |
 | Store AAB script | ✅ `scripts/build-release.sh` |
 | Store copy | ✅ `store/play-store.md` |
-| Legal docs | 📝 en `docs/`, workflow de Pages listo — falta activar Pages y verificar las URLs |
+| Legal docs | ✅ publicados en GitHub Pages: `/privacy-policy/` y `/terms-and-conditions/` (HTTP 200) |
 | Monetization | ✅ built, **inert** until Play products exist — launch after first users (§7) |
 | Supabase anon key in `.release.env` | ✅ filled — real-backend release AAB built (62.1 MB) |
 | Migrations `0005` … `0014` applied | ✅ `delete_account` RPC live in prod (verified: 42501 anon) · `0014` verificada: anon lee 0 filas de `profiles` |
@@ -100,13 +100,11 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 
 - [ ] **App identity**: name `Tande`, application ID `com.tande.app`
       (autofills from the AAB), version `1.0.0+1`.
-- [ ] **Legal docs**: contact email is filled (`a.morascastro@gmail.com`) —
-      activá GitHub Pages (Settings → Pages → Source: GitHub Actions) y
-      verificá que abran las URLs de `AppConstants.privacyUrl` /
-      `AppConstants.termsUrl` (`docs/privacy-policy.md` y
-      `docs/terms-and-conditions.md`). Después pegá la URL de privacidad en
-      Play Console. El workflow `.github/workflows/pages.yml` publica `docs/`
-      en cada push a `main`.
+- [x] **Legal docs**: publicados con GitHub Pages y verificados (HTTP 200):
+      https://moras98.github.io/amateur_tournaments/privacy-policy/ y
+      https://moras98.github.io/amateur_tournaments/terms-and-conditions/.
+      `AppConstants.privacyUrl` / `termsUrl` apuntan ahí. Falta pegar la URL
+      de privacidad en Play Console al completar la ficha.
 - [ ] **Data safety form** (must match the policy):
       - Collected: **name, email, profile photo (from Google/Apple), date of
         birth, gender, phone (optional), approximate/precise location

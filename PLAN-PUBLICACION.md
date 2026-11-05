@@ -447,9 +447,9 @@ Cada fase tiene criterio de aceptación. No arranques la siguiente sin cerrar la
 - [x] §4.8 filtro por fecha + caja geográfica + `.limit()` + índices (esto es lo que hace que
       "cerca tuyo" sea verdad fuera de Montevideo).
 - [x] §4.9 moneda del torneo (columna + selector + `formatCost`).
-- [ ] Privacidad y términos reales, con email y URL, publicados y linkeados, con la sección de
-      GDPR/LGPD si abrís Europa/Brasil. **(Email listo: a.morascastro@gmail.com. Falta
-      publicarlos en una URL propia.)**
+- [x] Privacidad y términos reales, con email y URL, publicados y linkeados. **(Publicados en
+      GitHub Pages: moras98.github.io/amateur_tournaments. Falta la sección GDPR/LGPD si abrís
+      Europa/Brasil.)**
 - [x] Ficha honesta y localizada es/en (ver §6.5 y §6.6 para el texto corregido).
 - **Criterio:** `flutter analyze` limpio ✓, tests ≥ 120 ✓ (195), alta con confirmación +
   recuperación de clave + borrado de cuenta probados en device contra el backend real
