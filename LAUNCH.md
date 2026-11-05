@@ -192,8 +192,10 @@ the closed test** — never gate the 12 testers.
       can become a one-off non-subscription SKU later).
 - [x] **Code (scaffolding)**: `in_app_purchase` wired in `lib/data/billing/`,
       paywall at `/pro` (profile card + free-tier gate), entitlement from
-      Play. **Inert until products exist** — with no products configured the
-      app is 100% free and ungated (entry points hidden), which is what
+      the store. **Inert until products exist** — with no products
+      configured the paywall shows the benefits with a "próximamente"
+      note (no prices, no buy button), the profile entry stays visible to
+      organizers, and the app is 100% free and ungated — which is what
       ships through the closed test. **Creating `tande_pro_monthly` /
       `tande_pro_yearly` in Play Console switches paying mode ON for every
       user without an entitlement** — only do it when Pro launches, after

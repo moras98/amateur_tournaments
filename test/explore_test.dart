@@ -364,9 +364,7 @@ void main() {
       // this test is about the bar clearance, not about which layer draws the
       // streets or which provider the build points at.
       final credit = ProviderScope.containerOf(mapContext).read(
-        mapAttributionProvider(
-          styleAssetFor(Theme.of(mapContext).brightness),
-        ),
+        mapAttributionProvider(styleAssetFor(Theme.of(mapContext).brightness)),
       );
       final attribution = tester.widget<Positioned>(
         find.ancestor(of: find.text(credit), matching: find.byType(Positioned)),

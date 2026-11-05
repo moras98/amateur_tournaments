@@ -32,7 +32,11 @@ void main() {
         final poi = layers.where(
           (l) => const {'poi', 'aerodrome_label'}.contains(l['source-layer']),
         );
-        expect(poi, isEmpty, reason: 'los íconos de POI vuelven si aparece una');
+        expect(
+          poi,
+          isEmpty,
+          reason: 'los íconos de POI vuelven si aparece una',
+        );
       });
 
       test('$asset keeps the streets and the place labels', () {
@@ -40,7 +44,10 @@ void main() {
         final ids = (style['layers'] as List)
             .map((l) => (l as Map)['id'] as String)
             .toSet();
-        expect(ids, containsAll(['background', 'water', 'highway_major_inner']));
+        expect(
+          ids,
+          containsAll(['background', 'water', 'highway_major_inner']),
+        );
         expect(ids.any((id) => id.startsWith('label_')), isTrue);
       });
     }

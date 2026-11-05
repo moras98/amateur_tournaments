@@ -47,7 +47,10 @@ final mapStyleProvider = FutureProvider.family<vt.Style, String>((
   ref,
   asset,
 ) async {
-  final style = await vt.StyleReader(uri: 'asset://$asset', language: 'es').read();
+  final style = await vt.StyleReader(
+    uri: 'asset://$asset',
+    language: 'es',
+  ).read();
   ref.onDispose(style.dispose);
   return style;
 });

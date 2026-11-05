@@ -25,9 +25,11 @@ abstract class AppConstants {
   /// Play Console product ids (one subscription each, base plans on top).
   ///
   /// **Creating these in Play Console switches paying mode ON** for every
-  /// user without an entitlement: paywall entry points appear and the
-  /// free-tier gate starts enforcing. Do it only when Pro really launches
-  /// (after the closed test, once the Pro features ship).
+  /// user without an entitlement: the paywall goes from "próximamente"
+  /// (benefits only, informational) to a live purchase flow, and the
+  /// free-tier gate starts enforcing. The profile entry is visible to
+  /// organizers either way. Do it only when Pro really launches (after
+  /// the closed test, once the Pro features ship).
   static const proMonthlyId = 'tande_pro_monthly';
   static const proYearlyId = 'tande_pro_yearly';
   static const proProductIds = [proMonthlyId, proYearlyId];

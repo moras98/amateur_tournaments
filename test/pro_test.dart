@@ -40,25 +40,48 @@ void main() {
       : 'Probar gratis';
 
   group('Tande Pro (widgets)', () {
-    testWidgets('before Play has products the app stays free and ungated', (
-      tester,
-    ) async {
-      await tester.pumpWidget(appHarness(signedInAs: 'u-org-1'));
-      await tester.pumpAndSettle();
+    testWidgets(
+      'before Play has products the paywall is informational and free',
+      (tester) async {
+        await tester.pumpWidget(appHarness(signedInAs: 'u-org-1'));
+        await tester.pumpAndSettle();
 
-      // No paywall entry on the profile while paying mode is off.
-      await tester.tap(navIcon(Icons.person_outline));
-      await tester.pumpAndSettle();
-      expect(find.text('Tande Pro'), findsNothing);
+        // The organizer sees the entry even before Play has the products:
+        // it's the product's pitch, not a purchase flow.
+        await tester.tap(navIcon(Icons.person_outline));
+        await tester.pumpAndSettle();
+        final card = find.widgetWithText(ListTile, 'Tande Pro');
+        expect(card, findsOneWidget);
+        await tester.tap(card);
+        await tester.pumpAndSettle();
 
-      // Creation opens the plain form — the closed-test invariant.
-      await tester.tap(navIcon(Icons.emoji_events_outlined));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byType(FloatingActionButton));
-      await tester.pumpAndSettle();
-      expect(find.byType(EventFormScreen), findsOneWidget);
-      expect(find.byType(PaywallScreen), findsNothing);
-    });
+        // Benefits are on screen in every state; without products the
+        // screen says "próximamente" and shows no plans or buy button.
+        expect(find.byType(PaywallScreen), findsOneWidget);
+        expect(find.text('Torneos activos ilimitados'), findsOneWidget);
+        expect(
+          find.text('Exportar inscripciones a CSV (planilla lista para Excel)'),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Tande Pro se está por lanzar. ¡Volvé pronto!'),
+          findsOneWidget,
+        );
+        expect(find.widgetWithText(FilledButton, ctaLabel), findsNothing);
+        expect(find.text('Elegí tu plan'), findsNothing);
+        expect(find.text('US\$ 4.99'), findsNothing);
+        await tester.tap(find.byIcon(Icons.arrow_back));
+        await tester.pumpAndSettle();
+
+        // Creation still opens the plain form — the closed-test invariant.
+        await tester.tap(navIcon(Icons.emoji_events_outlined));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(FloatingActionButton));
+        await tester.pumpAndSettle();
+        expect(find.byType(EventFormScreen), findsOneWidget);
+        expect(find.byType(PaywallScreen), findsNothing);
+      },
+    );
 
     testWidgets('paying mode: the profile card buys Pro on the paywall', (
       tester,

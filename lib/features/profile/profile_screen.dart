@@ -235,10 +235,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ),
                   ),
                 ],
-                // Tande Pro entry: only in paying mode (Play products
-                // configured) and only while this user isn't subscribed —
-                // organizers are the ones who can use it.
-                if (profile.isOrganizer && pro.available && !pro.isPro) ...[
+                // Tande Pro entry: visible to organizers while they don't
+                // hold the entitlement. Before Play has products the
+                // paywall shows the benefits and a "próximamente" note —
+                // informational, nothing is gated. Once products exist the
+                // same screen runs the store purchase.
+                if (profile.isOrganizer && !(pro.available && pro.isPro)) ...[
                   const SizedBox(height: 16),
                   Card(
                     child: ListTile(

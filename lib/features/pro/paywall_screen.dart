@@ -7,12 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tande/core/widgets/tande_toast.dart';
 
-/// The Tande Pro paywall (LAUNCH.md §7): benefits, plans, Play purchase.
+/// The Tande Pro paywall (LAUNCH.md §7): benefits, plans, store purchase.
 ///
-/// Reached from the profile card and from the free-tier gate. Three
-/// states: products not configured yet ("Próximamente"), already
-/// subscribed, and the buy flow. On a successful purchase the state flips
-/// under us — the screen simply re-renders as "already Pro".
+/// Reached from the profile card and from the free-tier gate. The benefits
+/// are always on screen — this is the product's pitch. What varies is the
+/// action under them: products not configured yet ("Próximamente"),
+/// already subscribed, or the buy flow. On a successful purchase the state
+/// flips under us — the screen simply re-renders as "already Pro".
 class PaywallScreen extends ConsumerStatefulWidget {
   const PaywallScreen({super.key});
 
@@ -55,53 +56,59 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.proTitle)),
-      body: switch ((pro.available, pro.isPro)) {
-        (false, _) => _StatusNote(
-          icon: Icons.schedule,
-          title: l10n.proComingSoon,
-          body: l10n.proComingSoonBody,
-        ),
-        (true, true) => _StatusNote(
-          icon: Icons.check_circle_outline,
-          title: l10n.proAlready,
-          body: l10n.proAlreadyBody,
-        ),
-        _ => ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            // Header: the brand mark and the promise, centered.
-            Icon(
-              Icons.workspace_premium,
-              size: 56,
-              color: theme.colorScheme.primary,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.proProfileHint,
-              style: theme.textTheme.titleMedium,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            // Benefits.
-            // Sólo lo que la app hace hoy. Cada bullet de más es una promesa
-            // que el usuario paga y no recibe (y en las tiendas, metadatos
-            // inexactos: Apple 2.3.1 / 3.1.2).
-            for (final benefit in [l10n.proBenefit1, l10n.proBenefit2])
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.check_circle,
-                      size: 20,
-                      color: theme.colorScheme.primary,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(child: Text(benefit)),
-                  ],
-                ),
+      // Benefits render in **every** state: the screen is the product's
+      // pitch, so an organizer who opens it before Play has the products
+      // (or while already subscribed) still sees what Tande Pro is. What
+      // changes below is only the action: buy, "próximamente", or nothing.
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          // Header: the brand mark and the promise, centered.
+          Icon(
+            Icons.workspace_premium,
+            size: 56,
+            color: theme.colorScheme.primary,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.proProfileHint,
+            style: theme.textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          // Benefits.
+          // Sólo lo que la app hace hoy. Cada bullet de más es una promesa
+          // que el usuario paga y no recibe (y en las tiendas, metadatos
+          // inexactos: Apple 2.3.1 / 3.1.2).
+          for (final benefit in [l10n.proBenefit1, l10n.proBenefit2])
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.check_circle,
+                    size: 20,
+                    color: theme.colorScheme.primary,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(child: Text(benefit)),
+                ],
               ),
-            const SizedBox(height: 14),
+            ),
+          const SizedBox(height: 14),
+          if (!pro.available)
+            _StatusNote(
+              icon: Icons.schedule,
+              title: l10n.proComingSoon,
+              body: l10n.proComingSoonBody,
+            )
+          else if (pro.isPro)
+            _StatusNote(
+              icon: Icons.check_circle_outline,
+              title: l10n.proAlready,
+              body: l10n.proAlreadyBody,
+            )
+          else ...[
             Text(l10n.proChoosePlan, style: theme.textTheme.titleSmall),
             const SizedBox(height: 8),
             // Plans — fixed monthly/yearly slots, rendered when Play has
@@ -162,28 +169,29 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 16,
-              runSpacing: 4,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              alignment: WrapAlignment.center,
-              children: [
-                TermsText(prefix: l10n.proLegalPrefix),
-                LegalLink(
-                  label: l10n.privacyPolicy,
-                  url: AppConstants.privacyUrl,
-                ),
-              ],
-            ),
           ],
-        ),
-      },
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 16,
+            runSpacing: 4,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            alignment: WrapAlignment.center,
+            children: [
+              TermsText(prefix: l10n.proLegalPrefix),
+              LegalLink(
+                label: l10n.privacyPolicy,
+                url: AppConstants.privacyUrl,
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
 
-/// Full-screen informational state (coming soon / already subscribed).
+/// Inline informational state (coming soon / already subscribed): same
+/// content as the full-screen version, sized to sit under the benefits.
 class _StatusNote extends StatelessWidget {
   const _StatusNote({
     required this.icon,
@@ -198,25 +206,22 @@ class _StatusNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 56, color: theme.colorScheme.primary),
-            const SizedBox(height: 16),
-            Text(title, style: theme.textTheme.titleLarge),
-            const SizedBox(height: 8),
-            Text(
-              body,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        children: [
+          Icon(icon, size: 48, color: theme.colorScheme.primary),
+          const SizedBox(height: 12),
+          Text(title, style: theme.textTheme.titleLarge),
+          const SizedBox(height: 8),
+          Text(
+            body,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
             ),
-          ],
-        ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
