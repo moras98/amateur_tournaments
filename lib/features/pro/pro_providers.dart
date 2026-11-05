@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:tande/core/observability/analytics.dart';
 import 'package:tande/data/billing/billing_service.dart';
 import 'package:tande/data/repositories/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -68,9 +69,16 @@ class ProController extends Notifier<ProState> {
 
   /// Runs the Play purchase flow; `true` when Pro was granted.
   Future<bool> buy(ProProduct product) async {
+    final analytics = ref.read(analyticsProvider)
+      ..track('pro_purchase_started', {'product_id': product.id});
     state = _restingState(busy: true);
     try {
-      return await _billing.buy(product);
+      final granted = await _billing.buy(product);
+      analytics.track('pro_purchase_finished', {
+        'product_id': product.id,
+        'granted': granted,
+      });
+      return granted;
     } finally {
       if (_alive) state = _restingState(busy: false);
     }
@@ -78,9 +86,12 @@ class ProController extends Notifier<ProState> {
 
   /// Restores past purchases; `true` when an entitlement came back.
   Future<bool> restore() async {
+    final analytics = ref.read(analyticsProvider);
     state = _restingState(busy: true);
     try {
-      return await _billing.restore();
+      final granted = await _billing.restore();
+      analytics.track('pro_restore', {'granted': granted});
+      return granted;
     } finally {
       if (_alive) state = _restingState(busy: false);
     }

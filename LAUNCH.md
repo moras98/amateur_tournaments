@@ -24,7 +24,8 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 | Legal docs | ✅ publicados en GitHub Pages: `/privacy-policy/` y `/terms-and-conditions/` (HTTP 200) |
 | Monetization | ✅ built, **inert** until Play products exist — launch after first users (§7) |
 | Supabase anon key in `.release.env` | ✅ filled — real-backend release AAB built (62.1 MB) |
-| Migrations `0005` … `0014` applied | ✅ `delete_account` RPC live in prod (verified: 42501 anon) · `0014` verificada: anon lee 0 filas de `profiles` |
+| Migrations `0005` … `0014` applied | ✅ `delete_account` RPC live in prod (verified: 42501 anon) · `0014` verificada: anon lee 0 filas de `profiles` · `0015` (analítica) pendiente |
+| Observabilidad | ✅ crash reporting opt-in con Sentry (`SENTRY_DSN`) + eventos de producto en `analytics_events` |
 | Auth email links (confirm + reset) | ⬜ dashboard allow-list + templates |
 | Play Console account | ⬜ |
 | Closed test (14 days) | ⬜ |
@@ -42,8 +43,8 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
       `0006_signup_checks.sql`, `0007_signup_metadata.sql`,
       `0008_explore_indexes.sql`, `0009_currency.sql`,
       `0010_tournament_banners.sql`, `0011_contact_channels.sql`,
-      `0012_delete_account.sql`, `0013_no_oversell.sql` and
-      `0014_profile_privacy.sql`** are
+      `0012_delete_account.sql`, `0013_no_oversell.sql`,
+      `0014_profile_privacy.sql` and `0015_analytics_events.sql`** are
       applied in the Supabase
       dashboard. **`0014` cierra la lectura pública de `profiles`** —
       verificado en producción: anon lee 0 filas y el RPC de contactos
@@ -58,7 +59,8 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
       "Eliminar cuenta" button calls it and fails politely until the
       migration runs. `0013` blocks overselling spots when two players
       confirm at the same instant. `0014` deja `profiles` como owner-only y
-      expone sólo a organizadores con torneos en `public_profiles`.
+      expone sólo a organizadores con torneos en `public_profiles`. `0015`
+      crea `analytics_events` (insert-only para authenticated, sin PII).
 - [ ] **Auth email links land in the app** (dashboard, Authentication):
       URL Configuration → Redirect URLs must list
       `io.supabase.amateurtournaments://login-callback` (it should already
@@ -109,8 +111,14 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
       - Collected: **name, email, profile photo (from Google/Apple), date of
         birth, gender, phone (optional), approximate/precise location
         (optional), user-generated tournaments/inscriptions**
-      - Used for app functionality · **not sold** · **not used for ads**
-      - Shared: Supabase (backend), Google/Apple (login), OpenStreetMap (maps)
+      - App activity: **in-app actions** (tournament created, inscription
+        requested/confirmed, purchase started) · App info and performance:
+        **crash logs and diagnostics**
+      - Used for app functionality, analytics and diagnostics · **not sold** ·
+        **not used for ads**
+      - Shared: Supabase (backend and product analytics), Sentry (crash
+        reporting, if configured), Google/Apple (login and purchases),
+        OpenStreetMap (maps)
 - [ ] **Content rating** questionnaire (IARC) — sports/organizing tool, no
       violence, no in-app chat between strangers beyond tournament info.
 - [ ] **App access**: give reviewers a working login (demo account with a
@@ -289,7 +297,10 @@ a build flag. If usage grows, the next step is a proxy on the Supabase side
 
 - [ ] **iOS**: needs a Mac + Apple Developer Program ($99/yr). Uruguay has
       real iPhone share — do it after Play validates the product
-- [ ] Crash reporting (Sentry/Firebase) if vitals show crashes
+- [x] **Observabilidad**: Sentry opt-in (`SENTRY_DSN` en `.release.env`) con
+      breadcrumbs y observer de navegación, más eventos de producto en
+      Supabase (`analytics_events`, migración `0015`). Falta crear el proyecto
+      de Sentry y pegar el DSN antes del build de tienda.
 - [ ] **B2B / white label** (clubes, municipios, federaciones): sold and
       delivered outside Play — no billing issue; needs a real offer first
 - [ ] **Mapa a escala**: OpenFreeMap es gratis y sin límite, pero lo mantiene

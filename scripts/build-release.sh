@@ -39,6 +39,8 @@ fi
 
 FLUTTER=/home/agustin/snap/flutter/common/flutter/bin/flutter
 
+APP_VERSION=$(awk '/^version:/ {print $2; exit}' pubspec.yaml)
+
 "$FLUTTER" gen-l10n
 
 if [[ "${SKIP_TESTS:-0}" != "1" ]]; then
@@ -48,6 +50,9 @@ fi
 "$FLUTTER" build appbundle --release \
   --dart-define=SUPABASE_URL="$SUPABASE_URL" \
   --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" \
+  --dart-define=APP_RELEASE="$APP_VERSION" \
+  --dart-define=SENTRY_DSN="${SENTRY_DSN:-}" \
+  --dart-define=SENTRY_ENVIRONMENT="${SENTRY_ENVIRONMENT:-production}" \
   --dart-define=TILE_PROVIDER="$TILE_PROVIDER" \
   --dart-define=THUNDERFOREST_KEY="${THUNDERFOREST_KEY:-}" \
   --dart-define=GEOCODER_URL="${GEOCODER_URL:-https://nominatim.openstreetmap.org/reverse}" \

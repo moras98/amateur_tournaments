@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:tande/core/constants.dart';
 import 'package:tande/core/location/reverse_geocoder.dart';
 import 'package:tande/core/map/basemap_layer.dart';
+import 'package:tande/core/observability/analytics.dart';
 import 'package:tande/core/theme/adaptive.dart';
 import 'package:tande/core/utils/country_code.dart';
 import 'package:tande/core/utils/format.dart';
@@ -846,6 +847,11 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
           status: status,
         );
         await repository.update(updated);
+        container.read(analyticsProvider).track('tournament_updated', {
+          'tournament_id': updated.id,
+          'sport': _sport,
+          'kind': _kind,
+        });
         // The removed banner's object only goes once the row stopped
         // pointing at it.
         if (_clearedBanner != null) {
@@ -884,6 +890,13 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
             location: _pin,
           ),
         );
+        container.read(analyticsProvider).track('tournament_created', {
+          'tournament_id': created.id,
+          'sport': _sport,
+          'kind': _kind,
+          'teams': _parsedTeams,
+          'currency': _currency,
+        });
         // The banner needs the assigned id, so it uploads (and persists
         // its path) right after the row exists. A failure keeps the event
         // — the organizer just re-adds the image from Editar.

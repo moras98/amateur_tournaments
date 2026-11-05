@@ -95,7 +95,7 @@ gente que llegó desde el mapa.
 | Flutter / Dart | 3.44.4 stable / Dart 3.12.2 | `flutter --version` |
 | Versión app | `1.0.0+1` | `pubspec.yaml` |
 | applicationId | `com.tande.app` (permanente) | `android/app/build.gradle.kts` |
-| targetSdk / minSdk | **36 / 24** | `build/app/intermediates/merged_manifests/release/.../AndroidManifest.xml` |
+| targetSdk / minSdk | **36 / 26** (26 por Sentry 10; Android 8+) | `android/app/build.gradle.kts` |
 | Firma Android | `~/upload-keystore.jks` + `android/key.properties` presentes | `ls -la` |
 | Backend | `.release.env`: URL cargada (40 chars), **anon key vacía** → `build-release.sh` aborta | `awk -F= '{print $1, length($2)}' .release.env` (no imprime el valor) |
 | Migraciones | 0001-0006 en repo | `ls supabase/migrations` |

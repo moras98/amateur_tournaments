@@ -32,7 +32,9 @@ android {
         applicationId = "com.tande.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        // Sentry Flutter 10 requires API 26 (Android 8). That is the current
+        // floor for the crash-reporting SDK; API 24/25 is a rounding error.
+        minSdk = 26
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

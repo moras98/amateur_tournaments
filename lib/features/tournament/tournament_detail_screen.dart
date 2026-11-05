@@ -1,6 +1,7 @@
 import 'package:tande/core/constants.dart';
 import 'package:tande/core/map/basemap.dart';
 import 'package:tande/core/map/basemap_layer.dart';
+import 'package:tande/core/observability/analytics.dart';
 import 'package:tande/core/theme/app_gradients.dart';
 import 'package:tande/core/widgets/sport_sticker.dart';
 import 'package:tande/core/theme/adaptive.dart';
@@ -97,6 +98,10 @@ class _TournamentDetailScreenState
             teamName: teamName,
             waitlist: waitlist,
           );
+      container.read(analyticsProvider).track('inscription_requested', {
+        'tournament_id': tournament.id,
+        'waitlist': waitlist,
+      });
       container
         ..invalidate(myInscriptionProvider(tournament.id))
         // The list tab caches its result — refresh it or a previously
@@ -172,6 +177,9 @@ class _TournamentDetailScreenState
       await ref
           .read(inscriptionRepositoryProvider)
           .cancel(inscriptionId: inscription.id);
+      container.read(analyticsProvider).track('inscription_cancelled', {
+        'tournament_id': widget.tournamentId,
+      });
       container
         ..invalidate(myInscriptionProvider(widget.tournamentId))
         ..invalidate(tournamentProvider(widget.tournamentId))

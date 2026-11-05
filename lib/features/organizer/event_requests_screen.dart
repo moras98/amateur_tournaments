@@ -1,4 +1,5 @@
 import 'package:tande/core/theme/adaptive.dart';
+import 'package:tande/core/observability/analytics.dart';
 import 'package:tande/core/utils/contact.dart';
 import 'package:tande/core/utils/csv_export.dart';
 import 'package:tande/core/utils/format.dart';
@@ -510,6 +511,10 @@ class _EventRequestsScreenState extends ConsumerState<EventRequestsScreen> {
       await ref
           .read(inscriptionRepositoryProvider)
           .decide(inscriptionId: inscription.id, status: status);
+      container.read(analyticsProvider).track('inscription_decided', {
+        'tournament_id': widget.tournamentId,
+        'status': status.value,
+      });
       invalidateOrganizerState(container, tournamentId: widget.tournamentId);
       if (!mounted) return;
       // Offers to notify the player right away: payment was coordinated

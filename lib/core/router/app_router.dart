@@ -1,4 +1,5 @@
 import 'package:tande/core/utils/nav_geometry.dart';
+import 'package:tande/core/constants.dart';
 import 'package:tande/data/repositories/providers.dart';
 import 'package:tande/features/auth/forgot_password_screen.dart';
 import 'package:tande/features/auth/login_screen.dart';
@@ -18,6 +19,7 @@ import 'package:tande/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 /// Root destinations, in bottom-nav order.
 final _rootDestinations = [
@@ -105,6 +107,9 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/explore',
     refreshListenable: refresh,
+    // Screen-level breadcrumbs in crash reports. Skipped when Sentry is off
+    // (tests, local mock builds), so the observer never touches the SDK.
+    observers: [if (AppConstants.hasSentry) SentryNavigatorObserver()],
     redirect: (context, state) => _redirect(ref, state),
     // Unknown locations (broken deep links, bad `from` values) would
     // otherwise render a blank screen.

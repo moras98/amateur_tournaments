@@ -44,6 +44,17 @@ jugadores pueden escribirle.
   Nosotros no recibimos ni almacenamos tu tarjeta: la tienda nos informa qué
   producto compraste, su estado y su fecha de vencimiento.
 
+**Datos de uso y diagnóstico:**
+
+- Eventos de producto (por ejemplo, torneo creado, inscripción pedida o
+  confirmada, compra iniciada), asociados a tu identificador de usuario,
+  versión de la app y plataforma. No incluyen nombres, teléfonos, correos ni
+  el contenido de tus torneos.
+- Si el reporte de fallos está configurado, ante un error se envía el modelo
+  del dispositivo, la versión del sistema y de la app, la traza del error y
+  las últimas pantallas o acciones. No se envían capturas ni el contenido de
+  los formularios.
+
 ### Qué ve cada persona
 
 - **Tu perfil completo** (fecha de nacimiento, género, correo y teléfono) solo
@@ -64,6 +75,8 @@ jugadores pueden escribirle.
   mostrarte el estado de tus solicitudes.
 - Para iniciar sesión y mantener tu cuenta.
 - Para verificar y mantener tu suscripción Tande Pro, si la contratás.
+- Para entender qué funciones se usan y detectar errores o caídas, sin usar
+  esos datos para publicidad.
 - Para compartir un torneo por WhatsApp: la app abre WhatsApp con el mensaje
   ya cargado; ese envío se rige por la política de WhatsApp, no por la
   nuestra.
@@ -75,7 +88,8 @@ terceros y no los compartimos salvo con los proveedores de abajo.
 
 | Proveedor | Qué hace | Dónde |
 |---|---|---|
-| Supabase | Base de datos y autenticación de cuentas | Supabase (EE. UU./UE) |
+| Supabase | Base de datos, autenticación de cuentas y eventos de uso | Supabase (EE. UU./UE) |
+| Sentry | Reporte de fallos, si está configurado | Sentry (EE. UU./UE) |
 | Google / Apple | Inicio de sesión (si lo elegís) | Google, Apple |
 | OpenStreetMap | Mapas y reverse geocoding (nombre de calle/ciudad) | OpenStreetMap |
 | Google Play / App Store | Procesar la suscripción Tande Pro, si está disponible | Google, Apple |

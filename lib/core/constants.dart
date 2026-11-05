@@ -12,6 +12,26 @@ abstract class AppConstants {
   static bool get hasSupabase =>
       supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty;
 
+  // --- Observabilidad ------------------------------------------------------
+
+  /// Sentry DSN injected at build time (`--dart-define=SENTRY_DSN=...`).
+  /// Empty = crash reporting disabled (tests, mock builds, local dev).
+  static const sentryDsn = String.fromEnvironment('SENTRY_DSN');
+
+  static const sentryEnvironment = String.fromEnvironment(
+    'SENTRY_ENVIRONMENT',
+    defaultValue: 'production',
+  );
+
+  /// Build version sent to Sentry, so a crash can be tied to a release.
+  /// `scripts/build-release.sh` overrides it with the `pubspec.yaml` version.
+  static const appRelease = String.fromEnvironment(
+    'APP_RELEASE',
+    defaultValue: '1.0.0+1',
+  );
+
+  static bool get hasSentry => sentryDsn.isNotEmpty;
+
   static const appName = 'Tande';
 
   /// Where Supabase sends the user back after the browser OAuth flow
