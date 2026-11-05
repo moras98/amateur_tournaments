@@ -1,9 +1,11 @@
 import 'package:tande/core/constants.dart';
+import 'package:tande/core/router/app_router.dart';
 import 'package:tande/data/billing/billing_service.dart';
 import 'package:tande/data/billing/mock_billing_service.dart';
 import 'package:tande/features/organizer/event_form_screen.dart';
 import 'package:tande/features/pro/paywall_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'support/harness.dart';
@@ -171,6 +173,36 @@ void main() {
       await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
 
+      expect(find.byType(PaywallScreen), findsOneWidget);
+      expect(find.byType(EventFormScreen), findsNothing);
+    });
+
+    testWidgets('paying mode: direct create/duplicate links hit the paywall', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        appHarness(
+          signedInAs: 'u-org-1',
+          billing: MockBillingService(products: [monthly], pro: false),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Reaching the form only through the Organizar tab was the bypass:
+      // a deep link used to open it without any free-tier check.
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(MaterialApp)),
+        listen: false,
+      );
+      final router = container.read(routerProvider);
+
+      router.go('/organize/create');
+      await tester.pumpAndSettle();
+      expect(find.byType(PaywallScreen), findsOneWidget);
+      expect(find.byType(EventFormScreen), findsNothing);
+
+      router.go('/organize/duplicate/t-1');
+      await tester.pumpAndSettle();
       expect(find.byType(PaywallScreen), findsOneWidget);
       expect(find.byType(EventFormScreen), findsNothing);
     });

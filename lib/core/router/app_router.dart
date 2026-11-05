@@ -12,6 +12,7 @@ import 'package:tande/features/organizer/event_requests_screen.dart';
 import 'package:tande/features/organizer/organizer_screen.dart';
 import 'package:tande/features/profile/profile_screen.dart';
 import 'package:tande/features/pro/paywall_screen.dart';
+import 'package:tande/features/pro/pro_gate.dart';
 import 'package:tande/features/tournament/tournament_detail_screen.dart';
 import 'package:tande/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -164,7 +165,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/organize/create',
         pageBuilder: (context, state) =>
-            _pushPage(state, const EventFormScreen()),
+            _pushPage(state, const ProGate(child: EventFormScreen())),
       ),
       GoRoute(
         path: '/organize/event/:id',
@@ -186,7 +187,9 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/organize/duplicate/:id',
         pageBuilder: (context, state) => _pushPage(
           state,
-          EventFormScreen(duplicateOfId: state.pathParameters['id']!),
+          ProGate(
+            child: EventFormScreen(duplicateOfId: state.pathParameters['id']!),
+          ),
         ),
       ),
       GoRoute(

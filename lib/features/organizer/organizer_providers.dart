@@ -1,5 +1,7 @@
+import 'package:tande/core/constants.dart';
 import 'package:tande/data/repositories/providers.dart';
 import 'package:tande/features/explore/explore_providers.dart';
+import 'package:tande/features/pro/pro_providers.dart';
 import 'package:tande/features/tournament/tournament_providers.dart';
 import 'package:tande/models/inscription_model.dart';
 import 'package:tande/models/tournament_model.dart';
@@ -23,6 +25,49 @@ final myTournamentsProvider = FutureProvider<List<TournamentModel>>((
     ..sort((a, b) => b.startTime.compareTo(a.startTime));
   return [...upcoming, ...past];
 });
+
+/// Active = not closed and not over yet. This is the unit the free tier
+/// counts (`AppConstants.freeActiveTournaments`): a past or manually closed
+/// event must not keep an organizer walled out of the next one.
+int activeTournamentCount(
+  Iterable<TournamentModel> tournaments, {
+  DateTime? now,
+}) {
+  final at = now ?? DateTime.now();
+  return tournaments
+      .where(
+        (t) => t.status != TournamentStatus.closed && t.endTime.isAfter(at),
+      )
+      .length;
+}
+
+/// Whether the signed-in organizer may create one more active tournament.
+///
+/// Paying mode off (Play has no products yet) or Pro → always allowed. A
+/// failed profile/tournament load never blocks creation (same rule as the
+/// old inline gate).
+///
+/// This is the single gate shared by the Organizar tab, the direct
+/// `/organize/create` route and the event form's save: the old check lived
+/// only on the tab, so a deep link to the form (or a stale screen) could
+/// create unlimited events without Pro.
+Future<bool> canCreateActiveTournament(WidgetRef ref) async {
+  final pro = ref.read(proProvider);
+  if (!pro.available || pro.isPro) return true;
+
+  // Re-read instead of trusting a cached list: the point of this check is
+  // the last one before the insert, when another device may have created
+  // an event in the meantime.
+  ref.invalidate(myTournamentsProvider);
+  List<TournamentModel> tournaments;
+  try {
+    tournaments = await ref.read(myTournamentsProvider.future);
+  } catch (_) {
+    return true;
+  }
+  return activeTournamentCount(tournaments) <
+      AppConstants.freeActiveTournaments;
+}
 
 /// Inscriptions of one of the organizer's events, joined with the players.
 final tournamentInscriptionsProvider =

@@ -771,10 +771,24 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
     final session = ref.read(authStateProvider);
     if (session == null) return;
 
-    setState(() => _saving = true);
     // Captured before the awaits: `ref` throws once disposed, and the
     // caches must refresh even if the user navigates away mid-save.
     final container = ProviderScope.containerOf(context, listen: false);
+
+    // Set before the Pro check so a double tap cannot start two saves.
+    setState(() => _saving = true);
+
+    // Last gate before the insert: the route-level ProGate checked when the
+    // form opened, but the free-tier count can change while it is open (for
+    // example, another device creates an event). Editing never adds an
+    // active tournament, so it is always allowed.
+    if (!_isEditing && !await canCreateActiveTournament(ref)) {
+      if (!mounted) return;
+      setState(() => _saving = false);
+      context.push('/pro');
+      return;
+    }
+
     try {
       final repository = ref.read(tournamentRepositoryProvider);
 

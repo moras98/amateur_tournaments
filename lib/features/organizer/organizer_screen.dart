@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:tande/core/constants.dart';
 import 'package:tande/core/theme/adaptive.dart';
 import 'package:tande/core/widgets/sport_sticker.dart';
 import 'package:tande/core/utils/format.dart';
@@ -11,7 +10,6 @@ import 'package:tande/core/widgets/tande_toast.dart';
 import 'package:tande/core/widgets/tournament_banner.dart';
 import 'package:tande/data/repositories/providers.dart';
 import 'package:tande/features/organizer/organizer_providers.dart';
-import 'package:tande/features/pro/pro_providers.dart';
 import 'package:tande/l10n/generated/app_localizations.dart';
 import 'package:tande/l10n/labels.dart';
 import 'package:tande/models/tournament_model.dart';
@@ -108,27 +106,12 @@ class _OrganizerScreenState extends ConsumerState<OrganizerScreen> {
     }
 
     // Gate 2: free tier — active tournaments an organizer runs without Pro.
-    final pro = ref.read(proProvider);
-    if (pro.available && !pro.isPro) {
-      List<TournamentModel> tournaments;
-      try {
-        tournaments = await ref.read(myTournamentsProvider.future);
-      } catch (_) {
-        // Never block creation on a load failure — same as before Pro.
-        tournaments = const [];
-      }
+    // The same helper guards the direct create/duplicate routes and the
+    // form's save (see `canCreateActiveTournament`).
+    if (!await canCreateActiveTournament(ref)) {
       if (!mounted) return;
-      final now = DateTime.now();
-      final active = tournaments
-          .where(
-            (t) =>
-                t.status != TournamentStatus.closed && t.endTime.isAfter(now),
-          )
-          .length;
-      if (active >= AppConstants.freeActiveTournaments) {
-        context.push('/pro');
-        return;
-      }
+      context.push('/pro');
+      return;
     }
     if (!mounted) return;
     context.push('/organize/create');
