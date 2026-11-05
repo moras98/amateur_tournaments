@@ -5,7 +5,7 @@ cerrado, sin modismos) y en `en`. Nada de lo que dice acá puede ser mentira: la
 exactamente lo que la app hace hoy (mapa de eventos + inscripción + contacto por WhatsApp).
 
 > **Regla:** si una función no está en `lib/`, no entra en la ficha. Pendientes (cuadros,
-> resultados, notificaciones, compartir) quedan para la release que las construya.
+> resultados, notificaciones) quedan para la release que las construya.
 
 ---
 
@@ -28,7 +28,7 @@ Inscribite a torneos amateur cerca tuyo. Organizá el tuyo y confirmá equipos.
 ```
 Tande es la app para encontrar y organizar torneos amateur cerca tuyo.
 
-Para jugadores: mirá en el mapa los torneos de fútbol 5, fútbol 7, pádel, tenis y básquet que se juegan cerca, filtrá por deporte y distancia, y anotate en segundos. Coordinás el pago directo con el organizador por WhatsApp, o por la vía que él publique (Instagram, Telegram, un formulario), sin comisiones ni pagos dentro de la app.
+Para jugadores: mirá en el mapa los torneos de fútbol 5, fútbol 7, pádel, tenis y básquet que se juegan cerca, filtrá por deporte y distancia, y anotate en segundos. Coordinás el pago directo con el organizador por WhatsApp, o por la vía que él publique (Instagram, Telegram, un formulario), sin comisiones por inscripción ni pagos de inscripción dentro de la app.
 
 Para organizadores: creá el torneo con fecha, sede y cupo; recibí solicitudes de inscripción; confirmá o rechazá equipos y avisales por WhatsApp con un toque. También podés sumar los equipos que confirmaste en persona, para que el cupo siempre esté al día. Y si querés, agregale una imagen para que destaque en Explorar.
 
@@ -36,6 +36,7 @@ Para organizadores: creá el torneo con fecha, sede y cupo; recibí solicitudes 
 - Inscripción desde el celular, sin filas ni planillas
 - Confirmación del organizador con aviso por WhatsApp
 - Contacto por la vía que publica el organizador: WhatsApp, llamada, Instagram, Telegram o un formulario
+- Compartí el torneo con tu equipo por WhatsApp
 - Cupos actualizados en tiempo real
 - Gratis para jugadores
 
@@ -107,8 +108,8 @@ las mismas pantallas con la UI en inglés.
 - "El cuadro se arma solo", "resultados", "posiciones", "fixture en vivo" → no existe
   (`grep -rn "cuadro\|llave\|partido\|resultado" lib` = 0).
 - "Notificaciones / no te pierdas ningún cambio" → no hay push.
-- "Compartir el cuadro por WhatsApp" → no hay hoja de compartir; lo que existe es el mensaje
-  uno-a-uno al organizador y el aviso al jugador.
+- "Compartir el cuadro por WhatsApp" → no existe el cuadro. La app comparte el **evento**
+  (título, fecha, sede y link a la tienda), no un bracket ni resultados.
 - "Inscripción desde un link" → la inscripción es desde la app, no desde un link web.
 
 Cuando se construyan, entran a la ficha en el mismo commit que las publica.

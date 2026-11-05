@@ -1,0 +1,14 @@
+title: Tande — documentos legales
+description: Política de privacidad y términos y condiciones de Tande.
+url: https://moras98.github.io
+baseurl: /amateur_tournaments
+lang: es
+permalink: /:title/
+markdown: kramdown
+defaults:
+  - scope:
+      path: ''
+    values:
+      layout: default
+exclude:
+  - README.md

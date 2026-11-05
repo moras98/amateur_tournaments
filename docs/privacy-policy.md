@@ -1,10 +1,11 @@
+---
+title: Política de privacidad
+permalink: /privacy-policy/
+---
+
 # Política de Privacidad — Tande
 
-> **Borrador.** Antes de enviar la app a Google Play hay que publicarla en una
-> URL pública (GitHub Pages o similar) y registrarla en el formulario de
-> *Datos de seguridad* de Play Console.
-
-**Última actualización:** 25 de octubre de 2026
+**Última actualización:** 5 de noviembre de 2026
 
 Tande ("la app") es una aplicación para crear, organizar e inscribirse a
 torneos amateur. Esta política explica qué datos personales recopilamos, para
@@ -17,9 +18,15 @@ qué los usamos y qué derechos tenés. Al usar la app aceptás esta política.
 - Nombre completo, nombre de usuario y correo electrónico.
 - Foto de perfil, nombre y correo cuando iniciás sesión con Google o Apple
   (nos los entrega ese proveedor, no los pedimos nosotros).
-- Fecha de nacimiento y género (opcional).
-- Número de teléfono (opcional, solo si lo cargás).
+- Fecha de nacimiento (obligatoria para verificar que sos mayor de 18 años) y
+  género (opcional).
+- Número de teléfono / WhatsApp (opcional).
+- Instagram, Telegram y un enlace de contacto propio (opcionales).
 - Deportes que te interesan (opcional).
+
+Para publicar un torneo, el organizador necesita al menos un canal de contacto
+(teléfono, Instagram, Telegram o enlace), porque es la vía por la que los
+jugadores pueden escribirle.
 
 **Ubicación del dispositivo** (opcional):
 
@@ -30,6 +37,12 @@ qué los usamos y qué derechos tenés. Al usar la app aceptás esta política.
 **Contenido que creás:**
 
 - Torneos, sedes, inscripciones y mensajes que publicás.
+
+**Compras dentro de la app** (sólo si Tande Pro está disponible):
+
+- La suscripción Tande Pro se procesa a través de Google Play o App Store.
+  Nosotros no recibimos ni almacenamos tu tarjeta: la tienda nos informa qué
+  producto compraste, su estado y su fecha de vencimiento.
 
 ### Qué ve cada persona
 
@@ -48,11 +61,12 @@ qué los usamos y qué derechos tenés. Al usar la app aceptás esta política.
 ## 2. Cómo usamos los datos
 
 - Para operar la app: mostrar torneos cercanos, gestionar inscripciones y
-  avisarte dentro de la app sobre cambios e inscripciones nuevas.
+  mostrarte el estado de tus solicitudes.
 - Para iniciar sesión y mantener tu cuenta.
-- Para compartir el cuadro de un torneo por WhatsApp: la app abre WhatsApp con
-  el mensaje ya cargado; ese envío se rige por la política de WhatsApp, no por
-  la nuestra.
+- Para verificar y mantener tu suscripción Tande Pro, si la contratás.
+- Para compartir un torneo por WhatsApp: la app abre WhatsApp con el mensaje
+  ya cargado; ese envío se rige por la política de WhatsApp, no por la
+  nuestra.
 
 **No vendemos tus datos personales**, no los usamos para publicidad de
 terceros y no los compartimos salvo con los proveedores de abajo.
@@ -64,22 +78,22 @@ terceros y no los compartimos salvo con los proveedores de abajo.
 | Supabase | Base de datos y autenticación de cuentas | Supabase (EE. UU./UE) |
 | Google / Apple | Inicio de sesión (si lo elegís) | Google, Apple |
 | OpenStreetMap | Mapas y reverse geocoding (nombre de calle/ciudad) | OpenStreetMap |
-| Google Play Services | Instalación y actualización de la app | Google |
+| Google Play / App Store | Procesar la suscripción Tande Pro, si está disponible | Google, Apple |
 
 ## 4. Conservación y eliminación
 
-Conservamos tus datos mientras tu cuenta esté activa. Podés pedir la
-eliminación de tu cuenta y de tus datos personales en cualquier momento
-escribiendo al correo de contacto: se elimina o anonimiza en un plazo máximo
-de 30 días (los datos que otros usuarios guardaron sobre vos, como una
-inscripción, pueden conservarse para la integridad del torneo).
+Conservamos tus datos mientras tu cuenta esté activa. Podés eliminar tu cuenta
+desde la app, en Perfil → Eliminar cuenta, o pedir la eliminación escribiendo
+al correo de contacto. La cuenta y sus datos se eliminan o anonimizan en un
+plazo máximo de 30 días (las inscripciones de torneos de otras personas pueden
+conservarse para la integridad del evento).
 
 ## 5. Tus derechos
 
 De acuerdo con la Ley 18.331 de Protección de Datos Personales (Uruguay),
 tenés derecho a acceder a tus datos, rectificarlos, oponerte a su tratamiento
-y solicitar su eliminación. Escribinos a **a.morascastro@gmail.com** y respondemos
-dentro de los 10 días hábiles.
+y solicitar su eliminación. Escribinos a **a.morascastro@gmail.com** y
+respondemos dentro de los 10 días hábiles.
 
 ## 6. Menores
 

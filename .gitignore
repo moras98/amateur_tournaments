@@ -57,3 +57,7 @@ android/.kotlin/
 
 # Design review renders (regenerate with --update-goldens; they go stale on every UI tweak)
 test/goldens/
+
+# Jekyll output from the legal docs (built by the Pages workflow, not committed)
+docs/_site/
+docs/.jekyll-cache/

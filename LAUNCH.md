@@ -21,10 +21,10 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 | Upload keystore | ✅ `~/upload-keystore.jks` + `android/key.properties` |
 | Store AAB script | ✅ `scripts/build-release.sh` |
 | Store copy | ✅ `store/play-store.md` |
-| Legal docs | 📝 drafts — contact email filled (`a.morascastro@gmail.com`), still needs public URL |
+| Legal docs | 📝 en `docs/`, workflow de Pages listo — falta activar Pages y verificar las URLs |
 | Monetization | ✅ built, **inert** until Play products exist — launch after first users (§7) |
 | Supabase anon key in `.release.env` | ✅ filled — real-backend release AAB built (62.1 MB) |
-| Migrations `0005` … `0013` applied | ✅ `delete_account` RPC live in prod (verified: 42501 anon) |
+| Migrations `0005` … `0014` applied | ✅ `delete_account` RPC live in prod (verified: 42501 anon) · `0014` verificada: anon lee 0 filas de `profiles` |
 | Auth email links (confirm + reset) | ⬜ dashboard allow-list + templates |
 | Play Console account | ⬜ |
 | Closed test (14 days) | ⬜ |
@@ -42,9 +42,12 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
       `0006_signup_checks.sql`, `0007_signup_metadata.sql`,
       `0008_explore_indexes.sql`, `0009_currency.sql`,
       `0010_tournament_banners.sql`, `0011_contact_channels.sql`,
-      `0012_delete_account.sql` and `0013_no_oversell.sql`** are
+      `0012_delete_account.sql`, `0013_no_oversell.sql` and
+      `0014_profile_privacy.sql`** are
       applied in the Supabase
-      dashboard. **`0007` is the sign-up data-loss fix** —
+      dashboard. **`0014` cierra la lectura pública de `profiles`** —
+      verificado en producción: anon lee 0 filas y el RPC de contactos
+      responde 42501. **`0007` is the sign-up data-loss fix** —
       until it runs, the confirm-email path keeps dropping username /
       birth date / gender / sports (the app already sends them in the
       metadata). `0008` indexes the Explore query (date cut, radius box,
@@ -54,7 +57,8 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
       5.1.1(v) / Play account-deletion policy) — the Profile screen's
       "Eliminar cuenta" button calls it and fails politely until the
       migration runs. `0013` blocks overselling spots when two players
-      confirm at the same instant.
+      confirm at the same instant. `0014` deja `profiles` como owner-only y
+      expone sólo a organizadores con torneos en `public_profiles`.
 - [ ] **Auth email links land in the app** (dashboard, Authentication):
       URL Configuration → Redirect URLs must list
       `io.supabase.amateurtournaments://login-callback` (it should already
@@ -97,10 +101,12 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 - [ ] **App identity**: name `Tande`, application ID `com.tande.app`
       (autofills from the AAB), version `1.0.0+1`.
 - [ ] **Legal docs**: contact email is filled (`a.morascastro@gmail.com`) —
-      publish both docs (GitHub Pages on this repo is fine), paste the privacy URL into Play Console, then point
-      `AppConstants.privacyUrl` / `AppConstants.termsUrl`
-      (`lib/core/constants.dart`) at the final URLs — the sign-up checkbox
-      and the login fine print open them in the browser.
+      activá GitHub Pages (Settings → Pages → Source: GitHub Actions) y
+      verificá que abran las URLs de `AppConstants.privacyUrl` /
+      `AppConstants.termsUrl` (`docs/privacy-policy.md` y
+      `docs/terms-and-conditions.md`). Después pegá la URL de privacidad en
+      Play Console. El workflow `.github/workflows/pages.yml` publica `docs/`
+      en cada push a `main`.
 - [ ] **Data safety form** (must match the policy):
       - Collected: **name, email, profile photo (from Google/Apple), date of
         birth, gender, phone (optional), approximate/precise location
@@ -209,8 +215,10 @@ the closed test** — never gate the 12 testers.
       entitlement is client-side only (Play query + restore on startup).
 - [ ] **Fee & payouts**: Google keeps **15%** of subscription revenue; fill
       tax info + bank payout details in Console when revenue starts.
-- [ ] **Docs**: update `store/terms-and-conditions.md` §1/§5 and the privacy
-      policy — both currently state that no payment happens in the app.
+- [x] **Docs**: `docs/terms-and-conditions.md` §1/§5/§8 explain that
+      inscription payments stay off-app and that Tande Pro is billed by the
+      stores; the privacy policy covers the subscription and the new contact
+      visibility. Published with the Pages workflow in `.github/workflows/`.
 
 ## Mapas y geocodificación
 

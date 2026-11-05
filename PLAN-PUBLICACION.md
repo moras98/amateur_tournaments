@@ -162,7 +162,7 @@ correr el simulador localmente — el QA se hace en device por TestFlight.
 
 ### 3.3 Legal (las dos tiendas)
 
-- [x] Reemplazar `EMAIL_DE_CONTACTO` en `store/privacy-policy.md` y `store/terms-and-conditions.md`
+- [x] Reemplazar `EMAIL_DE_CONTACTO` en `docs/privacy-policy.md` y `docs/terms-and-conditions.md`
       (email: a.morascastro@gmail.com).
 - [ ] Publicar ambos en una URL propia (GitHub Pages sirve) y apuntar `AppConstants.privacyUrl` / `termsUrl`.
 - [ ] Reescribir la política: hoy dice que la app "abre WhatsApp con el mensaje ya cargado

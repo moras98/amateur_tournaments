@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="{{ site.lang | default: 'es' }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if page.url != '/' %}{{ page.title }} — {% endif %}{{ site.title }}</title>
+    <meta name="description" content="{{ site.description }}">
+    <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
+  </head>
+  <body>
+    <header class="site-header">
+      <a href="{{ '/' | relative_url }}" class="brand">Tande</a>
+      <nav>
+        <a href="{{ '/privacy-policy/' | relative_url }}">Privacidad</a>
+        <a href="{{ '/terms-and-conditions/' | relative_url }}">Términos</a>
+      </nav>
+    </header>
+    <main class="content">
+      {{ content }}
+    </main>
+    <footer>
+      <p>Tande · com.tande.app · versión 1.0.0</p>
+      <p><a href="mailto:a.morascastro@gmail.com">a.morascastro@gmail.com</a></p>
+    </footer>
+  </body>
+</html>

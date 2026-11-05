@@ -50,14 +50,13 @@ abstract class AppConstants {
   // ignore: unnecessary_nullable_for_final_variable_declarations
   static const int? proTrialDays = 7;
 
-  /// Public URLs of the legal documents (hosted — see LAUNCH.md; update
-  /// these if the hosting moves). Opened from the registration forms.
-  static const termsUrl =
-      'https://github.com/moras98/amateur_tournaments/blob/main/store/'
-      'terms-and-conditions.md';
-  static const privacyUrl =
-      'https://github.com/moras98/amateur_tournaments/blob/main/store/'
-      'privacy-policy.md';
+  /// Public URLs of the legal documents (hosted with GitHub Pages from
+  /// `docs/`; see `.github/workflows/pages.yml`). Opened from the
+  /// registration forms and the paywall.
+  static const legalBaseUrl = 'https://moras98.github.io/amateur_tournaments';
+
+  static const termsUrl = '$legalBaseUrl/terms-and-conditions/';
+  static const privacyUrl = '$legalBaseUrl/privacy-policy/';
 
   // --- Share sheet (§4.10-c: el loop de crecimiento del producto) ---------
 

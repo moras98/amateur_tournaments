@@ -1,8 +1,8 @@
 # Tande
 
 > **Publishing & first users:** see [`LAUNCH.md`](LAUNCH.md) · Store copy in
-> [`store/play-store.md`](store/play-store.md), privacy policy draft in
-> [`store/privacy-policy.md`](store/privacy-policy.md).
+> [`store/play-store.md`](store/play-store.md), privacy policy in
+> [`docs/privacy-policy.md`](docs/privacy-policy.md).
 
 Players discover amateur tournaments near them (map + list — open filtered
 to the sports in their profile), contact the
