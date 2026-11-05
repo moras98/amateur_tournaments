@@ -31,6 +31,20 @@ qué los usamos y qué derechos tenés. Al usar la app aceptás esta política.
 
 - Torneos, sedes, inscripciones y mensajes que publicás.
 
+### Qué ve cada persona
+
+- **Tu perfil completo** (fecha de nacimiento, género, correo y teléfono) solo
+  lo ves vos.
+- **Perfil público de organizador**: si organizás torneos, tu nombre de
+  usuario, nombre, foto, deportes y canales de contacto (teléfono, Instagram,
+  Telegram y enlace) son visibles para cualquier persona que abra uno de tus
+  torneos, incluso sin cuenta. La fecha de nacimiento y el género nunca se
+  muestran públicamente.
+- **Contacto de jugadores inscriptos**: si te anotás a un torneo, el
+  organizador de ese torneo puede ver tu teléfono y tus otros canales de
+  contacto para coordinar el pago y la participación. Los demás jugadores no
+  los ven y no son públicos.
+
 ## 2. Cómo usamos los datos
 
 - Para operar la app: mostrar torneos cercanos, gestionar inscripciones y
@@ -62,7 +76,7 @@ inscripción, pueden conservarse para la integridad del torneo).
 
 ## 5. Tus derechos
 
-De acuerdo con la Ley 18.330 de Protección de Datos Personales (Uruguay),
+De acuerdo con la Ley 18.331 de Protección de Datos Personales (Uruguay),
 tenés derecho a acceder a tus datos, rectificarlos, oponerte a su tratamiento
 y solicitar su eliminación. Escribinos a **a.morascastro@gmail.com** y respondemos
 dentro de los 10 días hábiles.

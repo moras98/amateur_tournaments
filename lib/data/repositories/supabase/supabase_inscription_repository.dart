@@ -7,13 +7,17 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 ///
 /// Confirm/reject decisions update the row; the `sync_tournament_status`
 /// trigger keeps the event's status (`full`/`open`) in sync.
+///
+/// Player profiles are **not** embedded with `profiles(*)`: since migration
+/// 0014 that table is owner-only and the anon key can no longer read every
+/// player's phone. The organizer gets the contact channels of their own
+/// tournament's players through `inscription_player_contacts(tournament_id)`.
 class SupabaseInscriptionRepository implements InscriptionRepository {
   SupabaseInscriptionRepository(this._client);
 
   final SupabaseClient _client;
 
-  /// Every column plus the player profile (public under profiles RLS).
-  static const _select = '*, player:profiles(*)';
+  static const _select = '*';
 
   @override
   Future<List<InscriptionModel>> fetchForPlayer(String playerId) async {
@@ -32,7 +36,13 @@ class SupabaseInscriptionRepository implements InscriptionRepository {
         .select(_select)
         .eq('tournament_id', tournamentId)
         .order('created_at');
-    return rows.map(InscriptionModel.fromJson).toList();
+    final players = await _playerContacts(tournamentId);
+    return rows.map((row) {
+      final player = players[row['player_id']];
+      final json = <String, dynamic>{...row};
+      if (player != null) json['player'] = player;
+      return InscriptionModel.fromJson(json);
+    }).toList();
   }
 
   @override
@@ -48,6 +58,39 @@ class SupabaseInscriptionRepository implements InscriptionRepository {
         .maybeSingle();
     if (row == null) return null;
     return InscriptionModel.fromJson(row);
+  }
+
+  /// Contact channels of the players registered in [tournamentId], keyed by
+  /// player id. Empty when the RPC is not deployed yet or the caller does
+  /// not own the tournament — the request list still renders, just without
+  /// the contact buttons.
+  Future<Map<String, Map<String, dynamic>>> _playerContacts(
+    String tournamentId,
+  ) async {
+    try {
+      final response = await _client.rpc(
+        'inscription_player_contacts',
+        params: {'p_tournament_id': tournamentId},
+      );
+      final rows = (response as List).cast<Map<String, dynamic>>();
+      return {
+        for (final row in rows)
+          if (row['player_id'] != null)
+            row['player_id'] as String: {
+              'id': row['player_id'],
+              'username': row['username'] ?? '',
+              'full_name': row['full_name'] ?? '',
+              'avatar_url': row['avatar_url'],
+              'phone': row['phone'] ?? '',
+              'instagram': row['instagram'] ?? '',
+              'telegram': row['telegram'] ?? '',
+              'contact_url': row['contact_url'] ?? '',
+              'sports': row['sports'] ?? const <String>[],
+            },
+      };
+    } catch (_) {
+      return const {};
+    }
   }
 
   @override
