@@ -24,7 +24,7 @@ Working checklist. Update the boxes as you go. Base market: **Uruguay**.
 | Legal docs | ✅ publicados en GitHub Pages: `/privacy-policy/` y `/terms-and-conditions/` (HTTP 200) |
 | Monetization | ✅ built, **inert** until Play products exist — launch after first users (§7) |
 | Supabase anon key in `.release.env` | ✅ filled — real-backend release AAB built (62.1 MB) |
-| Migrations `0005` … `0014` applied | ✅ `delete_account` RPC live in prod (verified: 42501 anon) · `0014` verificada: anon lee 0 filas de `profiles` · `0015` (analítica) pendiente |
+| Migrations `0005` … `0015` applied | ✅ `delete_account` RPC live in prod (verified: 42501 anon) · `0014` verificada: anon lee 0 filas de `profiles` · `0015` verificada: anon no puede leer ni insertar en `analytics_events` |
 | Observabilidad | ✅ crash reporting opt-in con Sentry (`SENTRY_DSN`) + eventos de producto en `analytics_events` |
 | Auth email links (confirm + reset) | ⬜ dashboard allow-list + templates |
 | Play Console account | ⬜ |
